@@ -56,6 +56,7 @@
 
 *   **Медиатор:** [Доступ по ссылке на OneDrive](https://1drv.ms/w/c/B834906EDB47C714/AdDFXVIyG4pKvbCF-GmHrBI?e=YkUrAk)
 *   **Список сервисов в ServiceLocator:** [Доступ по ссылке на OneDrive](https://1drv.ms/w/c/B834906EDB47C714/AeaTmB9JNLtEqFoo4ktK3Hg?e=1MCPT4)
+*   **DOTween:** [Ссылка разработчика](https://dotween.demigiant.com/documentation.php)
 
 ## 👥 Команда разработки
 
