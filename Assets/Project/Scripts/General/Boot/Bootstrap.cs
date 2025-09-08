@@ -10,6 +10,7 @@ public class Bootstrap : MonoBehaviour
     private InputManager _inputManager;
     private DragManager _dragManager;
     private TransitionScreen _transitionScreen;
+    private PlayerController _playerController;
 
     private void Awake()
     {
@@ -19,12 +20,14 @@ public class Bootstrap : MonoBehaviour
         _inputManager = Instantiate(Resources.Load<InputManager>("Prefabs/InputManager"));
         _dragManager = Instantiate(Resources.Load<DragManager>("Prefabs/DragManager"));
         _transitionScreen = Instantiate(Resources.Load<TransitionScreen>("Prefabs/TransitionScreen"));
+        _playerController = Instantiate(Resources.Load<PlayerController>("Prefabs/PlayerController"));
 
         DontDestroyOnLoad(_mediator);
         DontDestroyOnLoad(_audioHub);
         DontDestroyOnLoad(_inputManager);
         DontDestroyOnLoad(_dragManager);
         DontDestroyOnLoad(_transitionScreen);
+        DontDestroyOnLoad(_playerController);
 
         _mediator.RegisterService<AudioHub>(_audioHub);
         _mediator.RegisterService<SaveManager>(_saveManager);
@@ -32,6 +35,7 @@ public class Bootstrap : MonoBehaviour
         _mediator.RegisterInitializable(_inputManager);
         _mediator.RegisterInitializable(_dragManager);
         _mediator.RegisterInitializable(_transitionScreen);
+        _mediator.RegisterInitializable(_playerController);
 
         _mediator.LoadScene(_sceneToLoad, Game.State.Gameplay, false);
 

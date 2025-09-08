@@ -6,13 +6,22 @@
             "id": "a1dadeff-48f2-4843-aa03-8644c8536eb0",
             "actions": [
                 {
-                    "name": "Touch",
-                    "type": "Button",
+                    "name": "PointerClick",
+                    "type": "Value",
                     "id": "f9f76808-fd72-4755-9206-5a5bdc99ac13",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Point",
+                    "type": "Value",
+                    "id": "b6673134-dcdf-41e5-bd3c-2954cd61d280",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -23,7 +32,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Touch",
+                    "action": "PointerClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -34,7 +43,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Touch",
+                    "action": "PointerClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "38d05ef9-e934-4351-b2ad-1d58f70a334a",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Point",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

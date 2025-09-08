@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 public interface IInitializable
 {
@@ -62,11 +63,11 @@ public class EventBus
     public void Publish<T>(T eventData) where T : IEvent
     {
         Type eventType = typeof(T);
-        Debug.Log($"Publishing {eventType.Name}");
+        // Debug.Log($"Publishing {eventType.Name}");
 
         if (_eventSubscriptions.TryGetValue(eventType, out var handlers))
         {
-            Debug.Log($"Found {handlers.Count} handlers for {eventType.Name}");
+            // Debug.Log($"Found {handlers.Count} handlers for {eventType.Name}");
             foreach (var handler in handlers.ToArray())
             {
                 handler?.Invoke(eventData);
