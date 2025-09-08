@@ -5,6 +5,7 @@ using UnityEngine;
 public enum SoundType
 {
     ButtonPress,
+    CoinToss
 
 }
 public class AudioHub : MonoBehaviour

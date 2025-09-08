@@ -11,6 +11,7 @@ public class Bootstrap : MonoBehaviour
     private DragManager _dragManager;
     private TransitionScreen _transitionScreen;
     private PlayerController _playerController;
+    private CurrencyPresenter _playerCurrencyPresenter;
 
     private void Awake()
     {
@@ -20,27 +21,36 @@ public class Bootstrap : MonoBehaviour
         _inputManager = Instantiate(Resources.Load<InputManager>("Prefabs/InputManager"));
         _dragManager = Instantiate(Resources.Load<DragManager>("Prefabs/DragManager"));
         _transitionScreen = Instantiate(Resources.Load<TransitionScreen>("Prefabs/TransitionScreen"));
+
         _playerController = Instantiate(Resources.Load<PlayerController>("Prefabs/PlayerController"));
+        _playerCurrencyPresenter = Instantiate(Resources.Load<CurrencyPresenter>("Prefabs/CurrencyPresenter"));
 
-        DontDestroyOnLoad(_mediator);
-        DontDestroyOnLoad(_audioHub);
-        DontDestroyOnLoad(_inputManager);
-        DontDestroyOnLoad(_dragManager);
-        DontDestroyOnLoad(_transitionScreen);
-        DontDestroyOnLoad(_playerController);
+        RegisterPersistent(_mediator);
+        RegisterPersistent(_audioHub);
+        RegisterPersistent(_inputManager);
+        RegisterPersistent(_dragManager);
+        RegisterPersistent(_transitionScreen);
+        RegisterPersistent(_playerController);
+        RegisterPersistent(_playerCurrencyPresenter);
 
-        _mediator.RegisterService<AudioHub>(_audioHub);
-        _mediator.RegisterService<SaveManager>(_saveManager);
+        _mediator.RegisterService(_audioHub);
+        _mediator.RegisterService(_saveManager);
 
         _mediator.RegisterInitializable(_inputManager);
         _mediator.RegisterInitializable(_dragManager);
         _mediator.RegisterInitializable(_transitionScreen);
         _mediator.RegisterInitializable(_playerController);
+        _mediator.RegisterInitializable(_playerCurrencyPresenter);
 
         _mediator.LoadScene(_sceneToLoad, Game.State.Gameplay, false);
 
         _mediator.SubscribeToState(Game.State.Gameplay, (_) => _mediator.InitializeAll());
 
         _saveManager.LoadSaveData();
+    }
+
+    public void RegisterPersistent<T>(T obj) where T : Object
+    {
+        DontDestroyOnLoad(obj);
     }
 }

@@ -9,6 +9,8 @@ public interface IInitializable
     void Initialize(Mediator mediator);
 }
 
+
+
 public interface IStateListener
 {
     void OnStateChanged(Game.State state);
@@ -76,7 +78,7 @@ public class EventBus
         else
         {
             Debug.LogWarning($"No handlers found for {eventType.Name}");
-            LogSubscriptions();
+            // LogSubscriptions();
         }
     }
 }
@@ -105,6 +107,8 @@ public class Mediator : MonoBehaviour
 
     public event Action<Game.State> OnStateChanged;
     public static event Action<float> OnLoadProgress;
+
+    public event Action OnInitializationCompleted;
 
     private Game.State _currentState;
     public Game.State CurrentState => _currentState;
@@ -168,6 +172,7 @@ public class Mediator : MonoBehaviour
         }
 
         _initializables.Clear();
+        OnInitializationCompleted?.Invoke();
     }
 
     #endregion

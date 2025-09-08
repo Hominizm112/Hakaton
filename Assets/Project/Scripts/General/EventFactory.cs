@@ -1,32 +1,5 @@
-
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
-
-#region Events
-public interface IEvent { }
-
-public class LoadSceneEvent : IEvent
-{
-    public string SceneName;
-    public Game.State TargetState;
-    public LoadSceneEvent(string sceneName, Game.State targetState)
-    {
-        SceneName = sceneName;
-        TargetState = targetState;
-    }
-}
-public class DebugLogErrorEvent : IEvent
-{
-    public string Message;
-
-    public DebugLogErrorEvent(string message)
-    {
-        Message = message;
-    }
-}
-
-#endregion
 
 public static class EventFactory
 {
