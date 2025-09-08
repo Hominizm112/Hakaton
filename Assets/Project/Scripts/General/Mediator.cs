@@ -13,12 +13,31 @@ public interface IStateListener
     void OnStateChanged(Game.State state);
 }
 
-public interface IEvent { }
+#region EventBus
 
 public class EventBus
 {
     private readonly Dictionary<Type, List<Action<IEvent>>> _eventSubscriptions = new();
 
+
+    public int GetSubscriptionCount<T>() where T : IEvent
+    {
+        Type eventType = typeof(T);
+        if (_eventSubscriptions.TryGetValue(eventType, out var handlers))
+        {
+            return handlers.Count;
+        }
+        return 0;
+    }
+
+    public void LogSubscriptions()
+    {
+        Debug.Log("=== EventBus Subscriptions ===");
+        foreach (var kvp in _eventSubscriptions)
+        {
+            Debug.Log($"{kvp.Key.Name}: {kvp.Value.Count} handlers");
+        }
+    }
     public void Subscribe<T>(Action<T> handler) where T : IEvent
     {
         Type eventType = typeof(T);
@@ -28,6 +47,7 @@ public class EventBus
         }
 
         _eventSubscriptions[eventType].Add((e) => handler((T)e));
+        Debug.Log($"Subscribed to {eventType.Name}");
     }
 
     public void Unsubscribe<T>(Action<T> handler) where T : IEvent
@@ -42,16 +62,25 @@ public class EventBus
     public void Publish<T>(T eventData) where T : IEvent
     {
         Type eventType = typeof(T);
+        Debug.Log($"Publishing {eventType.Name}");
+
         if (_eventSubscriptions.TryGetValue(eventType, out var handlers))
         {
+            Debug.Log($"Found {handlers.Count} handlers for {eventType.Name}");
             foreach (var handler in handlers.ToArray())
             {
                 handler?.Invoke(eventData);
             }
         }
+        else
+        {
+            Debug.LogWarning($"No handlers found for {eventType.Name}");
+            LogSubscriptions();
+        }
     }
 }
 
+#endregion
 
 public class Mediator : MonoBehaviour
 {
@@ -81,6 +110,7 @@ public class Mediator : MonoBehaviour
     public EventBus GlobalEventBus { get; private set; }
     public GameSettings Settings { get; private set; } = new();
 
+    #region Initialize
 
     private void Awake()
     {
@@ -93,7 +123,24 @@ public class Mediator : MonoBehaviour
         Instance = this;
 
         GlobalEventBus = new EventBus();
+        SubscribeToEvents();
         InitializeStateDictionary();
+    }
+
+    private void SubscribeToEvents()
+    {
+        GlobalEventBus.Subscribe<DebugLogErrorEvent>(DebugLogErrorEventHandler);
+        GlobalEventBus.Subscribe<LoadSceneEvent>(@LoadSceneEventHandler);
+    }
+
+    private void DebugLogErrorEventHandler(DebugLogErrorEvent @event)
+    {
+        Debug.LogError(@event.Message);
+    }
+
+    private void LoadSceneEventHandler(LoadSceneEvent @event)
+    {
+        LoadScene(@event.SceneName, @event.TargetState);
     }
 
     private void InitializeStateDictionary()
@@ -121,6 +168,10 @@ public class Mediator : MonoBehaviour
 
         _initializables.Clear();
     }
+
+    #endregion
+
+    #region State
 
     public void SetState(Game.State newState)
     {
@@ -200,6 +251,10 @@ public class Mediator : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Service
+
     public void RegisterService<T>(T service) where T : class
     {
         _services[typeof(T)] = service;
@@ -228,10 +283,22 @@ public class Mediator : MonoBehaviour
         return false;
     }
 
-    public void LoadScene(string sceneName, Game.State targetState)
+    #endregion
+
+    #region Scene Loading
+
+    public void LoadScene(string sceneName, Game.State targetState, bool useTransitionScreen = true)
     {
+        Debug.Log($"loading scene: {sceneName}");
         SetState("Loading");
-        StartCoroutine(LoadSceneAsync(sceneName, targetState));
+        if (useTransitionScreen)
+        {
+            GetService<TransitionScreen>().StartTransition(() => StartCoroutine(LoadSceneAsync(sceneName, targetState)));
+        }
+        else
+        {
+            StartCoroutine(LoadSceneAsync(sceneName, targetState));
+        }
     }
 
     private IEnumerator LoadSceneAsync(string sceneName, Game.State targetState)
@@ -252,9 +319,15 @@ public class Mediator : MonoBehaviour
             yield return null;
         }
 
+        if (GetService<TransitionScreen>() != null)
+        {
+            GetService<TransitionScreen>().EndTransition();
+        }
+
         SetState(targetState);
     }
 
+    #endregion
     private void OnDestroy()
     {
         if (Instance == this)

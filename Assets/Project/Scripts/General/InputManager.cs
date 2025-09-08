@@ -84,7 +84,6 @@ public class InputManager : MonoBehaviour, IInitializable, IStateListener
         mediator.SubscribeToState(this, Game.State.Menu);
 
         InitializeInputActions();
-        DebugInputActions();
     }
 
     private void DebugInputActions()

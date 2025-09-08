@@ -1,0 +1,45 @@
+{
+    "name": "ActionMap",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "a1dadeff-48f2-4843-aa03-8644c8536eb0",
+            "actions": [
+                {
+                    "name": "Touch",
+                    "type": "Button",
+                    "id": "f9f76808-fd72-4755-9206-5a5bdc99ac13",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ddba6533-f404-4e85-a1e5-1a9b7fc76e49",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Touch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "acf67b2c-4da3-4d50-80ee-a91dabbdde20",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Touch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

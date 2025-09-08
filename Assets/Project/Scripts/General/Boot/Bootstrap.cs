@@ -9,6 +9,7 @@ public class Bootstrap : MonoBehaviour
     private SaveManager _saveManager;
     private InputManager _inputManager;
     private DragManager _dragManager;
+    private TransitionScreen _transitionScreen;
 
     private void Awake()
     {
@@ -17,19 +18,22 @@ public class Bootstrap : MonoBehaviour
         _saveManager = Instantiate(Resources.Load<SaveManager>("Prefabs/SaveManager"));
         _inputManager = Instantiate(Resources.Load<InputManager>("Prefabs/InputManager"));
         _dragManager = Instantiate(Resources.Load<DragManager>("Prefabs/DragManager"));
+        _transitionScreen = Instantiate(Resources.Load<TransitionScreen>("Prefabs/TransitionScreen"));
 
         DontDestroyOnLoad(_mediator);
         DontDestroyOnLoad(_audioHub);
         DontDestroyOnLoad(_inputManager);
         DontDestroyOnLoad(_dragManager);
+        DontDestroyOnLoad(_transitionScreen);
 
         _mediator.RegisterService<AudioHub>(_audioHub);
         _mediator.RegisterService<SaveManager>(_saveManager);
 
         _mediator.RegisterInitializable(_inputManager);
         _mediator.RegisterInitializable(_dragManager);
+        _mediator.RegisterInitializable(_transitionScreen);
 
-        _mediator.LoadScene(_sceneToLoad, Game.State.Gameplay);
+        _mediator.LoadScene(_sceneToLoad, Game.State.Gameplay, false);
 
         _mediator.SubscribeToState(Game.State.Gameplay, (_) => _mediator.InitializeAll());
 
