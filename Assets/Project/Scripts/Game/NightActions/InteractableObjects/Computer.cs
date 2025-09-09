@@ -14,3 +14,8 @@ public class Computer : InteractionObject
         _mediator.SetState(Game.State.Paused);
     }
 }
+public interface IInteractable
+{
+    void Interact();
+    
+}
