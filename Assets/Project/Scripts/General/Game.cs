@@ -7,7 +7,11 @@ public abstract class Game : MonoBehaviour
         Gameplay,
         Paused,
         Menu,
-        Loading
+        Loading,
+        NightScene,
+        TradingActions,
+        TradingObligations,
+
     }
 
 }
