@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class Plants : MonoBehaviour, IInteractable
+public class Plants : MonoBehaviour, IInteractable, IGameStateListener
 {
     [SerializeField] private GameObject _leafPrefab;
     [SerializeField] private Vector2 _DropLeavesPoint;
@@ -51,7 +51,7 @@ public class Plants : MonoBehaviour, IInteractable
         _isActive = false;
     }
 
-    private void CheckGameMode(Game.State newState)
+    public void CheckGameMode(Game.State newState)
     {
         if (newState != Game.State.NightScene)
         {
