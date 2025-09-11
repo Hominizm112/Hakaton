@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c388f852198a7b140ace766f4f717159, type: 3}
+  m_Name: NPC1
+  m_EditorClassIdentifier: 
+  npcName: Foo
+  npcPrefab: {fileID: 5696537686227451910, guid: 7cfb8f4516234d64793ece15ac9475fe, type: 3}
+  smallTalkLines: {fileID: 11400000, guid: d7337b821e8ee034680c255c4359ae18, type: 2}
+  requestLines: {fileID: 11400000, guid: cde597cfdd10ad640974b3e60bb08c3c, type: 2}
+  buyReactions:
+  - buySatisfaction: 0
+    costMultiplier: 0.5
+    friendPointsAdded: -20
+    dialogueLine: {fileID: 11400000, guid: 115a8a68993c3a8469d2053154b2031b, type: 2}
+  - buySatisfaction: 1
+    costMultiplier: 0.8
+    friendPointsAdded: -5
+    dialogueLine: {fileID: 11400000, guid: b254aa1eeccf45a4eb721b2f33fbfe51, type: 2}
+  - buySatisfaction: 2
+    costMultiplier: 1
+    friendPointsAdded: 2
+    dialogueLine: {fileID: 11400000, guid: bcf41a35dcc253145af705e0f3b26172, type: 2}
+  - buySatisfaction: 3
+    costMultiplier: 1.2
+    friendPointsAdded: 8
+    dialogueLine: {fileID: 11400000, guid: a2415144bce2aca44992d0592c652335, type: 2}
+  - buySatisfaction: 4
+    costMultiplier: 1.5
+    friendPointsAdded: 15
+    dialogueLine: {fileID: 11400000, guid: 6455ca8a56780454bb2c95ade14de1b6, type: 2}
+  friendLevelCap:
+    min: -5
+    max: 5
+  friendLevelPoints:
+  - level: -5
+    pointsToReach: -200
+  - level: -4
+    pointsToReach: -100
+  - level: -3
+    pointsToReach: -50
+  - level: -2
+    pointsToReach: -20
+  - level: -1
+    pointsToReach: -10
+  - level: 0
+    pointsToReach: 0
+  - level: 1
+    pointsToReach: 10
+  - level: 2
+    pointsToReach: 20
+  - level: 3
+    pointsToReach: 50
+  - level: 4
+    pointsToReach: 100
+  - level: 5
+    pointsToReach: 200
+  favoriteTea:
+    teaTypes: 00000000
+    teaFlavorTags: 00000000
+    processingLevels: 00000000
+    teaGrades: 00000000
+    teaRatingThreshold: 0
+  normalTea:
+    teaTypes: 00000000
+    teaFlavorTags: 01000000
+    processingLevels: 01000000
+    teaGrades: 01000000
+    teaRatingThreshold: 0
+  unlovedTea:
+    teaTypes: 02000000
+    teaFlavorTags: 02000000
+    processingLevels: 02000000
+    teaGrades: 02000000
+    teaRatingThreshold: 0

@@ -5,8 +5,8 @@ public interface IEvent { }
 
 public class LoadSceneEvent : IEvent
 {
-    public string SceneName;
-    public Game.State TargetState;
+    public string SceneName { get; }
+    public Game.State TargetState { get; }
     public LoadSceneEvent(string sceneName, Game.State targetState)
     {
         SceneName = sceneName;
@@ -15,7 +15,7 @@ public class LoadSceneEvent : IEvent
 }
 public class DebugLogErrorEvent : IEvent
 {
-    public string Message;
+    public string Message { get; }
 
     public DebugLogErrorEvent(string message)
     {
@@ -24,7 +24,7 @@ public class DebugLogErrorEvent : IEvent
 }
 public class CurrencyChangedEvent : IEvent
 {
-    public int NewAmount;
+    public int NewAmount { get; }
     public CurrencyChangedEvent(int newAmount)
     {
         NewAmount = newAmount;
@@ -32,3 +32,12 @@ public class CurrencyChangedEvent : IEvent
 }
 
 
+public class ServiceRegisterEvent : IEvent
+{
+    public IService Service { get; }
+
+    public ServiceRegisterEvent(IService service)
+    {
+        Service = service;
+    }
+}

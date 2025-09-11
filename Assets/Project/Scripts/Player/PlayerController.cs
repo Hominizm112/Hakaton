@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour, IInitializable
 
         if (hit.collider == null)
         {
+            TryMoveInDialogue();
             return;
         }
 
@@ -40,6 +41,11 @@ public class PlayerController : MonoBehaviour, IInitializable
 
         interactionObject.Interact();
 
+    }
+
+    private void TryMoveInDialogue()
+    {
+        _mediator.GetService<NPCService>()?.HandleMoveInDialogue();
     }
 
 }

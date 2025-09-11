@@ -54,4 +54,46 @@ public class TypedListContainer : ScriptableObject
         Debug.LogError($"Type mismatch or unsupported type. Current type: {_currentType}, Requested type: {typeof(T)}");
         return null;
     }
+
+    public object GetRandomItem()
+    {
+        switch (_currentType)
+        {
+            case ListType.Integer:
+                if (_intList.Count > 0)
+                    return RandomUtils.GetRandomItemInList(_intList);
+                break;
+            case ListType.Float:
+                if (_floatList.Count > 0)
+                    return RandomUtils.GetRandomItemInList(_floatList);
+                break;
+            case ListType.String:
+                if (_stringList.Count > 0)
+                    return RandomUtils.GetRandomItemInList(_stringList);
+                break;
+            case ListType.Vector3:
+                if (_vector3List.Count > 0)
+                    return RandomUtils.GetRandomItemInList(_vector3List);
+                break;
+            case ListType.GameObject:
+                if (_gameObjectList.Count > 0)
+                    return RandomUtils.GetRandomItemInList(_gameObjectList);
+                break;
+        }
+
+        Debug.LogWarning("List is empty or type not supported");
+        return null;
+    }
+
+    public T GetRandomItem<T>()
+    {
+        var list = GetList<T>();
+        if (list != null && list.Count > 0)
+        {
+            return RandomUtils.GetRandomItemInList(list);
+        }
+
+        Debug.LogWarning($"Cannot get random item from list of type {typeof(T)}");
+        return default(T);
+    }
 }

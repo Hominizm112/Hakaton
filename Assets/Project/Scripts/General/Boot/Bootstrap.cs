@@ -12,6 +12,7 @@ public class Bootstrap : MonoBehaviour
     private TransitionScreen _transitionScreen;
     private PlayerController _playerController;
     private CurrencyPresenter _playerCurrencyPresenter;
+    private NPCService _npcService;
 
     private void Awake()
     {
@@ -25,6 +26,8 @@ public class Bootstrap : MonoBehaviour
         _playerController = Instantiate(Resources.Load<PlayerController>("Prefabs/PlayerController"));
         _playerCurrencyPresenter = Instantiate(Resources.Load<CurrencyPresenter>("Prefabs/CurrencyPresenter"));
 
+        _npcService = Instantiate(Resources.Load<NPCService>("Prefabs/NPCService"));
+
         RegisterPersistent(_mediator);
         RegisterPersistent(_audioHub);
         RegisterPersistent(_inputManager);
@@ -32,6 +35,7 @@ public class Bootstrap : MonoBehaviour
         RegisterPersistent(_transitionScreen);
         RegisterPersistent(_playerController);
         RegisterPersistent(_playerCurrencyPresenter);
+        RegisterPersistent(_npcService);
 
         _mediator.RegisterService(_audioHub);
         _mediator.RegisterService(_saveManager);
@@ -42,9 +46,16 @@ public class Bootstrap : MonoBehaviour
         _mediator.RegisterInitializable(_playerController);
         _mediator.RegisterInitializable(_playerCurrencyPresenter);
 
+        _mediator.RegisterInitializable(_npcService);
+
+
+
         _mediator.LoadScene(_sceneToLoad, Game.State.Gameplay, false);
 
         _mediator.SubscribeToState(Game.State.Gameplay, (_) => _mediator.InitializeAll());
+
+
+
 
         _saveManager.LoadSaveData();
     }

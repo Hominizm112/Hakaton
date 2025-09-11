@@ -8,7 +8,7 @@ public class Timer
     public event Action OnTimerStarted;
     public event Action OnTimerCompleted;
     public event Action OnTimerStopped;
-    public event Action<float> OnTimerUpdate; // Current time
+    public event Action<float> OnTimerUpdate;
 
     private CancellationTokenSource _cts;
     private bool _isRunning;
@@ -52,7 +52,6 @@ public class Timer
         }
         catch (OperationCanceledException)
         {
-            // Timer was stopped
         }
         finally
         {
@@ -84,5 +83,13 @@ public class Timer
     public void ResetTimerCompletedAction()
     {
         OnTimerCompleted = null;
+    }
+
+    public void Dispose()
+    {
+        OnTimerStarted = null;
+        OnTimerCompleted = null;
+        OnTimerStopped = null;
+        OnTimerUpdate = null;
     }
 }

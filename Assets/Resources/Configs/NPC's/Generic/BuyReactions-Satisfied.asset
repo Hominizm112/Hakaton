@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c81d37148405447a5e298282bc476e, type: 3}
+  m_Name: BuyReactions-Satisfied
+  m_EditorClassIdentifier: 
+  _currentType: 2
+  _intList: 
+  _floatList: []
+  _stringList:
+  - Now this is a lovely cup of tea!
+  - Very nice blend - I'll be back for more.
+  - Exactly what I was looking for today!
+  - The flavor is really quite pleasant.
+  - This hit the spot perfectly. Well done!
+  - I can tell this is quality tea. Good choice!
+  - The aroma alone was worth the purchase.
+  - This will be my new go-to morning tea.
+  - Lovely balance of flavors. Very enjoyable.
+  - You've got a returning customer in me!
+  _vector3List: []
+  _gameObjectList: []

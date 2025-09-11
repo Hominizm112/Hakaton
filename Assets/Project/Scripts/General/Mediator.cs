@@ -1,14 +1,87 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 
 public interface IInitializable
 {
     void Initialize(Mediator mediator);
 }
 
+
+#region MonoService
+public interface IService { }
+
+public class MonoService : MonoBehaviour, IService
+{
+    public virtual List<Type> requiredServices { get; protected set; } = new List<Type>();
+    protected Dictionary<Type, IService> services = new Dictionary<Type, IService>();
+    public Dictionary<Type, IService> Services => services;
+    public bool AllServicesReady => requiredServices.Count == 0;
+
+    private string LogPrefix => GetType().ToString() + "// ";
+
+    public void HandleServiceRegistration(ServiceRegisterEvent @event)
+    {
+        Debug.Log($"{LogPrefix}Handling service registration: {@event.Service?.GetType().Name}");
+        if (@event.Service == null) return;
+
+        Type serviceType = @event.Service.GetType();
+        bool foundMatch = false;
+
+        foreach (var requiredType in requiredServices.ToArray())
+        {
+            if (requiredType.IsAssignableFrom(serviceType))
+            {
+                services[requiredType] = @event.Service;
+                requiredServices.Remove(requiredType);
+                Debug.Log($"{LogPrefix}Registered {requiredType.Name} service");
+                foundMatch = true;
+                break;
+            }
+        }
+        if (foundMatch)
+        {
+            CheckAllServicesReady();
+        }
+    }
+
+    private void CheckAllServicesReady()
+    {
+        Debug.Log($"=== {GetType()} Service Status ===");
+        Debug.Log($"AllServicesReady: {AllServicesReady}");
+        Debug.Log($"Required services remaining: {requiredServices.Count}");
+        foreach (var service in services)
+        {
+            Debug.Log($"{LogPrefix}Has service: {service.Key.Name}");
+        }
+        if (requiredServices.Count == 0)
+        {
+
+
+            OnAllServicesReady();
+
+
+        }
+    }
+
+    protected virtual void OnAllServicesReady()
+    {
+        // Override in derived classes
+    }
+
+    protected T GetService<T>() where T : IService
+    {
+        if (services.TryGetValue(typeof(T), out IService service))
+        {
+            return (T)service;
+        }
+        return default;
+    }
+}
+
+#endregion
 
 
 public interface IStateListener
@@ -166,13 +239,36 @@ public class Mediator : MonoBehaviour
 
     public void InitializeAll()
     {
-        foreach (var initializable in _initializables)
+        Debug.Log($"Initializing {_initializables.Count} services");
+        foreach (var initializable in _initializables.ToArray()) // Copy to avoid modification
         {
             initializable.Initialize(this);
         }
 
+        foreach (var initializable in _initializables)
+        {
+            if (initializable is MonoService monoService)
+            {
+                GlobalEventBus.Subscribe<ServiceRegisterEvent>(monoService.HandleServiceRegistration);
+
+                CheckPreRegisteredServices(monoService);
+            }
+        }
+
         _initializables.Clear();
         OnInitializationCompleted?.Invoke();
+    }
+
+    private void CheckPreRegisteredServices(MonoService monoService)
+    {
+        foreach (var requiredType in monoService.requiredServices.ToArray())
+        {
+            if (_services.Values.Any(service => requiredType.IsAssignableFrom(service.GetType())))
+            {
+                var serviceInstance = _services.Values.First(s => requiredType.IsAssignableFrom(s.GetType()));
+                monoService.HandleServiceRegistration(new ServiceRegisterEvent(serviceInstance as MonoService));
+            }
+        }
     }
 
     #endregion
@@ -263,7 +359,15 @@ public class Mediator : MonoBehaviour
 
     public void RegisterService<T>(T service) where T : class
     {
+        Debug.Log($"Registered service: {service}");
         _services[typeof(T)] = service;
+        GlobalEventBus.Publish(new ServiceRegisterEvent(service as MonoService));
+    }
+
+    public void UnregisterService<T>(T service) where T : class
+    {
+        Type serviceType = typeof(T);
+        _services.Remove(serviceType);
     }
 
     public T GetService<T>() where T : class

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class RandomUtils
@@ -14,6 +15,13 @@ public static class RandomUtils
 
         int randomIndex = UnityEngine.Random.Range(0, list.Count);
         return list[randomIndex];
+    }
+
+    public static T GetRandomItemInEnum<T>() where T : Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        int randomIndex = UnityEngine.Random.Range(0, values.Length);
+        return (T)values.GetValue(randomIndex);
     }
 
     public static bool CoinFlip()

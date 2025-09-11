@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c81d37148405447a5e298282bc476e, type: 3}
+  m_Name: BuyReactions-Neutral
+  m_EditorClassIdentifier: 
+  _currentType: 2
+  _intList: 
+  _floatList: []
+  _stringList:
+  - It's decent tea. Does the job.
+  - Pretty standard blend, nothing special.
+  - It's tea. Can't complain, can't praise.
+  - Adequate for my daily cup.
+  - Does what it says on the tin, I suppose.
+  - It's fine. Not memorable, but fine.
+  - Average tea for an average day.
+  - It'll do until I find something better.
+  - No complaints, but no compliments either.
+  - Exactly what I expected - nothing more, nothing less.
+  _vector3List: []
+  _gameObjectList: []

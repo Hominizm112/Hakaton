@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c81d37148405447a5e298282bc476e, type: 3}
+  m_Name: SmallTalkLines
+  m_EditorClassIdentifier: 
+  _currentType: 2
+  _intList: 
+  _floatList: []
+  _stringList:
+  - The aroma in here is absolutely wonderful!
+  - I'm looking for something special today.
+  - Do you have any new flavors this season?
+  - I heard your tea helps with relaxation, is that true?
+  - The packaging on these tins is so beautiful.
+  - What would you recommend for a cold evening?
+  - I'm buying a gift for my tea-loving friend.
+  - Your shop always has the best selection.
+  - Is this tea sourced sustainably?
+  - I can't decide between these two varieties...
+  _vector3List: []
+  _gameObjectList: []

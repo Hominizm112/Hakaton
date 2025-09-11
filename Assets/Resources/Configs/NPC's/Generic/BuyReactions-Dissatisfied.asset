@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c81d37148405447a5e298282bc476e, type: 3}
+  m_Name: BuyReactions-Dissatisfied
+  m_EditorClassIdentifier: 
+  _currentType: 2
+  _intList: 
+  _floatList: []
+  _stringList:
+  - Hmm, it's not quite what I was hoping for.
+  - A bit disappointing for the price, honestly.
+  - I've had better tea from the supermarket.
+  - It's drinkable, but I expected more.
+  - The aroma promised more than the taste delivered.
+  - Not terrible, but certainly not great either.
+  - I'll finish it, but I won't be buying it again.
+  - A rather mediocre blend, to be honest.
+  - The quality doesn't match the price point.
+  - It's... acceptable. Barely.
+  _vector3List: []
+  _gameObjectList: []
