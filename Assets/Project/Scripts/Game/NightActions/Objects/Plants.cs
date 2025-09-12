@@ -2,13 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class Plants : MonoBehaviour, IInteractable, IGameStateListener
+public class Plants : MonoBehaviour, IInteractable, IStateListener
 {
-    [SerializeField] private GameObject _leafPrefab;
-    [SerializeField] private Vector2 _DropLeavesPoint;
-    [SerializeField] private float _DropDistance = 5f;
-    [SerializeField] private float _DropDuration = 5f;
-    [SerializeField] private float _actionInterval = 10f;//временной интервал между падением
+    [SerializeField] private PlantsAnimationSettings _animationSettings;
     private bool _isActive = false;
     private Sequence _DropSequence;
     public bool IsActive => _isActive;
@@ -20,18 +16,20 @@ public class Plants : MonoBehaviour, IInteractable, IGameStateListener
 
     void SpawnLeaf()
     {
-        if (_leafPrefab == null) return;
-        GameObject leaf = Instantiate(_leafPrefab, _DropLeavesPoint, Quaternion.identity);//создание копии(листьев будет мало)
+        if (_animationSettings.leafPrefab == null) return;
+        GameObject leaf = Instantiate(_animationSettings.leafPrefab, _animationSettings.dropLeavesPoint, Quaternion.identity);//создание копии(листьев будет мало)
 
-        leaf.transform.DOMoveY(_DropLeavesPoint.y - _DropDistance, _DropDuration)
+        leaf.transform.DOMoveY(_animationSettings.dropLeavesPoint.y - _animationSettings.dropDistance, _animationSettings.dropDuration)
             .SetEase(Ease.InCubic)
             .OnComplete(() => Destroy(leaf));
     }
 
     void Start()
     {
-        StartPeriodicAction();
-        Game.GamesStateChanged += CheckGameMode;//подписка на GamesStateChanged
+        Mediator.Instance?.SubscribeToState(this, Game.State.NightScene);
+        if (!IsActive&&Mediator.Instance?.CurrentState == Game.State.NightScene) {
+          StartPeriodicAction();
+      }
     }
 
     private void StartPeriodicAction()
@@ -39,36 +37,33 @@ public class Plants : MonoBehaviour, IInteractable, IGameStateListener
         if (_isActive) return;
 
         _DropSequence = DOTween.Sequence()
-            .AppendInterval(_actionInterval)
+            .AppendInterval(_animationSettings.actionInterval)
             .AppendCallback(Interact)
             .SetLoops(-1);
         _isActive = true;
     }
 
+    void OnDestroy()
+    {
+        Mediator.Instance?.UnsubscribeFromState(this, Game.State.NightScene);
+        StopPeriodicAction();
+    }
     public void StopPeriodicAction()
     {
         _DropSequence?.Kill();
         _isActive = false;
     }
 
-    public void CheckGameMode(Game.State newState)
+    public void OnStateChanged(Game.State newState)
     {
-        if (newState != Game.State.NightScene)
-        {
-            StopPeriodicAction();
-        }
-        else if (newState == Game.State.NightScene)
+        if (newState == Game.State.NightScene)
         {
             StartPeriodicAction();
         }
-
+        else
+        {
+            StopPeriodicAction();
+        }
     }
-    
-        void OnDestroy()
-    {
-        Game.GamesStateChanged -= CheckGameMode;
-        StopPeriodicAction();
-    }
-
 
 }

@@ -2,20 +2,32 @@ using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-public class Cloud : MonoBehaviour, IInteractable,IGameStateListener
+using UnityEngine.Rendering;
+
+public class Cloud : MonoBehaviour, IInteractable, IStateListener
 {
-    [SerializeField] private float _movementDuration = 10f;
-    [SerializeField] private float _x_final = 5f;
-    [SerializeField] private Vector2 _initial_point = new Vector2(0, 5f);
+    [SerializeField] private CloudAnimationsSettings _cloudAnimationSettings;
     private Tween _movementTweener;
     private bool _isMoving = false;
+    private bool _isSubscribed = false;
+    
+
     public void Awake()
     {
         InitializeCloud();
     }
+
+    public void Start()
+    {
+        if (!_isSubscribed)
+        {
+            Mediator.Instance?.SubscribeToState(this, Game.State.NightScene);
+            _isSubscribed = true;
+        }
+    }
     private void InitializeCloud()
     {
-        transform.position = _initial_point;
+        transform.position = _cloudAnimationSettings.initial_point;
         _isMoving = false;
     }
     public void Interact()
@@ -34,32 +46,36 @@ public class Cloud : MonoBehaviour, IInteractable,IGameStateListener
         if (_isMoving) return;
 
         _isMoving = true;
-        _movementTweener = transform.DOMoveX(_x_final, _movementDuration)
+        _movementTweener = transform.DOMoveX(_cloudAnimationSettings.xFinal, _cloudAnimationSettings.movementDuration)
                                     .SetEase(Ease.Linear)
                                     .SetLoops(-1, LoopType.Restart)
-                                    .OnStart(() => transform.position = _initial_point);
+                                    .OnStart(() => transform.position = _cloudAnimationSettings.initial_point);
     }
-
     public void StopCloudMovement()
     {
         _movementTweener?.Kill();
         _movementTweener = null;
+        _isMoving = false;
     }
-    public void CheckGameMode(Game.State newState)
+    public void OnStateChanged(Game.State newState)
     {
-        if (newState != Game.State.NightScene)
-        {
-            StopCloudMovement();
-        }
-        else if (newState == Game.State.NightScene)
+        if (newState == Game.State.NightScene)
         {
             StartCloudMovement();
+        }
+        else
+        {
+            StopCloudMovement();
+            transform.position = _cloudAnimationSettings.initial_point;
         }
     }
 
     void OnDestroy()
-    {
+    {  if (_isSubscribed)
+        {
+            Mediator.Instance?.UnsubscribeFromState(this, Game.State.NightScene);
+        }
         StopCloudMovement();
     }
-    
+
 }
