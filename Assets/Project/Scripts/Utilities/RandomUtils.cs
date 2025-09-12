@@ -5,6 +5,9 @@ using UnityEngine;
 
 public static class RandomUtils
 {
+    private static System.Random _seededRandom;
+    private static bool _usingSeed = false;
+
     public static T GetRandomItemInList<T>(List<T> list)
     {
         if (list == null || list.Count == 0)
@@ -52,6 +55,50 @@ public static class RandomUtils
     {
         last -= 'a';
         return (char)('A' + UnityEngine.Random.Range(0, last));
+    }
+
+    public static Color GetRandomColor(int? seed = null, float minBrightness = 0.3f, float maxBrightness = 1.0f)
+    {
+        InitializeRandom(seed);
+
+        if (_usingSeed)
+        {
+            float r = (float)_seededRandom.NextDouble();
+            float g = (float)_seededRandom.NextDouble();
+            float b = (float)_seededRandom.NextDouble();
+
+            return AdjustBrightness(new Color(r, g, b), minBrightness, maxBrightness);
+        }
+        else
+        {
+            return AdjustBrightness(
+                new Color(
+                    UnityEngine.Random.value,
+                    UnityEngine.Random.value,
+                    UnityEngine.Random.value
+                ),
+                minBrightness,
+                maxBrightness
+            );
+        }
+    }
+
+    private static Color AdjustBrightness(Color color, float minBrightness, float maxBrightness)
+    {
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+
+        v = Mathf.Lerp(minBrightness, maxBrightness, v);
+
+        return Color.HSVToRGB(h, s, v);
+    }
+
+    private static void InitializeRandom(int? seed)
+    {
+        _usingSeed = seed.HasValue;
+        if (_usingSeed)
+        {
+            _seededRandom = new System.Random(seed.Value);
+        }
     }
 
 
