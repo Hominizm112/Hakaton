@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class NPCService : MonoService, IInitializable
+public class NPCService : MonoService
 {
     public override List<Type> requiredServices { get; protected set; } = new List<Type> { typeof(EmotionIndicator) };
     [SerializeField] private List<Emotion> emotions;
@@ -26,16 +26,30 @@ public class NPCService : MonoService, IInitializable
     private Mediator _mediator;
     private Sequence _currentAnimation;
 
-    public void Initialize(Mediator mediator)
+    private void Awake()
     {
-        _mediator = Mediator.Instance;
-        mediator.RegisterService(this);
-        _mainCamera = Camera.main;
+        Mediator.Instance.RegisterService(this);
+    }
 
+    private void OnDestroy()
+    {
+        _currentAnimation?.Kill();
+
+        if (_activeNpc != null)
+        {
+            _activeNpc.transform.DOKill();
+        }
+    }
+
+
+    public override void Initialize(Mediator mediator)
+    {
+        base.Initialize();
     }
 
     protected override void OnAllServicesReady()
     {
+        _mainCamera = Camera.main;
         _emotionIndicator = GetService<EmotionIndicator>();
         if (_emotionIndicator != null)
         {
@@ -181,14 +195,6 @@ public class NPCService : MonoService, IInitializable
         _activeSpeechBubble?.Interact();
     }
 
-    private void OnDestroy()
-    {
-        _currentAnimation?.Kill();
 
-        if (_activeNpc != null)
-        {
-            _activeNpc.transform.DOKill();
-        }
-    }
 
 }

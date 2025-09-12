@@ -10,17 +10,24 @@ public class EmotionIndicator : MonoService
     [SerializeField] private float verticalOffset = -0.5f;
 
     private SpriteRenderer spriteRenderer;
-    private Mediator _mediator;
     private Timer timer = new();
 
     public Action OnComplete;
 
-
-    public void Awake()
+    protected void Awake()
     {
-        _mediator = Mediator.Instance;
-        _mediator.RegisterService(this);
+        Mediator.Instance.RegisterService(this);
+    }
 
+    private void OnDestroy()
+    {
+        OnComplete = null;
+        timer.Dispose();
+    }
+
+    public override void Initialize(Mediator mediator)
+    {
+        base.Initialize();
         spriteRenderer = emotionObject.GetComponent<SpriteRenderer>();
         if (spriteRenderer == null)
         {
@@ -28,7 +35,6 @@ public class EmotionIndicator : MonoService
         }
 
         emotionObject.SetActive(false);
-
     }
 
     public void ShowEmotion(Sprite sprite)
@@ -61,12 +67,7 @@ public class EmotionIndicator : MonoService
         emotionObject.SetActive(false);
     }
 
-    private void OnDestroy()
-    {
-        _mediator.UnregisterService(this);
-        OnComplete = null;
-        timer.Dispose();
-    }
+
 
 
 }

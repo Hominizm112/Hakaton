@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour, IInitializable
     private Mediator _mediator;
     private InputManager _inputManager;
     private Camera _mainCamera;
-    private Action act;
 
 
     public void Initialize(Mediator mediator)
@@ -34,6 +33,8 @@ public class PlayerController : MonoBehaviour, IInitializable
 
         var interactionObject = hit.collider.gameObject.GetComponent<InteractionObject>();
 
+        Debug.Log($"Interacted with {hit.collider.gameObject.name}");
+
         if (interactionObject == null)
         {
             return;
@@ -45,7 +46,8 @@ public class PlayerController : MonoBehaviour, IInitializable
 
     private void TryMoveInDialogue()
     {
-        _mediator.GetService<NPCService>()?.HandleMoveInDialogue();
+        _mediator.TryGetService<NPCService>(out var service);
+        service?.HandleMoveInDialogue();
     }
 
 }

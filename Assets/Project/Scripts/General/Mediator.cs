@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public interface IInitializable
@@ -10,10 +11,11 @@ public interface IInitializable
 }
 
 
+
 #region MonoService
 public interface IService { }
 
-public class MonoService : MonoBehaviour, IService
+public abstract class MonoService : MonoBehaviour, IService, IInitializable
 {
     public virtual List<Type> requiredServices { get; protected set; } = new List<Type>();
     protected Dictionary<Type, IService> services = new Dictionary<Type, IService>();
@@ -21,6 +23,15 @@ public class MonoService : MonoBehaviour, IService
     public bool AllServicesReady => requiredServices.Count == 0;
 
     private string LogPrefix => GetType().ToString() + "// ";
+    private bool _initialized;
+
+
+    public virtual void Initialize(Mediator mediator = null)
+    {
+        if (_initialized) return;
+        Debug.Log($"//: Initialized service {this}");
+        _initialized = true;
+    }
 
     public void HandleServiceRegistration(ServiceRegisterEvent @event)
     {
@@ -59,10 +70,8 @@ public class MonoService : MonoBehaviour, IService
         if (requiredServices.Count == 0)
         {
 
-
             OnAllServicesReady();
-
-
+            Initialize();
         }
     }
 
@@ -150,7 +159,7 @@ public class EventBus
         }
         else
         {
-            Debug.LogWarning($"No handlers found for {eventType.Name}");
+            // Debug.LogWarning($"No handlers found for {eventType.Name}");
             // LogSubscriptions();
         }
     }
@@ -158,6 +167,8 @@ public class EventBus
 
 #endregion
 
+
+#region Mediator
 public class Mediator : MonoBehaviour
 {
     [System.Serializable]
@@ -180,6 +191,9 @@ public class Mediator : MonoBehaviour
 
     public event Action<Game.State> OnStateChanged;
     public static event Action<float> OnLoadProgress;
+    public static event Action<string> OnSceneLoadStarted;
+    public static event Action<string> OnSceneLoadComplete;
+
 
     public event Action OnInitializationCompleted;
 
@@ -203,6 +217,8 @@ public class Mediator : MonoBehaviour
         GlobalEventBus = new EventBus();
         SubscribeToEvents();
         InitializeStateDictionary();
+
+        OnSceneLoadStarted += _ => ServiceCleanup();
     }
 
     private void SubscribeToEvents()
@@ -361,6 +377,20 @@ public class Mediator : MonoBehaviour
     {
         Debug.Log($"Registered service: {service}");
         _services[typeof(T)] = service;
+
+        if (service is MonoService monoService)
+        {
+            if (monoService.AllServicesReady)
+            {
+                monoService.Initialize(this);
+            }
+            else
+            {
+                GlobalEventBus.Subscribe<ServiceRegisterEvent>(monoService.HandleServiceRegistration);
+                CheckPreRegisteredServices(monoService);
+
+            }
+        }
         GlobalEventBus.Publish(new ServiceRegisterEvent(service as MonoService));
     }
 
@@ -393,6 +423,25 @@ public class Mediator : MonoBehaviour
         return false;
     }
 
+    public void CheckActiveServices()
+    {
+        foreach (var keyValuePair in _services)
+        {
+            print(keyValuePair.Key);
+        }
+    }
+
+    private void ServiceCleanup()
+    {
+        foreach (var keyValuePair in _services)
+        {
+            if (keyValuePair.Value == null)
+            {
+                _services.Remove(keyValuePair.Key);
+            }
+        }
+    }
+
     #endregion
 
     #region Scene Loading
@@ -413,6 +462,7 @@ public class Mediator : MonoBehaviour
 
     private IEnumerator LoadSceneAsync(string sceneName, Game.State targetState)
     {
+        OnSceneLoadStarted?.Invoke(sceneName);
         AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
         operation.allowSceneActivation = false;
 
@@ -428,6 +478,8 @@ public class Mediator : MonoBehaviour
 
             yield return null;
         }
+
+        OnSceneLoadComplete?.Invoke(sceneName);
 
         if (GetService<TransitionScreen>() != null)
         {
@@ -454,3 +506,5 @@ public class Mediator : MonoBehaviour
         _initializables.Clear();
     }
 }
+
+#endregion
