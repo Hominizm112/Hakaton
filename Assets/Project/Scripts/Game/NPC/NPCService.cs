@@ -25,6 +25,7 @@ public class NPCService : MonoService
     private Vector3 _targetPosition;
     private Mediator _mediator;
     private Sequence _currentAnimation;
+    public bool NpcReadyToBuy;
 
     private void Awake()
     {
@@ -68,8 +69,11 @@ public class NPCService : MonoService
 
         SetupNPCPosition();
         AnimateNPCIn();
+    }
 
-
+    public void BuyTea(TeaCommodity tea)
+    {
+        npc.BuyTea(tea, HandleItemBought);
     }
 
     #region  Animation
@@ -166,20 +170,14 @@ public class NPCService : MonoService
     {
         _activeSpeechBubble.OnNextLineRequested = null;
         _activeSpeechBubble.SetText(npc.RequestLine);
-        _activeSpeechBubble.OnNextLineRequested += HandleBuyResult;
-    }
-
-    private void HandleBuyResult()
-    {
-        _emotionIndicator.OnComplete += () => RemoveNPC();
-        npc.BuyTea(teaCommodity, HandleItemBought);
-
-        _activeSpeechBubble.OnNextLineRequested = null;
+        NpcReadyToBuy = true;
     }
 
     private void HandleItemBought(NPCBuyResult buyResult)
     {
+        NpcReadyToBuy = false;
         _activeSpeechBubble.SetText(buyResult.dialogueLine);
+        _emotionIndicator.OnComplete += () => RemoveNPC();
         _emotionIndicator.ShowEmotion(GetEmotionSprite(buyResult.satisfaction));
     }
 

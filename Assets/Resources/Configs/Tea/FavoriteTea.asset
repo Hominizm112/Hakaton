@@ -22,9 +22,9 @@ MonoBehaviour:
   rarity: 0
   seasonality: 0
   region: 0
-  teaType: 0
-  teaGrade: 0
-  processingLevel: 0
+  teaType: 2
+  teaGrade: 1
+  processingLevel: 1
   harvestYear: 2024
   caffeineContent: 0.03
   idealBrewTemperature: 80
