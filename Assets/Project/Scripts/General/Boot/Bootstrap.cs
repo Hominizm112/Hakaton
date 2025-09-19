@@ -39,12 +39,14 @@ public class Bootstrap : MonoBehaviour
 
         _mediator.RegisterService(_audioHub);
         _mediator.RegisterService(_saveManager);
+        _mediator.RegisterService(_playerCurrencyPresenter);
 
         _mediator.RegisterInitializable(_inputManager);
         _mediator.RegisterInitializable(_dragManager);
         _mediator.RegisterInitializable(_transitionScreen);
         _mediator.RegisterInitializable(_playerController);
-        _mediator.RegisterInitializable(_playerCurrencyPresenter);
+        _mediator.RegisterInitializable(_playerCurrencyPresenter, true);
+        _playerCurrencyPresenter.AddCurrency(1000);
 
         _mediator.RegisterInitializable(_npcService);
 

@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Project/Scenes/TEA COMPOSE TEST.unity
     guid: 292359446045dd34281076ce51a46393
+  - enabled: 1
+    path: Assets/Project/Scenes/PC TEST.unity
+    guid: a92f394f03c2f034282db950e067fbd3
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

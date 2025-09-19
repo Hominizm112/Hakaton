@@ -245,8 +245,13 @@ public class Mediator : MonoBehaviour
         }
     }
 
-    public void RegisterInitializable(IInitializable initializable)
+    public void RegisterInitializable(IInitializable initializable, bool immediate = false)
     {
+        if (immediate)
+        {
+            initializable.Initialize(this);
+            return;
+        }
         if (!_initializables.Contains(initializable))
         {
             _initializables.Add(initializable);

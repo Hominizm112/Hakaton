@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 
 public class CurrencyPresenter : MonoBehaviour, IInitializable
 {
     [SerializeField] private CurrencyView _view;
+
+    public Action<int> OnValueChanged;
 
     private CurrencyModel _model;
     private SaveManager _saveManager;
