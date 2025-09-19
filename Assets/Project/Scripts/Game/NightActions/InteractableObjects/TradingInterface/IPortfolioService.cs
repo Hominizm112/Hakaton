@@ -1,31 +1,34 @@
 using UnityEngine;
 using System.Collections.Generic;
+using MyGame.Enums;
 
 public interface IPortfolioService
 {
     PortfolioSummary GetPortfolioSummary();
-    //проверка цены
-    void UpdateStockPrices(Dictionary<string, float> newPrices);
-    void UpdateBondPrices(Dictionary<string, float> newPrices);
     //операции с активами
-    void BuyStock(string symbol, int quantity, float price);
-    void SellStock(string symbol, int quantity, float price);
-    void BuyBond(string isin, int quantity, float price);
-    void SellBond(string isin, int quantity, float price);
+    bool TradeAssets(TradeType tradeType, object asset, int quantity);
     void AddCash(float amount);
+    //float GetCashBalance();
     //покупка иных
     void CheckOtherStocks();
     void CheckOtherBonds();
     //Analytics
     void GeneratePortfolioReport();
+   
 }
 
 public class PortfolioSummary
-{
-    public float CashBalance;
-    public float StocksValue { get;}
-    public float BondsValue { get;}
-    public float TotalValue => StocksValue + BondsValue;
-    public float TotalGainLoss { get; }
-    public float DayGainLoss { get; }
+{//данные для отображения
+    public int CountStocks{ get; set; }
+    public Dictionary<string, int> MyStocks = new();
+    public int CountBonds{ get; set; }
+    public Dictionary<string, int> MyBonds = new();
+
+    public float CashBalance { get; set; }
+    public float StocksValue { get;set; }
+    public float BondsValue { get;set; }
+    public float TotalValue => StocksValue + BondsValue + CashBalance ;
+    public float TotalGainLoss { get;set; }
+    public float DayGainLoss { get;set; }
+    
 }

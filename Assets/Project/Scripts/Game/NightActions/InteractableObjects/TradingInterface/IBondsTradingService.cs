@@ -2,20 +2,21 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public interface IBondsTradingService
-{    
+{
+    //void UpdateBondPrices(Dictionary<string, float> newPrices);
+    
    // List<Bond> GetAvailableBonds();
     //Bond GetBondData(string bondId);
     //TradeResult BuyBond(string bondId, int quantity);
-   // TradeResult SellBond(string bondId, int quantity);
-   // List<BondPosition> GetBondPortfolio();
+    // TradeResult SellBond(string bondId, int quantity);
+    // List<BondPosition> GetBondPortfolio();
     //float CalculateBondYield(string bondId, int quantity);
     //float CalculateBondMaturityValue(string bondId, int quantity);
 }
-public class Bond
+public class Bond: IAsset
 {
-    public string BondName { get; }
-    public int Quantity{ get; }
-    public float CurrentValue{ get;}
+    public string Ticker { get; set; }
+    public Dictionary<string, int> BondName = new();
     public string RepaymentDate{ get; }
     public float CouponValue { get; }
     public string CouponPaymentDate { get; }
@@ -25,19 +26,4 @@ public class Bond
 
 }
 
-public class BondInfoPortfolio
-{
-    public Dictionary<string, int> Bonds = new();
-    public int Quantity { get; }
-    public float BondsSummaryValue { get; }
-    public float CurrentValue { get; }
-}
 
-public enum RatingIssuer
-{
-    AAA,
-    BBB,
-    CCC,
-    C,
-    D,
-}

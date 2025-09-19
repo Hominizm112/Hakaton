@@ -11,6 +11,7 @@ public abstract class Game : MonoBehaviour
         NightScene,
         TradingActions,
         TradingObligations,
+        MyPortfolio
 
     }
 
