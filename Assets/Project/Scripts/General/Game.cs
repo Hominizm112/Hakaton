@@ -9,8 +9,7 @@ public abstract class Game : MonoBehaviour
         Menu,
         Loading,
         NightScene,
-        TradingActions,
-        TradingObligations,
+        Trading,
         MyPortfolio
 
     }

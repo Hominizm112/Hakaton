@@ -74,50 +74,51 @@ public class PortfollioService : MonoService, IPortfolioService
         _availableAssets = availableAssets;
     }
 
-   public bool TradeAssets(TradeType tradeType, object asset, int quantity)
-{
-    
-    if (asset == null || quantity <= 0)
+  
+    public bool TradeAssets(TradeType tradeType, object asset, int quantity)
     {
-        Debug.LogError("Неверные параметры торговой операции");
+
+        if (asset == null || quantity <= 0)
+        {
+            Debug.LogError("Неверные параметры торговой операции");
+            return false;
+        }
+
+        float assetPrice;
+        string ticker;
+        bool isStock = false;
+
+        // определение типа актива
+        if (asset is Stock stock)
+        {
+            assetPrice = stock.CurrentValue;
+            ticker = stock.Ticker;
+            isStock = true;
+        }
+        else if (asset is Bond bond)
+        {
+            assetPrice = bond.CurrentValue;
+            ticker = bond.Ticker;
+        }
+        else
+        {
+            Debug.LogError("Неподдерживаемый тип актива");
+            return false;
+        }
+
+        float totalCost = quantity * assetPrice;
+
+        if (tradeType == TradeType.Buy)
+        {
+            return BuyAsset(isStock, ticker, quantity, totalCost, assetPrice);
+        }
+        else if (tradeType == TradeType.Sell)
+        {
+            return SellAsset(isStock, ticker, quantity, totalCost);
+        }
+
         return false;
     }
-
-    float assetPrice;
-    string ticker;
-    bool isStock = false;
-
-    // определение типа актива
-    if (asset is Stock stock)
-    {
-        assetPrice = stock.CurrentValue;
-        ticker = stock.Ticker;
-        isStock = true;
-    }
-    else if (asset is Bond bond)
-    {
-        assetPrice = bond.CurrentValue;
-        ticker = bond.Ticker;
-    }
-    else
-    {
-        Debug.LogError("Неподдерживаемый тип актива");
-        return false;
-    }
-
-    float totalCost = quantity * assetPrice;
-
-    if (tradeType == TradeType.Buy)
-    {
-        return BuyAsset(isStock, ticker, quantity, totalCost, assetPrice);
-    }
-    else if (tradeType == TradeType.Sell)
-    {
-        return SellAsset(isStock, ticker, quantity, totalCost);
-    }
-
-    return false;
-}
  #region BuyActiv
     private bool BuyAsset(bool isStock, string ticker, int quantity, float totalCost, float assetPrice)
     {
@@ -207,7 +208,9 @@ private bool SellAsset(bool isStock, string ticker, int quantity, float totalCos
     Debug.Log($"Продажа {ticker} успешна. Продано {quantity} штук.");
     return true;
 }
-#endregion SellActiv
+    #endregion SellActiv
+
+  
     public void AddCash(float amount)//пополнение баланса
     {
 
