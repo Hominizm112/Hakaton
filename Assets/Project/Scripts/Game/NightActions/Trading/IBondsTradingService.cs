@@ -13,10 +13,10 @@ public interface IBondsTradingService
     //float CalculateBondYield(string bondId, int quantity);
     //float CalculateBondMaturityValue(string bondId, int quantity);
 }
-public class Bond: IAsset
+public class Bond
 {
     public string Ticker { get; set; }
-    public Dictionary<string, int> BondName = new();
+    public float CurrentValue { get; set; }
     public string RepaymentDate{ get; }
     public float CouponValue { get; }
     public string CouponPaymentDate { get; }

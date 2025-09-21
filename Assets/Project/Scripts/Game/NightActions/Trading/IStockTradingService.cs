@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IStockTradingService
+public class IStockTradingService
 {
     //void UpdateStockPrices(Dictionary<string, float> newPrices);
 
@@ -14,24 +14,25 @@ public interface IStockTradingService
     //decimal CalculateStockValue(string stockId, int quantity);
 }
 
-public class Stock: IAsset
+public class Stock//одна акция в портфеле
 {
     public string Ticker { get; set; }
-    public Dictionary<string, int> Stocks = new();
+    public float CurrentValue { get; set; }
     //public Company Company { get; } 
     public float OpenPrice { get; }
     public float ClosePrice { get; }
-    public float GainLoss{ get; }
-    public float GainLossPercent { get; }
-    public float AmountNextDiv { get; }
-    public float PercenttNextDiv { get; }
-    public string DateNextDiv { get; }
-    public string LevelStability { get; }
-    public float AverageDivYield{ get; }// средняя дивидендная доходность
+    public float GainLossDay { get; }
+    public float GainLossPercentDay { get; }
+    public float AmountNextDiv { get; }//(фикс)
+    public float PercenttNextDiv { get; }//(фикс)
+    public string DateNextDiv { get; }//(фикс)
+    public string LevelStability { get; }//(фикс)
+    public float AverageDivYield { get; }// средняя дивидендная доходность(фикс)
+    public string Country;
+    public string Sector;
 
 
 }
-
 
 public enum LevelStability
     {
