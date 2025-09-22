@@ -247,14 +247,6 @@ private bool SellAsset(bool isStock, string ticker, int quantity, float totalCos
         }
 }
    //покупка иных
-    public void CheckOtherStocks()
-    {
-
-    }
-   public void CheckOtherBonds() {
-    
-   }
-
     public void CalculatDayeGainLossPercent()
     {
     

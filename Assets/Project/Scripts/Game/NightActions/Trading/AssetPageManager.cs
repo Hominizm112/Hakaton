@@ -52,9 +52,9 @@ public class AssetPageManager : MonoBehaviour
         _stockPageUI.SetActive(false);
         _bondPageUI.SetActive(false);
 
-        if (e.Type == AssetType.Stock)
-        {
-        }
+        //if (e.Type == AssetType.Stock)
+       // {
+        //}
     }
 
 
