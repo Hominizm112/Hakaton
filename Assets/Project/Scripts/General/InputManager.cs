@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+#region Events
 public interface IInputEvent : IEvent { }
 
 public class InputActionEvent : IInputEvent
@@ -66,18 +67,24 @@ public class InputEnabledEvent : IInputEvent
     }
 }
 
-public class InputManager : MonoBehaviour, IInitializable, IStateListener
+
+#endregion
+
+
+#region InputService
+
+public class InputManager : MonoService, IStateListener
 {
     [SerializeField] private InputActionAsset _inputActions;
     private Mediator _mediator;
     private Dictionary<string, InputAction> _actionMap = new();
+    private List<InputAction> _allActions = new();
     private bool _isInputEnabled = true;
 
-    public void Initialize(Mediator mediator)
+    public override void Initialize(Mediator mediator)
     {
+        base.Initialize();
         _mediator = mediator;
-
-        mediator.RegisterService<InputManager>(this);
 
         mediator.SubscribeToState(this, Game.State.Gameplay);
         mediator.SubscribeToState(this, Game.State.Paused);
@@ -123,10 +130,11 @@ public class InputManager : MonoBehaviour, IInitializable, IStateListener
             foreach (var action in actionMap.actions)
             {
                 _actionMap[action.name] = action;
+                _allActions.Add(action);
 
-                action.performed += ctx => OnInputActionPerformed(action.name, ctx);
-                action.canceled += ctx => OnInputActionCanceled(action.name, ctx);
-                action.started += ctx => OnInputActionStarted(action.name, ctx);
+                action.performed += ctx => OnInputActionPerformed(ctx);
+                action.canceled += ctx => OnInputActionCanceled(ctx);
+                action.started += ctx => OnInputActionStarted(ctx);
             }
         }
     }
@@ -217,25 +225,25 @@ public class InputManager : MonoBehaviour, IInitializable, IStateListener
         return action?.WasReleasedThisFrame() ?? false;
     }
 
-    private void OnInputActionPerformed(string actionName, InputAction.CallbackContext context)
+    private void OnInputActionPerformed(InputAction.CallbackContext context)
     {
         if (!_isInputEnabled) return;
 
-        _mediator.GlobalEventBus.Publish(new InputActionEvent(context, actionName));
+        _mediator.GlobalEventBus.Publish(new InputActionEvent(context, context.action.name));
     }
 
-    private void OnInputActionStarted(string actionName, InputAction.CallbackContext context)
+    private void OnInputActionStarted(InputAction.CallbackContext context)
     {
         if (!_isInputEnabled) return;
 
-        _mediator.GlobalEventBus.Publish(new InputActionEvent(context, actionName));
+        _mediator.GlobalEventBus.Publish(new InputActionEvent(context, context.action.name));
     }
 
-    private void OnInputActionCanceled(string actionName, InputAction.CallbackContext context)
+    private void OnInputActionCanceled(InputAction.CallbackContext context)
     {
         if (!_isInputEnabled) return;
 
-        _mediator.GlobalEventBus.Publish(new InputActionEvent(context, actionName));
+        _mediator.GlobalEventBus.Publish(new InputActionEvent(context, context.action.name));
     }
 
     public void RebindAction(string actionName, int bindingIndex, InputBinding newBinding, Action<bool> callback = null)
@@ -261,12 +269,30 @@ public class InputManager : MonoBehaviour, IInitializable, IStateListener
 
     private void OnDestroy()
     {
+        foreach (var action in _allActions)
+        {
+            action.performed -= OnInputActionPerformed;
+            action.canceled -= OnInputActionCanceled;
+            action.started -= OnInputActionStarted;
+        }
+
+        _allActions.Clear();
+
         if (_inputActions != null)
         {
             _inputActions.Disable();
+        }
+
+        if (_mediator != null)
+        {
+            _mediator.UnsubscribeFromState(this, Game.State.Gameplay);
+            _mediator.UnsubscribeFromState(this, Game.State.Paused);
+            _mediator.UnsubscribeFromState(this, Game.State.Menu);
         }
     }
 
 
 
 }
+
+#endregion

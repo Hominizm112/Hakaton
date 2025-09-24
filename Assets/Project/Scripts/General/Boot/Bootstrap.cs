@@ -14,6 +14,7 @@ public class Bootstrap : MonoBehaviour
     private CurrencyPresenter _playerCurrencyPresenter;
     private NPCService _npcService;
     private ShopkeeperService _shopkeeperService;
+    private ConsoleService _consoleService;
 
     private void Awake()
     {
@@ -31,6 +32,8 @@ public class Bootstrap : MonoBehaviour
 
         _shopkeeperService = Instantiate(Resources.Load<ShopkeeperService>("Prefabs/ShopkeeperService"));
 
+        _consoleService = Instantiate(Resources.Load<ConsoleService>("Prefabs/ConsoleService"));
+
         RegisterPersistent(_mediator);
         RegisterPersistent(_audioHub);
         RegisterPersistent(_inputManager);
@@ -40,17 +43,21 @@ public class Bootstrap : MonoBehaviour
         RegisterPersistent(_playerCurrencyPresenter);
         RegisterPersistent(_npcService);
         RegisterPersistent(_shopkeeperService);
+        RegisterPersistent(_consoleService);
 
         _mediator.RegisterService(_audioHub);
+        _mediator.RegisterService(_inputManager);
         _mediator.RegisterService(_saveManager);
         _mediator.RegisterService(_playerCurrencyPresenter);
         _mediator.RegisterService(_shopkeeperService);
+        _mediator.RegisterService(_consoleService);
 
-        _mediator.RegisterInitializable(_inputManager);
         _mediator.RegisterInitializable(_dragManager);
         _mediator.RegisterInitializable(_transitionScreen);
         _mediator.RegisterInitializable(_playerController);
         _mediator.RegisterInitializable(_playerCurrencyPresenter, true);
+
+
         _playerCurrencyPresenter.AddCurrency(1000);
 
         _mediator.RegisterInitializable(_npcService);

@@ -23,7 +23,6 @@ public class CurrencyPresenter : MonoBehaviour, IInitializable
 
         _model.OnCurrencyChanged += HandleCurrencyChanged;
 
-        _mediator.RegisterService(this);
         _mediator.GlobalEventBus.Subscribe<CurrencyChangedEvent>((e) => _mediator.GetService<AudioHub>().PlayOneShot(SoundType.CoinToss, .1f));
     }
 

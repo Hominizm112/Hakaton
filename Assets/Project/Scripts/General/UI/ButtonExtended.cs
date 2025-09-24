@@ -143,7 +143,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 
     protected virtual void OnDestroy()
     {
-        _button.onClick.RemoveAllListeners();
+        _button?.onClick.RemoveAllListeners();
         OnButtonHold = null;
 
         if (_holdCoroutine != null)

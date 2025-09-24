@@ -10,11 +10,11 @@ public interface IApp
 }
 public class AppController : MonoService
 {
-    [SerializeField] private List<IApp> apps = new();
     [SerializeField] public UnityEvent OnAppOpen;
     [SerializeField] public UnityEvent OnAppClose;
     [SerializeField] private BaseApp KeypadApp;
 
+    [SerializeReference] private List<IApp> apps = new();
     private IApp _activeApp;
     private bool _keypadOpen => KeypadApp.IsOpen;
     public KeypadApp KeypadAppInstance => KeypadApp as KeypadApp;
@@ -22,6 +22,7 @@ public class AppController : MonoService
     private void Awake()
     {
         Mediator.Instance.RegisterService(this);
+        print(Mediator.Instance.GetService<AppController>());
     }
 
     public void RegisterApp(IApp app)
@@ -35,7 +36,7 @@ public class AppController : MonoService
         return apps.Contains(app);
     }
 
-    public IApp GetApp<T>() where T : IApp
+    public T GetApp<T>() where T : IApp
     {
         return apps.OfType<T>().FirstOrDefault();
     }
@@ -64,5 +65,11 @@ public class AppController : MonoService
         {
             KeypadApp.Close();
         }
+    }
+
+    public void OnDestroy()
+    {
+        apps.Clear();
+        Mediator.Instance?.UnregisterService(this);
     }
 }

@@ -23,14 +23,14 @@ public abstract class MonoService : MonoBehaviour, IService, IInitializable
     public bool AllServicesReady => requiredServices.Count == 0;
 
     private string LogPrefix => GetType().ToString() + "// ";
-    private bool _initialized;
+    [NonSerialized] public bool initialized;
 
 
     public virtual void Initialize(Mediator mediator = null)
     {
-        if (_initialized) return;
+        if (initialized) return;
         Debug.Log($"//: Initialized service {this}");
-        _initialized = true;
+        initialized = true;
     }
 
     public void HandleServiceRegistration(ServiceRegisterEvent @event)
@@ -380,13 +380,20 @@ public class Mediator : MonoBehaviour
 
     public void RegisterService<T>(T service) where T : class
     {
+        if (_services.ContainsKey(typeof(T)))
+        {
+            Debug.LogWarning($"Service {typeof(T)} already registered!");
+            return;
+        }
+
         Debug.Log($"Registered service: {service}");
         _services[typeof(T)] = service;
 
-        if (service is MonoService monoService)
+        if (service is MonoService monoService && !monoService.initialized)
         {
             if (monoService.AllServicesReady)
             {
+                print($"initializing {monoService.name}");
                 monoService.Initialize(this);
             }
             else
@@ -503,12 +510,20 @@ public class Mediator : MonoBehaviour
         }
 
         OnStateChanged = null;
+        OnLoadProgress = null;
+        OnSceneLoadStarted = null;
+        OnSceneLoadComplete = null;
+        OnInitializationCompleted = null;
+
+
         foreach (var callbackList in _stateChangeCallbacks.Values)
         {
             callbackList.Clear();
         }
         _stateChangeCallbacks.Clear();
         _initializables.Clear();
+        _services.Clear();
+        GlobalEventBus = null;
     }
 }
 

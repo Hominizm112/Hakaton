@@ -25,12 +25,12 @@ public abstract class BaseApp : MonoBehaviour, IApp
 
     protected virtual void Initialize(ServiceRegisterEvent @event)
     {
-        if (@event.Service == typeof(AppController) as IService)
+        if (@event.Service is AppController)
         {
             _appController = _mediator.GetService<AppController>();
             _appController.RegisterApp(this);
-
         }
+
     }
     public void Open()
     {
