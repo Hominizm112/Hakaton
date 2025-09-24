@@ -3,7 +3,8 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using MyGame.Enums;
-public class PortfolioApp : MonoBehaviour
+using System.Linq;
+public class PortfolioApp : MonoBehaviour, IApp
 {
     [SerializeField] private Transform _assetListContainer; //для динамического добавления активов
     [SerializeField] private GameObject _assetUIPrefab;
@@ -26,29 +27,52 @@ public class PortfolioApp : MonoBehaviour
     private Dictionary<string, GameObject> _activeUIElements = new Dictionary<string, GameObject>();
     private PortfollioService _portfolioService;
     Mediator _mediator;
+    private AppController _appController;
+    private void Start()
+    {
+        _addCashButton.onClick.AddListener(OnAddCashClick);
+        _analyticsButton.onClick.AddListener(OnAnalyticsClick);
+    }
     private void Awake()
     {
-        _portfolioService = Mediator.Instance.GetService<PortfollioService>();
+        _portfolioService = Mediator.Instance.GetService<PortfollioService>();//??
         if (_portfolioService != null)
         {
-            ///
+            _portfolioService.OnPortfolioUpdated += UpdateUI;
+            UpdateUI(_portfolioService.GetPortfolioSummary());
         }
         else
         {
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("PortfollioService  не найден"));
         }
+
+        _appController = Mediator.Instance.GetService<AppController>();
+        if (_appController != null)
+        {
+            // Регистрируем этот экран в AppController
+            _appController.RegisterApp(this);
+        }
+    }
+    public void Open()
+    {
+        gameObject.SetActive(true);
     }
 
+    public void Close()
+    {
+        gameObject.SetActive(false);
+    }
     private void OnDestroy()
     {
-
+        if (_portfolioService != null)
+        {
+            _portfolioService.OnPortfolioUpdated -= UpdateUI;
+        }
     }
     private void UpdateUI(PortfolioSummary summary)
     {
         _cashBalanceText.text = summary.CashBalance.ToString("C");
         _totalValueText.text = summary.TotalValue.ToString("C");
-
-        HashSet<string> updatedTickers = new HashSet<string>();
 
         _bondsValueText.text = summary.BondsValue.ToString("C");
         _stocksValueText.text = summary.StocksValue.ToString("C");
@@ -59,14 +83,13 @@ public class PortfolioApp : MonoBehaviour
         _countBonds.text = summary.CountBonds.ToString("C");
         _countStocks.text = summary.CountStocks.ToString("C");
 
+        Dictionary<string, int> allAssets = summary.MyStocks.Concat(summary.MyBonds).ToDictionary(x => x.Key, x => x.Value);
         _analyticsButton.gameObject.SetActive(true);
         _addCashButton.gameObject.SetActive(true);
-
-        foreach (var entry in summary.MyStocks)
+        foreach (var entry in allAssets)
         {
             string ticker = entry.Key;
             int quantity = entry.Value;
-
             if (quantity > 0)
             {
                 if (_activeUIElements.ContainsKey(ticker))
@@ -78,28 +101,19 @@ public class PortfolioApp : MonoBehaviour
                         assetNameText.text = $"{ticker} (x{quantity})";
                     }
                 }
-                else
+                else//создание элемента
                 {
                     CreateAssetUI(ticker, quantity);
                 }
-                updatedTickers.Add(ticker);
             }
-
-        }  
-    List<string> tickersToRemove = new List<string>();
-    foreach (var existingTicker in _activeUIElements.Keys)
-    {
-        if (!updatedTickers.Contains(existingTicker))
-        {
-            tickersToRemove.Add(existingTicker);
         }
-    }
-
-    foreach (var ticker in tickersToRemove)
-    {
-        Destroy(_activeUIElements[ticker]);
-        _activeUIElements.Remove(ticker);
-    }
+        //логика удаления проданных активов
+        List<string> tickersToRemove = _activeUIElements.Keys.Where(t => !allAssets.ContainsKey(t) || allAssets[t] == 0).ToList();
+        foreach (var ticker in tickersToRemove)
+        {
+            Destroy(_activeUIElements[ticker]);
+            _activeUIElements.Remove(ticker);
+        }
     }
     private void CreateAssetUI(string ticker, int quantity)
     {
@@ -124,7 +138,7 @@ public class PortfolioApp : MonoBehaviour
         }
         //действие кнопки sell(buy)
         QuickTradeButton sellbuyButton = assetUI.GetComponentInChildren<QuickTradeButton>();
-        if (sellbuyButton!= null)
+        if (sellbuyButton != null)
         {
             sellbuyButton.Ticker = ticker;
             sellbuyButton.Price = currentPrice;
@@ -135,7 +149,24 @@ public class PortfolioApp : MonoBehaviour
             });
         }
     }
+    private void OnAddCashClick()
+    {
+        //_portfolioService.AddCash();
+    }
 
+    private void OnAnalyticsClick()
+    {
+        _portfolioService.GeneratePortfolioReport();
+    }
+
+    public void CheckOtherStocks()
+    {
+
+    }
+   public void CheckOtherBonds()
+   {
+    
+   }
 
 
 }

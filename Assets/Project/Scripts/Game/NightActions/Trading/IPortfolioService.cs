@@ -4,14 +4,12 @@ using MyGame.Enums;
 
 public interface IPortfolioService
 {
-    //PortfolioSummary GetPortfolioSummary();
     //операции с активами
     bool TradeAssets(TradeType tradeType, object asset, int quantity);
     void AddCash(float amount);
-    //float GetCashBalance();
     //покупка иных
-    void CheckOtherStocks();
-    void CheckOtherBonds();
+    //void CheckOtherStocks();
+    //void CheckOtherBonds();
     void CalculatDayeGainLossPercent();
     void CalculateDayGainLoss();
     void CalculateTotalGainLossPercent();
