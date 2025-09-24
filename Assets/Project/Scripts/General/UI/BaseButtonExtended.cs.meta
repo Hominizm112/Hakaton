@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: c4603b55feb60504f8884495d17151ea
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _button: {instanceID: 0}
+  - spriteToSwap: {fileID: 21300000, guid: fa7ef62c8d32537419167ce180d42975, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -13,6 +13,7 @@ public class Bootstrap : MonoBehaviour
     private PlayerController _playerController;
     private CurrencyPresenter _playerCurrencyPresenter;
     private NPCService _npcService;
+    private ShopkeeperService _shopkeeperService;
 
     private void Awake()
     {
@@ -28,6 +29,8 @@ public class Bootstrap : MonoBehaviour
 
         _npcService = Instantiate(Resources.Load<NPCService>("Prefabs/NPCService"));
 
+        _shopkeeperService = Instantiate(Resources.Load<ShopkeeperService>("Prefabs/ShopkeeperService"));
+
         RegisterPersistent(_mediator);
         RegisterPersistent(_audioHub);
         RegisterPersistent(_inputManager);
@@ -36,10 +39,12 @@ public class Bootstrap : MonoBehaviour
         RegisterPersistent(_playerController);
         RegisterPersistent(_playerCurrencyPresenter);
         RegisterPersistent(_npcService);
+        RegisterPersistent(_shopkeeperService);
 
         _mediator.RegisterService(_audioHub);
         _mediator.RegisterService(_saveManager);
         _mediator.RegisterService(_playerCurrencyPresenter);
+        _mediator.RegisterService(_shopkeeperService);
 
         _mediator.RegisterInitializable(_inputManager);
         _mediator.RegisterInitializable(_dragManager);

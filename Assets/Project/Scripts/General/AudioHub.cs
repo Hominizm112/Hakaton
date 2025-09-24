@@ -4,8 +4,11 @@ using UnityEngine;
 
 public enum SoundType
 {
+    None,
     ButtonPress,
-    CoinToss
+    CoinToss,
+    PC_ButtonPress,
+    PC_TextChangeSound,
 
 }
 public class AudioHub : MonoBehaviour
@@ -33,6 +36,7 @@ public class AudioHub : MonoBehaviour
     {
         foreach (var sound in sounds)
         {
+            print($"Added {sound.name}");
             soundsDict.Add(sound.soundType, sound);
         }
     }
@@ -49,20 +53,47 @@ public class AudioHub : MonoBehaviour
         }
     }
 
+
     public void PlayOneShot(AudioClip clip, float volume = 1f, float pitch = 1f)
     {
         PlayClip(clip, volume, pitch);
     }
 
+    public void PlayOneShot(AudioClip clip)
+    {
+        PlayOneShot(clip, 1, 1);
+    }
+
+
     public void PlayOneShot(Sound sound, float volume = 1f, float pitch = 1f)
     {
-        PlayClip(sound.audioClip, volume, pitch, sound.restrictSoundAmount);
+        PlayClip(sound.AudioClip, volume, pitch, sound.restrictSoundAmount);
     }
+
+
     public void PlayOneShot(SoundType soundType, float volume = 1f, float pitch = 1f)
     {
+        if (soundType == SoundType.None) return;
+
         soundsDict.TryGetValue(soundType, out Sound sound);
-        PlayClip(sound.audioClip, volume, pitch, sound.restrictSoundAmount);
+        if (sound == null)
+        {
+            Mediator.Instance.GlobalEventBus.Publish(new DebugLogErrorEvent($"Sound not found with type of {soundType}"));
+            return;
+        }
+        PlayClip(sound.AudioClip, volume, pitch, sound.restrictSoundAmount);
     }
+
+    public void PlayOneShot(SoundType soundType, float pitch = 1f)
+    {
+        PlayOneShot(soundType, 1f, pitch);
+
+    }
+    public void PlayOneShot(SoundType soundType)
+    {
+        PlayOneShot(soundType, 1f, 1f);
+    }
+
 
     private void PlayClip(AudioClip clip, float volume, float pitch, bool restrictSoundAmount = false)
     {

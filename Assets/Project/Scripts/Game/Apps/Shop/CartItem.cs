@@ -5,13 +5,11 @@ using TMPro;
 public class CartItemData
 {
     public Commodity commodity;
-    public int price;
     public int quantity;
 
-    public CartItemData(Commodity commodity, int price, int quantity)
+    public CartItemData(Commodity commodity, int quantity)
     {
         this.commodity = commodity;
-        this.price = price;
         this.quantity = quantity;
     }
 }
@@ -43,7 +41,7 @@ public class CartItem : MonoBehaviour
 
         _itemData = cartItemData;
         nameText.text = cartItemData.commodity.commodityName;
-        priceText.text = (cartItemData.price * cartItemData.quantity).ToString();
+        priceText.text = (cartItemData.commodity.basePrice * cartItemData.quantity).ToString();
         quantityText.text = cartItemData.quantity.ToString();
     }
 

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53cca4acea07b9d40a0e9e8f0abdec2e, type: 3}
+  m_Name: PC ButtonExtendedSettings
+  m_EditorClassIdentifier: 
+  soundType: 3
+  spriteSwap: 1
+  spriteToSwap: {fileID: 21300000, guid: fa7ef62c8d32537419167ce180d42975, type: 3}
+  textColorSwap: 1
+  textColorToSwap: {r: 0.96470594, g: 0.9294118, b: 0.7568628, a: 1}
+  holdSoundType: 0
+  holdDelay: 0.1

@@ -10,15 +10,18 @@ public class ShopApp : BaseApp
     [SerializeField] private TMP_Text totalCostText;
 
     private List<CartItemData> _cartList = new();
-    private List<CartItem> _cartItems = new();
+    private List<CartItem> _cartObjects = new();
 
     private Action<CartItemData> _onCartChanged;
     private int totalCost;
 
-    private void OnEnable()
+
+    protected override void Awake()
     {
+        base.Awake();
         _onCartChanged += _ => CalculateCartCost();
     }
+
 
     public void AddToCart(Commodity commodity)
     {
@@ -26,8 +29,8 @@ public class ShopApp : BaseApp
         {
             CartItem cartItem = Instantiate(cartItemPrefab, Vector3.zero, Quaternion.identity, cartHolder).GetComponent<CartItem>();
             cartItem.transform.localScale = Vector3.one;
-            _cartItems.Add(cartItem);
-            _cartList.Add(new(commodity, 100, 0));
+            _cartObjects.Add(cartItem);
+            _cartList.Add(new(commodity, 0));
             _onCartChanged += r => cartItem.SetItem(r);
         }
 
@@ -36,20 +39,21 @@ public class ShopApp : BaseApp
             cartItemData.quantity++;
             _onCartChanged?.Invoke(cartItemData);
         }
+
     }
 
     public void RemoveFromCart(CartItem cartItem, CartItemData data)
     {
         _cartList.Remove(data);
-        _cartItems.Remove(cartItem);
-        CalculateCartCost();
-
+        _cartObjects.Remove(cartItem);
+        _onCartChanged?.Invoke(data);
     }
 
     public void AddInCart(CartItemData data)
     {
         data.quantity++;
         _onCartChanged?.Invoke(data);
+
     }
 
     public void ReduceInCart(CartItemData data)
@@ -64,7 +68,7 @@ public class ShopApp : BaseApp
         totalCost = 0;
         foreach (var item in _cartList)
         {
-            totalCost += item.price * item.quantity;
+            totalCost += item.commodity.basePrice * item.quantity;
         }
         UpdateTotalCostDisplay(totalCost);
     }
@@ -79,11 +83,11 @@ public class ShopApp : BaseApp
     private void ClearCart()
     {
         _cartList.Clear();
-        for (int i = _cartItems.Count - 1; i >= 0; i--)
+        for (int i = _cartObjects.Count - 1; i >= 0; i--)
         {
-            Destroy(_cartItems[i]);
+            Destroy(_cartObjects[i]);
         }
-        _cartItems.Clear();
+        _cartObjects.Clear();
     }
 
     private bool ExistsCartItemData(Commodity commodity)
@@ -107,9 +111,16 @@ public class ShopApp : BaseApp
 
     public void TryBuyItemsInCart()
     {
-        if (!Mediator.Instance.GetService<CurrencyPresenter>().CanAfford(totalCost) || _cartItems.Count == 0) return;
+        Mediator mediator = Mediator.Instance;
+        if (!mediator.GetService<CurrencyPresenter>().CanAfford(totalCost) || _cartObjects.Count == 0) return;
 
-        Mediator.Instance.GetService<CurrencyPresenter>().TrySpendCurrency(totalCost);
+        mediator.GetService<CurrencyPresenter>().TrySpendCurrency(totalCost);
+        foreach (var item in _cartList)
+        {
+            mediator.GetService<ShopkeeperService>().AddCommodity(item.commodity, item.quantity);
+
+        }
+
     }
 
     private void OnDisable()
