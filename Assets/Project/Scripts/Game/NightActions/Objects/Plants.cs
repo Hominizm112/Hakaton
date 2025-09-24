@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -6,56 +5,99 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
 {
     [SerializeField] private PlantsAnimationSettings _animationSettings;
     private bool _isActive = false;
-    private Sequence _DropSequence;
-    public bool IsActive => _isActive;
+    private Sequence _dropSequence; 
+    private bool _isSubscribed = false;
+
+    public void Start()
+    {
+        SubscribeToGameState();
+        CheckCurrentState();
+        Debug.Log("Start() вызван");
+    }
+
+    private void SubscribeToGameState()
+    {
+        if (!_isSubscribed)
+        {
+            Game.GamesStateChanged += OnStateChanged;
+            _isSubscribed = true;
+        }
+    }
+
+    private void UnsubscribeFromGameState()
+    {
+        if (_isSubscribed)
+        {
+            Game.GamesStateChanged -= OnStateChanged;
+            _isSubscribed = false;
+        }
+    }
+
+    private void CheckCurrentState()
+    {
+        if (Game.ActualState == Game.State.NightScene)
+        {
+            StartPeriodicAction();
+        }
+    }
 
     public void Interact()
     {
         SpawnLeaf();
+         Debug.Log("Interact() вызван");
     }
 
     void SpawnLeaf()
     {
-        if (_animationSettings.leafPrefab == null) return;
-        GameObject leaf = Instantiate(_animationSettings.leafPrefab, _animationSettings.dropLeavesPoint, Quaternion.identity);//создание копии(листьев будет мало)
+       Debug.Log("SpawnLeaf() вызван");
+        if (_animationSettings.leafPrefab == null)
+        {
+            Debug.LogError("Leaf Prefab не назначен в ScriptableObject Animation Settings!");
+            return;
+        }
+        GameObject newLeaf = Instantiate(_animationSettings.leafPrefab, _animationSettings.dropLeavesPoint, Quaternion.identity);
 
-        leaf.transform.DOMoveY(_animationSettings.dropLeavesPoint.y - _animationSettings.dropDistance, _animationSettings.dropDuration)
-            .SetEase(Ease.InCubic)
-            .OnComplete(() => Destroy(leaf));
-    }
+        LeafController leafController = newLeaf.GetComponent<LeafController>();
 
-    void Start()
-    {
-        Mediator.Instance?.SubscribeToState(this, Game.State.NightScene);
-        if (!IsActive&&Mediator.Instance?.CurrentState == Game.State.NightScene) {
-          StartPeriodicAction();
-      }
+        if (leafController != null)
+        {
+            // 1. Передаем настройки анимации листу.
+            leafController.DropDistance = _animationSettings.dropDistance;
+            leafController.DropDuration = _animationSettings.dropDuration;
+
+            // 2. Теперь, когда данные переданы, запускаем анимацию.
+            leafController.StartLeafAnimation();
+        }
     }
 
     private void StartPeriodicAction()
     {
         if (_isActive) return;
 
-        _DropSequence = DOTween.Sequence()
+        Debug.Log("Plants: запуск периодического падения листьев");
+
+        _dropSequence = DOTween.Sequence()
             .AppendInterval(_animationSettings.actionInterval)
             .AppendCallback(Interact)
             .SetLoops(-1);
         _isActive = true;
     }
 
-    void OnDestroy()
-    {
-        Mediator.Instance?.UnsubscribeFromState(this, Game.State.NightScene);
-        StopPeriodicAction();
-    }
     public void StopPeriodicAction()
     {
-        _DropSequence?.Kill();
+        if (_dropSequence != null)
+        {
+            _dropSequence.Kill();
+            _dropSequence = null;
+        }
         _isActive = false;
+        Debug.Log("Plants: остановка падения листьев");
     }
 
     public void OnStateChanged(Game.State newState)
     {
+        Debug.Log($"Plants: состояние изменено на {newState}");
+        
         if (newState == Game.State.NightScene)
         {
             StartPeriodicAction();
@@ -66,4 +108,9 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
         }
     }
 
+    void OnDestroy()
+    {
+        UnsubscribeFromGameState();
+        StopPeriodicAction();
+    }
 }

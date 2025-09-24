@@ -1,8 +1,5 @@
 using UnityEngine;
 using DG.Tweening;
-using System.Collections.Generic;
-using JetBrains.Annotations;
-using UnityEngine.Rendering;
 
 public class Cloud : MonoBehaviour, IInteractable, IStateListener
 {
@@ -10,25 +7,49 @@ public class Cloud : MonoBehaviour, IInteractable, IStateListener
     private Tween _movementTweener;
     private bool _isMoving = false;
     private bool _isSubscribed = false;
-    
-
-    public void Awake()
-    {
-        InitializeCloud();
-    }
+    private Mediator _mediator;
 
     public void Start()
     {
+        InitializeCloud();
+        SubscribeToGameState();
+        CheckCurrentState();
+    }
+    private void SubscribeToGameState()
+    {
         if (!_isSubscribed)
         {
-            Mediator.Instance?.SubscribeToState(this, Game.State.NightScene);
+            Game.GamesStateChanged += OnStateChanged;
             _isSubscribed = true;
         }
     }
+
+     private void CheckCurrentState()
+    {
+        if (Game.ActualState == Game.State.NightScene)
+        {
+            StartCloudMovement();
+        }
+    }
+    private void UnsubscribeFromGameState()
+    {
+        if (_isSubscribed)
+        {
+            Game.GamesStateChanged -= OnStateChanged;
+            _isSubscribed = false;
+        }
+    }
+
     private void InitializeCloud()
     {
+        if (_cloudAnimationSettings == null)
+        {
+            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new ("CloudAnimationsSettings not assigned!"));
+            return;
+        }
         transform.position = _cloudAnimationSettings.initial_point;
         _isMoving = false;
+    
     }
     public void Interact()
     {
@@ -43,12 +64,10 @@ public class Cloud : MonoBehaviour, IInteractable, IStateListener
     }
     private void StartCloudMovement()
     {
-        if (_isMoving) return;
-
         _isMoving = true;
         _movementTweener = transform.DOMoveX(_cloudAnimationSettings.xFinal, _cloudAnimationSettings.movementDuration)
                                     .SetEase(Ease.Linear)
-                                    .SetLoops(-1, LoopType.Restart)
+                                    .SetLoops(-1, LoopType.Yoyo)
                                     .OnStart(() => transform.position = _cloudAnimationSettings.initial_point);
     }
     public void StopCloudMovement()
@@ -71,10 +90,8 @@ public class Cloud : MonoBehaviour, IInteractable, IStateListener
     }
 
     void OnDestroy()
-    {  if (_isSubscribed)
-        {
-            Mediator.Instance?.UnsubscribeFromState(this, Game.State.NightScene);
-        }
+    {
+        UnsubscribeFromGameState();
         StopCloudMovement();
     }
 

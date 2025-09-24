@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00a65e3d51e164c389f5099ac1d528bd, type: 3}
+  m_Name: PlantAnimationSettings
+  m_EditorClassIdentifier: 
+  leafPrefab: {fileID: 3265596149460700170, guid: e709fc7f5c64042afa26bcce4514adaf, type: 3}
+  dropLeavesPoint: {x: -0.86, y: -1.06}
+  dropDistance: 1
+  dropDuration: 5
+  actionInterval: 20
