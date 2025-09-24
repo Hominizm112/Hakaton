@@ -15,7 +15,7 @@ MonoBehaviour:
   commodityName: Tea
   description: 
   icon: {fileID: 0}
-  basePrice: 10
+  basePrice: 30
   priceTier: 0
   flavorTags: 00000000
   qualityLevel: 5

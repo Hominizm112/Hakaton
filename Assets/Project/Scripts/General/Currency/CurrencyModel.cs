@@ -19,13 +19,14 @@ public class CurrencyModel
 
     public CurrencyModel(int initialAmount = 0)
     {
-        _currencyAmount = initialAmount;
+        CurrencyAmount = initialAmount;
     }
 
     public bool CanAfford(int amount)
     {
-        return _currencyAmount >= amount;
+        return CurrencyAmount >= amount;
     }
+
 
     public void AddCurrency(int amount)
     {

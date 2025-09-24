@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d66eafe2f7e11574098e882af4241ac1, type: 3}
   m_Name: ButtonPressSfx
   m_EditorClassIdentifier: 
-  soundType: 0
-  audioClip: {fileID: 8300000, guid: c8e3d805fad40ea438d62e19cce3b87c, type: 3}
+  soundType: 1
+  audioClip:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   restrictSoundAmount: 0

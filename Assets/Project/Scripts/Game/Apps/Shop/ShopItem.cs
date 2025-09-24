@@ -1,14 +1,18 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
-public class ShopItem : ButtonExtended
+public class ShopItem : MonoBehaviour
 {
     [SerializeField] private Commodity commodity;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text priceText;
 
-    protected override void HandleClick()
+    protected void Awake()
     {
-        Select();
+        nameText.text = commodity.commodityName;
+        priceText.text = commodity.basePrice.ToString();
     }
+
 
     public void Select()
     {

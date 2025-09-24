@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d66eafe2f7e11574098e882af4241ac1, type: 3}
   m_Name: CoinTossSound
   m_EditorClassIdentifier: 
-  soundType: 1
-  audioClip: {fileID: 8300000, guid: 9a3748e8f323a5e48b3cecca372d8478, type: 3}
+  soundType: 2
+  audioClip:
+  - {fileID: 8300000, guid: 9a3748e8f323a5e48b3cecca372d8478, type: 3}
   restrictSoundAmount: 1
