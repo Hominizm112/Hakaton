@@ -16,7 +16,11 @@ public class ShopItem : MonoBehaviour
 
     public void Select()
     {
-        (Mediator.Instance.GetService<AppController>().GetApp<ShopApp>() as ShopApp).AddToCart(commodity);
+        print("Selected");
+        print(Mediator.Instance.name);
+        print(Mediator.Instance.GetService<AppController>());
+        print(Mediator.Instance.GetService<AppController>().GetApp<ShopApp>());
+        Mediator.Instance.GetService<AppController>().GetApp<ShopApp>().AddToCart(commodity);
     }
 
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,6 +14,10 @@ public class AppController : MonoService
     [SerializeField] public UnityEvent OnAppOpen;
     [SerializeField] public UnityEvent OnAppClose;
     [SerializeField] private BaseApp KeypadApp;
+    [SerializeField] private AppLoader AppLoader;
+#if UNITY_EDITOR
+    [SerializeField] private bool disableAppLoadingScreen;
+#endif
 
     [SerializeReference] private List<IApp> apps = new();
     private IApp _activeApp;
@@ -27,8 +32,15 @@ public class AppController : MonoService
 
     public void RegisterApp(IApp app)
     {
+        if (app.IsUnityNull())
+        {
+            return;
+        }
+
+        ColorfulDebug.LogBlue($"{name}//: Registered app - {app}");
         if (CheckApp(app)) return;
         apps.Add(app);
+        ColorfulDebug.LogBlue($"{name}//: Total Registered Apps - {apps.Count}");
     }
 
     public bool CheckApp(IApp app)
@@ -50,9 +62,17 @@ public class AppController : MonoService
     public void SelectApp(IApp app)
     {
         _activeApp = app;
-        if ((_activeApp is BaseApp baseApp) && baseApp.requireKeypad)
+        if (_activeApp is BaseApp baseApp)
         {
-            KeypadApp.Open();
+            if (baseApp.requireKeypad)
+            {
+                KeypadApp.Open();
+            }
+
+            if (baseApp.requireAppLoad && !disableAppLoadingScreen)
+            {
+                AppLoader.StartLoading();
+            }
         }
     }
 

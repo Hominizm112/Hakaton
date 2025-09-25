@@ -793,7 +793,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6861638814402389312}
-  - component: {fileID: 2349414922474528202}
+  - component: {fileID: 282499564215879599}
   m_Layer: 0
   m_Name: ConsoleService
   m_TagString: Untagged
@@ -817,7 +817,7 @@ Transform:
   - {fileID: 3901736939242122449}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2349414922474528202
+--- !u!114 &282499564215879599
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -826,15 +826,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3519483483198102494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d69828da5972274496cdba9ae36df66, type: 3}
+  m_Script: {fileID: 11500000, guid: d7daddfbc8f011e43939e19f2164cbd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialized: 0
   consoleObject: {fileID: 591218621786266839}
   inputField: {fileID: 1376489682344768635}
   outputText: {fileID: 1755379768333387188}
   scrollRect: {fileID: 3276569794047737317}
-  maxOutputLines: 20
+  maxOutputLines: 10
   enableCheats: 1
   logToDebug: 0
 --- !u!1 &4420528612108929545

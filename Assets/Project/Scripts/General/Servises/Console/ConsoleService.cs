@@ -1,75 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Reflection;
 using System.Linq;
-using UnityEngine.EventSystems;
-using System.Collections;
 
-[AttributeUsage(AttributeTargets.Method)]
-public class ConsoleCommandAttribute : Attribute
-{
-    public string Name { get; }
-    public string Description { get; }
-    public string Usage { get; }
-
-    public ConsoleCommandAttribute(string name, string description = "", string usage = "")
-    {
-        Name = name;
-        Description = description;
-        Usage = usage;
-    }
-}
-
-public struct CommandResult
-{
-    public bool Succes { get; }
-    public string Message { get; }
-
-    public CommandResult(bool success, string message = "")
-    {
-        Succes = success;
-        Message = message;
-    }
-
-    public static CommandResult Ok(string message = "") => new CommandResult(true, message);
-    public static CommandResult Error(string message) => new CommandResult(false, message);
-}
-
-public class CommandContext
-{
-    public ConsoleService Console { get; }
-    public string[] Arguments { get; }
-    public int ArgumentCount => Arguments.Length;
-
-    public CommandContext(ConsoleService console, string[] arguments)
-    {
-        Console = console;
-        Arguments = arguments;
-    }
-
-    public string GetString(int index, string defaultValue = "") => index < Arguments.Length ? Arguments[index] : defaultValue;
-    public int GetInt(int index, int defaultValue = 0) => int.TryParse(GetString(index), out int result) ? result : defaultValue;
-
-    public float GetFloat(int index, float defaultValue = 0f) => float.TryParse(GetString(index), out float result) ? result : defaultValue;
-
-    public bool GetBool(int index, bool defaultValue = false)
-    {
-        string arg = GetString(index).ToLower();
-        return arg switch
-        {
-            "true" or "1" or "yes" => true,
-            "false" or "0" or "no" => false,
-            _ => defaultValue
-        };
-    }
-}
-
-public class ConsoleService : MonoService
+public partial class ConsoleService : MonoService
 {
     public override List<Type> requiredServices { get; protected set; } = new() { typeof(InputManager) };
 
@@ -84,7 +22,6 @@ public class ConsoleService : MonoService
     [SerializeField] private bool enableCheats = true;
     [SerializeField] private bool logToDebug = true;
 
-
     private bool _consoleOppened;
     private Mediator _mediator;
     private InputAction _toggleAction;
@@ -92,12 +29,9 @@ public class ConsoleService : MonoService
     private int _historyIndex = -1;
     private string _currentInput = "";
 
-
     private readonly Dictionary<string, MethodInfo> _commands = new();
     private readonly Dictionary<string, ConsoleCommandAttribute> _commandAttributes = new();
     private readonly List<string> _outputLines = new();
-
-
 
     protected override void OnAllServicesReady()
     {
@@ -139,13 +73,9 @@ public class ConsoleService : MonoService
         }
         else if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
-
             AutoComplete();
-
         }
     }
-
-
 
     private void NavigateHistory(int direction)
     {
@@ -194,7 +124,6 @@ public class ConsoleService : MonoService
         _currentInput = value;
     }
 
-
     private void OnInputAction(InputAction.CallbackContext ctx)
     {
         _consoleOppened = !_consoleOppened;
@@ -239,7 +168,6 @@ public class ConsoleService : MonoService
             if (_commands.TryGetValue(commandName, out MethodInfo method))
             {
                 ExecuteCommand(method, args);
-
             }
             else
             {
@@ -289,17 +217,16 @@ public class ConsoleService : MonoService
         var methods = GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
             .Where(m => m.GetCustomAttribute<ConsoleCommandAttribute>() != null);
 
-        foreach (var item in methods)
+        foreach (var method in methods)
         {
-            var attribute = item.GetCustomAttribute<ConsoleCommandAttribute>();
+            var attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
             if (attribute != null)
             {
                 string commandName = attribute.Name.ToLower();
-                _commands[commandName] = item;
+                _commands[commandName] = method;
                 _commandAttributes[commandName] = attribute;
             }
         }
-
     }
 
     #endregion
@@ -342,7 +269,7 @@ public class ConsoleService : MonoService
 
     #region Built-in Commands
 
-    [ConsoleCommand("help", "Shows avaliable commands", "help[command]")]
+    [ConsoleCommand("help", "Shows avaliable commands", "help [command]")]
     private CommandResult HelpCommand(CommandContext context)
     {
         if (context.ArgumentCount > 0)
@@ -403,56 +330,6 @@ public class ConsoleService : MonoService
     }
     #endregion
 
-    #region Game-specific Commands (Examples)
-    [ConsoleCommand("god", "Toggle god mode", "god [on/off]")]
-    private CommandResult GodCommand(CommandContext context)
-    {
-        if (!enableCheats)
-            return CommandResult.Error("Cheats are disabled");
-
-        // Implement your god mode logic here
-        return CommandResult.Ok("God mode toggled");
-    }
-
-    [ConsoleCommand("addcurrency", "Adds currency to player", "addcurrency <amount>")]
-    private CommandResult AddCurrencyCommand(CommandContext context)
-    {
-        if (!enableCheats)
-            return CommandResult.Error("Cheats are disabled");
-
-        if (context.ArgumentCount == 0)
-            return CommandResult.Error("Usage: addcurrency <amount>");
-
-        int amount = context.GetInt(0, 0);
-        _mediator.GetService<CurrencyPresenter>()?.AddCurrency(amount);
-        return CommandResult.Ok($"Added {amount} currency");
-    }
-
-    [ConsoleCommand("loadscene", "Loads a scene", "loadscene <sceneName>")]
-    private CommandResult LoadSceneCommand(CommandContext context)
-    {
-        if (context.ArgumentCount == 0)
-            return CommandResult.Error("Usage: loadscene <sceneName>");
-
-        string sceneName = context.GetString(0);
-        _mediator.LoadScene(sceneName, Game.State.Gameplay);
-        return CommandResult.Ok($"Loading scene: {sceneName}");
-    }
-
-    [ConsoleCommand("unlockemail", "Unlock an email", "unlockemail <emailId>")]
-    private CommandResult UnlockEmailCommand(CommandContext context)
-    {
-        if (context.ArgumentCount == 0)
-            return CommandResult.Error("Usage: unlockemail <emaleId>");
-
-
-
-        _mediator.GetService<AppController>()?.GetApp<EmailApp>()?.UnlockEmail(context.GetInt(0, 0));
-
-        return CommandResult.Ok($"Email unlocked.");
-    }
-    #endregion
-
     private void OnDestroy()
     {
         if (_toggleAction != null)
@@ -465,9 +342,5 @@ public class ConsoleService : MonoService
             inputField.onSubmit.RemoveListener(HandleInput);
             inputField.onValueChanged.RemoveListener(OnInputChanged);
         }
-
     }
-
-
-
 }

@@ -9,6 +9,8 @@ public enum SoundType
     CoinToss,
     PC_ButtonPress,
     PC_TextChangeSound,
+    PC_AppIconButton,
+    PC_LoadAppSound,
 
 }
 public class AudioHub : MonoBehaviour

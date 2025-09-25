@@ -29,7 +29,7 @@ public abstract class MonoService : MonoBehaviour, IService, IInitializable
     public virtual void Initialize(Mediator mediator = null)
     {
         if (initialized) return;
-        Debug.Log($"//: Initialized service {this}");
+        ColorfulDebug.LogGreen($"//: Initialized service {this}");
         initialized = true;
     }
 
@@ -229,7 +229,7 @@ public class Mediator : MonoBehaviour
 
     private void DebugLogErrorEventHandler(DebugLogErrorEvent @event)
     {
-        Debug.LogError(@event.Message);
+        ColorfulDebug.LogError(@event.Message);
     }
 
     private void LoadSceneEventHandler(LoadSceneEvent @event)
@@ -382,18 +382,17 @@ public class Mediator : MonoBehaviour
     {
         if (_services.ContainsKey(typeof(T)))
         {
-            Debug.LogWarning($"Service {typeof(T)} already registered!");
+            ColorfulDebug.LogWarning($"Service {typeof(T)} already registered!");
             return;
         }
 
-        Debug.Log($"Registered service: {service}");
+        ColorfulDebug.LogGreen($"Registered service: {service}");
         _services[typeof(T)] = service;
 
         if (service is MonoService monoService && !monoService.initialized)
         {
             if (monoService.AllServicesReady)
             {
-                print($"initializing {monoService.name}");
                 monoService.Initialize(this);
             }
             else
@@ -408,6 +407,8 @@ public class Mediator : MonoBehaviour
 
     public void UnregisterService<T>(T service) where T : class
     {
+        ColorfulDebug.LogGreen($"Unregistered service: {service}");
+
         Type serviceType = typeof(T);
         _services.Remove(serviceType);
     }
@@ -419,7 +420,7 @@ public class Mediator : MonoBehaviour
             return service as T;
         }
 
-        Debug.LogError($"Service of type {typeof(T)} not registered!");
+        ColorfulDebug.LogError($"Service of type {typeof(T)} not registered!");
         return null;
     }
 

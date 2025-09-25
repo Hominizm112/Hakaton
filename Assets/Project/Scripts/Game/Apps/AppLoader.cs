@@ -64,6 +64,7 @@ public class AppLoader : MonoBehaviour
 
         yield return new WaitForSeconds(loadProgressKeys[step].stepTime);
 
+        Mediator.Instance.GetService<AudioHub>().PlayOneShot(SoundType.PC_LoadAppSound, 0.2f);
         UpdateView(loadProgressKeys[step].targetPrecentage, step == loadProgressKeys.Count - 1);
         OnLoadingProgressUpdate?.Invoke(step);
 
