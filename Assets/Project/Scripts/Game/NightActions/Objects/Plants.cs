@@ -7,12 +7,12 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
     private bool _isActive = false;
     private Sequence _dropSequence; 
     private bool _isSubscribed = false;
+    private Mediator _mediator;
 
     public void Start()
     {
         SubscribeToGameState();
         CheckCurrentState();
-        Debug.Log("Start() вызван");
     }
 
     private void SubscribeToGameState()
@@ -44,28 +44,21 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
     public void Interact()
     {
         SpawnLeaf();
-         Debug.Log("Interact() вызван");
     }
 
     void SpawnLeaf()
     {
-       Debug.Log("SpawnLeaf() вызван");
         if (_animationSettings.leafPrefab == null)
         {
-            Debug.LogError("Leaf Prefab не назначен в ScriptableObject Animation Settings!");
+             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Leaf Prefab не назначен в ScriptableObject Animation Settings!"));
             return;
         }
         GameObject newLeaf = Instantiate(_animationSettings.leafPrefab, _animationSettings.dropLeavesPoint, Quaternion.identity);
-
         LeafController leafController = newLeaf.GetComponent<LeafController>();
-
         if (leafController != null)
         {
-            // 1. Передаем настройки анимации листу.
             leafController.DropDistance = _animationSettings.dropDistance;
             leafController.DropDuration = _animationSettings.dropDuration;
-
-            // 2. Теперь, когда данные переданы, запускаем анимацию.
             leafController.StartLeafAnimation();
         }
     }
@@ -73,8 +66,6 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
     private void StartPeriodicAction()
     {
         if (_isActive) return;
-
-        Debug.Log("Plants: запуск периодического падения листьев");
 
         _dropSequence = DOTween.Sequence()
             .AppendInterval(_animationSettings.actionInterval)
@@ -91,13 +82,10 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
             _dropSequence = null;
         }
         _isActive = false;
-        Debug.Log("Plants: остановка падения листьев");
     }
 
     public void OnStateChanged(Game.State newState)
     {
-        Debug.Log($"Plants: состояние изменено на {newState}");
-        
         if (newState == Game.State.NightScene)
         {
             StartPeriodicAction();

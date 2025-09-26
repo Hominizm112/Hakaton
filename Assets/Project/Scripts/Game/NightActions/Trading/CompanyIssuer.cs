@@ -23,7 +23,7 @@ public class CompanyIssuer
     { "RRT", new Company { Name = "Regency Realty Trust", Sector = CompanySector.Real_Estate,Country=CompanyCountry.China,Rating=RatingIssuer.AAA} },
 
     //Tech
-    { "LUMN", new Company { Name = "Lumen Networks",Sector = CompanySector.Technology,Country=CompanyCountry.France,Rating=RatingIssuer.CCC } },
+    { "RRT", new Company { Name = "Lumen Networks",Sector = CompanySector.Technology,Country=CompanyCountry.France,Rating=RatingIssuer.CCC } },
     { "CHAI", new Company { Name = "Chronos AI",Sector = CompanySector.Technology,Country=CompanyCountry.Canada, Rating=RatingIssuer.D } },
     //Health
     { "GNM", new Company { Name = "Genomica",Sector = CompanySector.Healthcare,Country=CompanyCountry.Germany,Rating=RatingIssuer.BBB } },
@@ -58,10 +58,3 @@ public enum CompanySector
     Real_Estate,
 }
 
-public enum RatingIssuer
-{
-    AAA,
-    BBB,
-    CCC,
-    D,
-}

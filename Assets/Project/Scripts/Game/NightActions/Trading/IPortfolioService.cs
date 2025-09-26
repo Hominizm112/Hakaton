@@ -22,9 +22,9 @@ public interface IPortfolioService
 public class PortfolioSummary
 {//данные для отображения
     public int CountStocks { get; set; }
-    public Dictionary<string, int> MyStocks = new();
+    public Dictionary<Ticker, int> MyStocks = new();
     public int CountBonds { get; set; }
-    public Dictionary<string, int> MyBonds = new();
+    public Dictionary<Ticker, int> MyBonds = new();
     public float CashBalance { get; set; }
     public float StocksValue { get; set; }
     public float BondsValue { get; set; }
@@ -35,8 +35,8 @@ public class PortfolioSummary
     public float DayGainLossPercent { get; set; }
     public PortfolioSummary()
     {
-        MyStocks = new Dictionary<string, int>();
-        MyBonds = new Dictionary<string, int>();
+        MyStocks = new Dictionary<Ticker, int>();
+        MyBonds = new Dictionary<Ticker, int>();
         CashBalance = 0f;
         CountBonds = 0;
         CountStocks = 0;

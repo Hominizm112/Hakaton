@@ -12,7 +12,6 @@ using MyGame.Enums;
 
 public class TradingApp : BaseApp
 {
-
     //динамические кнопки
     [Header("UI Elements - Containers")]
     [SerializeField] private Transform _assetListContainer;// Контейнер, где будут создаваться кликабельные кнопки

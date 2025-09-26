@@ -15,15 +15,27 @@ public interface IBondsTradingService
 }
 public class Bond
 {
-    public string Ticker { get; set; }
+    public BondConstInfo BondInfo{ get; set; }
     public float CurrentValue { get; set; }
-    public string RepaymentDate{ get; }
-    public float CouponValue { get; }
+    public string RepaymentDate { get; }
     public string CouponPaymentDate { get; }
     public int QuantityPayQuater { get; }
-    public float NominalValue{ get; }
-    public string RatingIssuer { get; }
-
 }
 
+public class BondConstInfo
+{
+    public Ticker Ticker { get; set; }
+    public Country Country { get; }
+    public Sector Sector { get; }
+    public float CouponValue { get; }
+    public float NominalValue { get; }
+    public RatingIssuer RatingIssuer { get; }  
+}
 
+public enum RatingIssuer
+{
+    AAA,
+    BBB,
+    CCC,
+    D,
+}
