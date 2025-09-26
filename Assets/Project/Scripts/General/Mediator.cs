@@ -280,6 +280,7 @@ public class Mediator : MonoBehaviour
         OnInitializationCompleted?.Invoke();
     }
 
+
     private void CheckPreRegisteredServices(MonoService monoService)
     {
         foreach (var requiredType in monoService.requiredServices.ToArray())

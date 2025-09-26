@@ -2,18 +2,22 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using MyGame.Enums;
+using UnityEditor.Toolbars;
 public class TradeWindow : MonoBehaviour
 {
-    [SerializeField] private TMP_Text _headerText; 
+    [SerializeField] private TMP_Text _headerText;
     [SerializeField] private TMP_Text _assetNameText;
     [SerializeField] private TMP_Text _assetPriceText;
+
+    //TODO: убрать _quantityInput
     [SerializeField] private TMP_InputField _quantityInput;
     [SerializeField] private TMP_Text _totalText;
 
 
-    private string _currentTicker;
+    private Ticker _currentTicker;
     private float _currentPrice;
     private TradeType _currentTradeType;
+
 
     private void Awake()
     {
@@ -27,17 +31,20 @@ public class TradeWindow : MonoBehaviour
         _currentTicker = e.Ticker;
         _currentPrice = e.Price;
         _currentTradeType = e.TradeType;
-        _assetNameText.text = _currentTicker;
-        _assetPriceText.text = _currentPrice.ToString("C");
+        _assetNameText.text = _currentTicker.ToString();
+        _assetPriceText.text = _currentPrice.ToString();
 
-        if (_currentTradeType == TradeType.Buy)
+        switch (_currentTradeType)
         {
-            _headerText.text = "Цена покупки";
+            case TradeType.Buy:
+                _headerText.text = "Цена покупки";
+                break;
+
+            case TradeType.Sell:
+                _headerText.text = "Цена продажи";
+                break;
         }
-        else
-        {
-            _headerText.text = "Цена продажи";
-        }
+
         _quantityInput.onValueChanged.AddListener(UpdateTotal);
     }
 
@@ -53,13 +60,13 @@ public class TradeWindow : MonoBehaviour
             _totalText.text = "0";
         }
     }
-   public void OnTradeButtonClick()
-   {
+    public void OnTradeButtonClick()
+    {
         if (int.TryParse(_quantityInput.text, out int quantity))
         {
-            
+
             Mediator.Instance.GlobalEventBus.Publish(new TradeRequestEvent(_currentTradeType, _currentTicker, _currentPrice, quantity));
             gameObject.SetActive(false);
         }
-   }
+    }
 }

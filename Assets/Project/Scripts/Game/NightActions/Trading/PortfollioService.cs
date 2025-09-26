@@ -2,47 +2,84 @@ using UnityEngine;
 using System.Collections.Generic;
 using MyGame.Enums;
 using System;
+using Unity.VisualScripting;
+using System.Linq;
+
+public interface IActiv { }
+
+public abstract class SampleActiv : IActiv
+{
+    public float CurrentValue;
+    private int quantity;
+
+    public int Quantity => quantity;
+
+    public void AddQuantity(int amount)
+    {
+        quantity += amount;
+    }
+
+    public void RemoveQuantity(int amount)
+    {
+        quantity -= amount;
+    }
+
+}
 
 public class PortfollioService : MonoService, IPortfolioService
 {
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
-    public override List<Type> requiredServices { get; protected set; } = new List<Type>();
-    public Dictionary<string, Stock> AvailableStocks { get; private set; }
-    public Dictionary<string, Bond> AvailableBonds { get; private set; }//все доступные акции из списка
-    public event Action<PortfolioSummary> OnPortfolioUpdated;//событие об успешной покупке/продаже
     private Mediator _mediator;
+
+
+    public override List<Type> requiredServices { get; protected set; } = new List<Type>();
+
+
+    public Dictionary<Ticker, Stock> AvailableStocks { get; private set; }
+
+
+    //все доступные акции из списка
+    public Dictionary<Ticker, Bond> AvailableBonds { get; private set; }
+
+
+    //событие об успешной покупке/продаже
+    public event Action<PortfolioSummary> OnPortfolioUpdated;
+
+
     private void Awake()
     {
         Mediator.Instance.RegisterService(this);
     }
+
+
     public override void Initialize(Mediator mediator = null)
     {
-        base.Initialize(mediator);
-        if (mediator != null && mediator.GlobalEventBus != null)
-        {
-            mediator.GlobalEventBus.Subscribe<TradeRequestEvent>(HandleTradeRequest);
-        }
+        base.Initialize();
+
+        mediator.GlobalEventBus.Subscribe<TradeRequestEvent>(HandleTradeRequest);
+
         LoadInitialData();
     }
+
     public void LoadInitialData()//логика сохранения и инициализации
     {
-        AvailableStocks = new Dictionary<string, Stock>();
-        AvailableBonds = new Dictionary<string, Bond>();
+        AvailableStocks = new Dictionary<Ticker, Stock>();
+        AvailableBonds = new Dictionary<Ticker, Bond>();
         //загрузка активов портфолио
     }
 
-    private void HandleTradeRequest(TradeRequestEvent e)
+    private void HandleTradeRequest(TradeRequestEvent @event)
     {
         // поиск и покупка нужного объекта
-        object asset = FindAssetByTicker(e.Ticker);
+        IActiv activ = FindAssetByTicker(@event.Ticker);
 
-        if (asset != null)
+        if (!activ.IsUnityNull())
         {
-            TradeAssets(e.TradeType, asset, e.Quantity);
+            TradeAssets(@event.TradeType, activ, @event.Quantity);
         }
     }
 
-    private object FindAssetByTicker(Ticker ticker)
+    private IActiv FindAssetByTicker(Ticker ticker)
     {
         if (AvailableStocks.TryGetValue(ticker, out Stock stock))
         {
@@ -55,32 +92,32 @@ public class PortfollioService : MonoService, IPortfolioService
         }
         return null;
     }
+
+
     public PortfolioSummary GetPortfolioSummary()//отображение портфеля
     {
-        
-       return _portfolioSummary;    
-            
+
+        return _portfolioSummary;
+
     }
+
     public float GetAssetPrice(Ticker ticker)//поиск цены по тикеру
     {
+        SampleActiv activ = null;
 
-        if (AvailableStocks.TryGetValue(ticker, out Stock stock))
+        AvailableStocks.TryGetValue(ticker, out Stock stock);
+        activ = stock.IsUnityNull() ? activ : stock;
 
-        {
-            return stock.CurrentValue;
-        }
+        AvailableBonds.TryGetValue(ticker, out Bond bond);
+        activ = bond.IsUnityNull() ? activ : bond;
 
-        if (AvailableBonds.TryGetValue(ticker, out Bond bond))
-
-        {
-            return bond.CurrentValue;
-        }
+        return activ.CurrentValue;
 
 
-        return 0;
-  }
-  //кнопки быстрой продажи покупки
-    public bool TradeAssets(TradeType tradeType, object asset, int quantity)
+
+    }
+    //кнопки быстрой продажи покупки
+    public bool TradeAssets(TradeType tradeType, IActiv asset, int quantity)
     {
         if (asset == null || quantity <= 0)
         {
@@ -90,16 +127,16 @@ public class PortfollioService : MonoService, IPortfolioService
 
         float assetPrice;
         Ticker ticker;
-        bool isStock = false;
+        Type assetType;
 
         // определение типа актива
         if (asset is Stock stock)
         {
             assetPrice = stock.CurrentValue;
-            if (stock.StockInfo != null)
+            if (!stock.StockInfo.IsUnityNull())
             {
                 ticker = stock.StockInfo.Ticker;
-                isStock = true;
+                assetType = typeof(Stock);
             }
             else
             {
@@ -110,14 +147,15 @@ public class PortfollioService : MonoService, IPortfolioService
         else if (asset is Bond bond)
         {
             assetPrice = bond.CurrentValue;
-            if (bond.BondInfo != null)
+            if (!bond.BondInfo.IsUnityNull())
             {
                 ticker = bond.BondInfo.Ticker;
+                assetType = typeof(Bond);
             }
             else
             {
                 _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Информация об активе отсутствует"));
-                 return false;
+                return false;
             }
         }
         else
@@ -125,125 +163,143 @@ public class PortfollioService : MonoService, IPortfolioService
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Неподдерживаемый тип актива"));
             return false;
         }
+
         float totalCost = quantity * assetPrice;
-        
-        if (tradeType == TradeType.Buy)
+
+        switch (tradeType)
         {
-            return BuyAsset(isStock, ticker, quantity, totalCost);
+            case TradeType.Buy:
+                return BuyAsset(assetType, ticker, quantity, totalCost);
+            case TradeType.Sell:
+                return SellAsset(assetType, ticker, quantity, totalCost);
+            default:
+                break;
         }
-        else if (tradeType == TradeType.Sell)
-        {
-            return SellAsset(isStock, ticker, quantity, totalCost);
-        }
+
         _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Неподдерживаемый тип операции"));
         return false;
     }
+
     #region BuyActiv
-        private bool BuyAsset(bool isStock, Ticker ticker, int quantity, float totalCost)
-        {
+
+
+    private bool BuyAsset(Type assetType, Ticker ticker, int quantity, float totalCost)
+    {
         if (_portfolioSummary.CashBalance < totalCost)
         {
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Недостаточно средств для покупки"));
             return false;
         }
-        _portfolioSummary.CashBalance -= totalCost;
 
-        if (isStock)
+        _portfolioSummary.CashBalance -= totalCost;
+        _portfolioSummary.MyActives[ticker].AddQuantity(quantity);
+
+
+        if (assetType == typeof(Stock))
         {
-            if (_portfolioSummary.MyStocks.ContainsKey(ticker))//существующий актив
-            {
-                _portfolioSummary.MyStocks[ticker] += quantity;
-            }
-            else
-            {
-                _portfolioSummary.MyStocks.Add(ticker, quantity);
-            }
+
+
             _portfolioSummary.StocksValue += totalCost;
             _portfolioSummary.CountStocks += quantity;
         }
-        else
+
+        if (assetType == typeof(Bond))
         {
-            if (_portfolioSummary.MyBonds.ContainsKey(ticker))
-            {
-                _portfolioSummary.MyBonds[ticker] += quantity;
-            }
-            else
-            {
-                _portfolioSummary.MyBonds.Add(ticker, quantity);
-            }
+
             _portfolioSummary.BondsValue += totalCost;
             _portfolioSummary.CountBonds += quantity;
         }
+
         OnPortfolioUpdated?.Invoke(_portfolioSummary);
-        Debug.Log($"Успешная покупка {ticker}");
+        ColorfulDebug.LogGreen($"Успешная покупка {ticker}");
+
         return true;
     }
-#endregion BuyActiv
-#region SellActiv
-private bool SellAsset(bool isStock, Ticker ticker, int quantity, float totalCost)
-{
-    if (isStock)
-    {
-        if (!_portfolioSummary.MyStocks.ContainsKey(ticker) || _portfolioSummary.MyStocks[ticker] < quantity)
-        {
-            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно акций {ticker} для продажи."));
-            return false;
-        }
-    }
-    else
-    {
-        if (!_portfolioSummary.MyBonds.ContainsKey(ticker) || _portfolioSummary.MyBonds[ticker] < quantity)
-        {
-           _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно облигаций {ticker} для продажи."));
-            return false;
-        }
-    }
+    #endregion
 
-    _portfolioSummary.CashBalance += totalCost;
-    if (isStock)
-    {
-        _portfolioSummary.MyStocks[ticker] -= quantity;
-        if (_portfolioSummary.MyStocks[ticker] <= 0)
-        {
-            _portfolioSummary.MyStocks.Remove(ticker);
-        }
-        _portfolioSummary.StocksValue -= totalCost;
-        _portfolioSummary.CountStocks -= quantity;
-    }
-    else
-    {
-        _portfolioSummary.MyBonds[ticker] -= quantity;
-        if (_portfolioSummary.MyBonds[ticker] <= 0)
-        {
-            _portfolioSummary.MyBonds.Remove(ticker);
-        }
-        _portfolioSummary.BondsValue -= totalCost;
-        _portfolioSummary.CountBonds -= quantity;
-    }
-    OnPortfolioUpdated?.Invoke(_portfolioSummary);
-    Debug.Log($"Продажа {ticker} успешна");
-    return true;
-}
-    #endregion SellActiv
 
-    public void AddCash(float amount)//пополнение баланса
+    #region SellActiv
+    private bool SellAsset(Type assetType, Ticker ticker, int quantity, float totalCost)
+    {
+        if (assetType == typeof(Stock))
+        {
+
+            if (!_portfolioSummary.MyActives.ContainsKey(ticker) || _portfolioSummary.MyActives[ticker].Quantity < quantity)
+            {
+                _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно акций {ticker} для продажи."));
+                return false;
+            }
+        }
+        if (assetType == typeof(Bond))
+        {
+
+            if (!_portfolioSummary.MyActives.ContainsKey(ticker) || _portfolioSummary.MyActives[ticker].Quantity < quantity)
+            {
+                _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно облигаций {ticker} для продажи."));
+                return false;
+            }
+        }
+
+        _portfolioSummary.CashBalance += totalCost;
+
+        if (assetType == typeof(Stock))
+        {
+
+
+            _portfolioSummary.MyActives[ticker].RemoveQuantity(quantity);
+            if (_portfolioSummary.MyActives[ticker].Quantity <= 0)
+            {
+                _portfolioSummary.MyActives.Remove(ticker);
+            }
+            _portfolioSummary.StocksValue -= totalCost;
+            _portfolioSummary.CountStocks -= quantity;
+        }
+
+        if (assetType == typeof(Bond))
+        {
+
+
+            _portfolioSummary.MyActives[ticker].RemoveQuantity(quantity);
+            if (_portfolioSummary.MyActives[ticker].Quantity <= 0)
+            {
+                _portfolioSummary.MyActives.Remove(ticker);
+            }
+            _portfolioSummary.BondsValue -= totalCost;
+            _portfolioSummary.CountBonds -= quantity;
+        }
+
+        OnPortfolioUpdated?.Invoke(_portfolioSummary);
+        ColorfulDebug.LogGreen($"Продажа {ticker} успешна. Продано {quantity} штук.");
+        return true;
+
+    }
+    #endregion
+
+    // пополнение баланса кошелька приложения
+    public void AddCash(int amount)
     {
         if (amount <= 0)
         {
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Некорректный ввод"));
+            return;
         }
-        else if (amount > 100000f)
+        else if (amount > 100000)
         {
-           _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Достигнут лимит пополнения"));
+            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Достигнут лимит пополнения"));
+            return;
         }
-        //недостаточно средств???
-        else
+
+        if (_mediator.GetService<CurrencyPresenter>().TrySpendCurrency(amount))
         {
             _portfolioSummary.CashBalance += amount;
+
         }
+        //недостаточно средств???
+
     }
-   public object GetAssetByTicker(string ticker)// поиск актива по тикеру
-   {
+
+    public IActiv GetAssetByTicker(Ticker ticker)// поиск актива по тикеру
+    {
         if (AvailableStocks.TryGetValue(ticker, out Stock stock))
         {
             return stock;
@@ -259,20 +315,20 @@ private bool SellAsset(bool isStock, Ticker ticker, int quantity, float totalCos
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Актива с заданным тикером не существует"));
             return null;
         }
-}
-   //покупка иных
-    public void CalculatDayeGainLossPercent()
+    }
+    //покупка иных
+    public void CalculatDayGainLossPercent()
     {
-    
+
     }
 
     public void CalculateDayGainLoss()
     {
-    
+
     }
     public void CalculateTotalGainLossPercent()
     {
-        
+
     }
     public void CalculateTotalGainLoss()
     {
@@ -285,4 +341,3 @@ private bool SellAsset(bool isStock, Ticker ticker, int quantity, float totalCos
 
     }
 }
-

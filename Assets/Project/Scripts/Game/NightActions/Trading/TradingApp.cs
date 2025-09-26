@@ -15,14 +15,15 @@ public class TradingApp : BaseApp
     //динамические кнопки
     [Header("UI Elements - Containers")]
     [SerializeField] private Transform _assetListContainer;// Контейнер, где будут создаваться кликабельные кнопки
-    [SerializeField] private GameObject _assetUIPrefab; 
+    [SerializeField] private GameObject _assetUIPrefab;
     private PortfolioSummary _portfolioSummary;
     private PortfollioService _portfolioService;
-    private Dictionary<string, GameObject> _activeUIElements = new Dictionary<string, GameObject>();
+    private Dictionary<Ticker, GameObject> _activeUIElements = new();
 
-    private void Awake()
+    protected override void Awake()
     {
-        _portfolioService = Mediator.Instance.GetService<PortfollioService>();
+        base.Awake();
+        _portfolioService = _mediator.GetService<PortfollioService>();
         _portfolioService.OnPortfolioUpdated += UpdateUI;
     }
 
@@ -39,19 +40,19 @@ public class TradingApp : BaseApp
         var allStocks = _portfolioService.AvailableStocks;
         var allBonds = _portfolioService.AvailableBonds;
 
-     //динамическое создание кнопок
-        foreach (var entry in allStocks)
+        //динамическое создание кнопок
+        foreach (var kvp in allStocks)
         {
-           // CreateAssetUI(entry.Key, entry.Value.CurrentValue, summary.MyStocks);
+            // CreateAssetUI(entry.Key, entry.Value.CurrentValue, summary.MyStocks);
         }
 
-        foreach (var entry in allBonds)
+        foreach (var kvp in allBonds)
         {
             //CreateAssetUI(entry.Key, entry.Value.CurrentValue, summary.MyBonds);
         }
     }
 
-private void CreateAssetUI(string ticker, int quantity, TradeType tradeType)
+    private void CreateAssetUI(Ticker ticker, int quantity, TradeType tradeType)
     {
         GameObject assetUI = Instantiate(_assetUIPrefab, _assetListContainer);
         _activeUIElements[ticker] = assetUI;
@@ -61,7 +62,7 @@ private void CreateAssetUI(string ticker, int quantity, TradeType tradeType)
         {
             assetNameText.text = $"{ticker} (x{quantity})";
         }
-        
+
         QuickTradeButton sellButton = assetUI.GetComponentInChildren<QuickTradeButton>();
         if (sellButton != null)
         {
@@ -71,5 +72,5 @@ private void CreateAssetUI(string ticker, int quantity, TradeType tradeType)
             sellButton.gameObject.SetActive(true);
         }
     }
-    
+
 }

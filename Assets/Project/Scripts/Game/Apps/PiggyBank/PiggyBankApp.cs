@@ -48,7 +48,7 @@ public class PiggyBankApp : BaseApp
             return;
         }
 
-        int keypadInput = (_appController.GetApp<KeypadApp>() as KeypadApp).KeypadInput;
+        int keypadInput = _appController.GetApp<KeypadApp>().KeypadInput;
         if (keypadInput == 0)
         {
             return;

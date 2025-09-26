@@ -41,7 +41,7 @@ public abstract class BaseApp : MonoBehaviour, IApp
 
         if (oppenable)
         {
-            _appController?.SelectApp(this as IApp);
+            _appController?.SelectApp(this);
             _appController?.OnAppOpen?.Invoke();
         }
 

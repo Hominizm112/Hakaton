@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using MyGame.Enums;
 using System.Linq;
+using Unity.Mathematics;
 public class PortfolioApp : MonoBehaviour, IApp
 {
     [SerializeField] private Transform _assetListContainer; //для динамического добавления активов
@@ -35,7 +36,7 @@ public class PortfolioApp : MonoBehaviour, IApp
     }
     private void Awake()
     {
-        _portfolioService = Mediator.Instance.GetService<PortfollioService>();//??
+        _portfolioService = Mediator.Instance.GetService<PortfollioService>();//?? 
         if (_portfolioService != null)
         {
             _portfolioService.OnPortfolioUpdated += UpdateUI;
@@ -47,11 +48,8 @@ public class PortfolioApp : MonoBehaviour, IApp
         }
 
         _appController = Mediator.Instance.GetService<AppController>();
-        if (_appController != null)
-        {
-            // Регистрируем этот экран в AppController
-            _appController.RegisterApp(this);
-        }
+        // Регистрируем этот экран в AppController
+        _appController?.RegisterApp(this);
     }
     public void Open()
     {
@@ -82,17 +80,17 @@ public class PortfolioApp : MonoBehaviour, IApp
         _countBonds.text = summary.CountBonds.ToString("C");
         _countStocks.text = summary.CountStocks.ToString("C");
 
-        Dictionary<Ticker, int> allAssets = summary.MyStocks.Concat(summary.MyBonds).ToDictionary(x => x.Key, x => x.Value);
         _analyticsButton.gameObject.SetActive(true);
         _addCashButton.gameObject.SetActive(true);
-        foreach (var entry in allAssets)
+        foreach (var entry in summary.MyActives)
         {
             Ticker ticker = entry.Key;
-            int quantity = entry.Value;
-            if (quantity > 0 && ticker!= null)
+            int quantity = entry.Value.Quantity;
+            if (quantity > 0)
             {
                 if (_activeUIElements.ContainsKey(ticker))
                 {
+                    //TODO вынести это в класс вьюшки элемента
                     GameObject existingUI = _activeUIElements[ticker];
                     TMP_Text assetNameText = existingUI.GetComponentInChildren<TMP_Text>();
                     if (assetNameText != null)
@@ -110,13 +108,7 @@ public class PortfolioApp : MonoBehaviour, IApp
                 _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Информация об активе отсутствует"));
             }
         }
-        //логика удаления  кнопок проданных активов
-        List<Ticker> tickersToRemove = _activeUIElements.Keys.Where(t => !allAssets.ContainsKey(t) || allAssets[t] == 0).ToList();
-        foreach (var ticker in tickersToRemove)
-        {
-            Destroy(_activeUIElements[ticker]);
-            _activeUIElements.Remove(ticker);
-        }
+
     }
     private void CreateAssetUI(Ticker ticker, int quantity)
     {
@@ -148,7 +140,7 @@ public class PortfolioApp : MonoBehaviour, IApp
             sellbuyButton.TradeType = TradeType.Sell;
             sellbuyButton.OnClickAction.AddListener(() =>//публикация
             {
-                Mediator.Instance.GlobalEventBus.Publish(new OpenTradeWindowEvent(sellbuyButton.Ticker, sellbuyButton.Price, sellbuyButton.TradeType));
+                Mediator.Instance.GlobalEventBus.Publish(new OpenTradeWindowEvent(sellbuyButton.Ticker, sellbuyButton.Price, sellbuyButton.TradeType, 1));
             });
         }
     }
@@ -166,12 +158,42 @@ public class PortfolioApp : MonoBehaviour, IApp
     {
 
     }
-   public void CheckOtherBonds()
-   {
-    
-   }
+    public void CheckOtherBonds()
+    {
+
+    }
 
 
 }
 
-    
+
+class ActivView : MonoBehaviour
+{
+    public int Quantity => _sampleActiv.Quantity;
+
+    private SampleActiv _sampleActiv;
+    public void Initialize(SampleActiv sampleActiv)
+    {
+        _sampleActiv = sampleActiv;
+    }
+
+    public void Remove(int amount)
+    {
+        _sampleActiv.RemoveQuantity(amount);
+        HandleQuantityChange();
+    }
+
+    public void Add(int amount)
+    {
+        _sampleActiv.AddQuantity(amount);
+        HandleQuantityChange();
+    }
+
+    public void HandleQuantityChange()
+    {
+        if (Quantity <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+}

@@ -48,5 +48,7 @@ public partial class ConsoleService
         _mediator.GetService<AppController>()?.GetApp<EmailApp>()?.UnlockEmailFromConsole(context.GetString(0, ""), context.GetInt(1, 0));
         return CommandResult.Ok($"Email unlocked.");
     }
+
+
     #endregion
 }

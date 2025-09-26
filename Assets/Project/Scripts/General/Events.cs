@@ -1,4 +1,5 @@
 using System;
+using MyGame.Enums;
 using UnityEngine;
 
 public interface IEvent { }
@@ -41,3 +42,41 @@ public class ServiceRegisterEvent : IEvent
         Service = service;
     }
 }
+
+
+
+#region Trade Events
+public class TradeRequestEvent : IEvent// событие со всей инф для покупки/продажи
+{
+    public Ticker Ticker { get; set; }
+    public float Price { get; set; }
+    public int Quantity { get; set; }
+    public TradeType TradeType { get; set; }
+    public TradeRequestEvent(TradeType tradeType, Ticker ticker, float price, int quantity)
+    {
+        TradeType = tradeType;
+        Ticker = ticker;
+        Price = price;
+        Quantity = quantity;
+    }
+
+}
+
+
+public class OpenTradeWindowEvent : IEvent//событие открытия окна торговли
+{
+    public Ticker Ticker { get; }
+    public float Price { get; }
+    public TradeType TradeType { get; }
+    public int Quantity { get; }
+
+    public OpenTradeWindowEvent(Ticker ticker, float price, TradeType tradeType, int quantity)
+    {
+        Ticker = ticker;
+        Price = price;
+        TradeType = tradeType;
+        Quantity = quantity;
+    }
+}
+
+#endregion

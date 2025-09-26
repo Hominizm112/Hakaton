@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,26 +15,21 @@ public class IStockTradingService
     //decimal CalculateStockValue(string stockId, int quantity);
 }
 
-public class Stock//одна акция в портфеле
+public class Stock : SampleActiv//одна акция в портфеле
 {
-    public StockConstInfo StockInfo{ get; set; }
-    public float CurrentValue { get; set; }
-    public float OpenPrice { get; }
-    public float ClosePrice { get; }
-    public float GainLossDay { get; }
-    public float GainLossPercentDay { get; }
-    public string DateNextDiv { get; }
+    public readonly StockConfig StockInfo;
+    public float OpenPrice;
+    public float ClosePrice;
+    public float GainLossDay;
+    public float GainLossPercentDay;
+    public DateTime DateNextDiv;
+
+    public Stock(StockConfig stockConfig)
+    {
+        StockInfo = stockConfig;
+    }
 }
-public class StockConstInfo
-{
-    public Ticker Ticker { get; set; }
-    public LevelStability LevelStability { get; }//(фикс)
-    public Country Country { get; }
-    public Sector Sector { get; }
-    public float PercenttNextDiv { get; }//(фикс)
-    public float AverageDivYield { get; }// средняя дивидендная доходность(фикс)
-    public float AmountNextDiv { get; }//(фикс)
-}
+
 public enum Ticker
 {
     //акции

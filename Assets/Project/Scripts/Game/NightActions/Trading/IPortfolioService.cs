@@ -5,48 +5,37 @@ using MyGame.Enums;
 public interface IPortfolioService
 {
     //операции с активами
-    bool TradeAssets(TradeType tradeType, object asset, int quantity);
-    void AddCash(float amount);
+    bool TradeAssets(TradeType tradeType, IActiv asset, int quantity);
+    void AddCash(int amount);
     //покупка иных
     //void CheckOtherStocks();
     //void CheckOtherBonds();
-    void CalculatDayeGainLossPercent();
+    void CalculatDayGainLossPercent();
     void CalculateDayGainLoss();
     void CalculateTotalGainLossPercent();
     void CalculateTotalGainLoss();
     //Analytics
     void GeneratePortfolioReport();
-   
+
 }
 
 public class PortfolioSummary
 {//данные для отображения
-    public int CountStocks { get; set; }
-    public Dictionary<Ticker, int> MyStocks = new();
-    public int CountBonds { get; set; }
-    public Dictionary<Ticker, int> MyBonds = new();
-    public float CashBalance { get; set; }
-    public float StocksValue { get; set; }
-    public float BondsValue { get; set; }
+    public int CountStocks;
+    public Dictionary<Ticker, SampleActiv> MyActives = new();
+    public int CountBonds;
+    public float CashBalance;
+    public float StocksValue;
+    public float BondsValue;
     public float TotalValue => StocksValue + BondsValue + CashBalance;
-    public float TotalGainLoss { get; set; }
-    public float TotalGainLossPercent { get; set; }
-    public float DayGainLoss { get; set; }
-    public float DayGainLossPercent { get; set; }
+    public float TotalGainLoss;
+    public float TotalGainLossPercent;
+    public float DayGainLoss;
+    public float DayGainLossPercent;
     public PortfolioSummary()
     {
-        MyStocks = new Dictionary<Ticker, int>();
-        MyBonds = new Dictionary<Ticker, int>();
-        CashBalance = 0f;
-        CountBonds = 0;
-        CountStocks = 0;
-        TotalGainLoss = 0f;
-        DayGainLoss = 0f;
-        StocksValue = 0f;
-        BondsValue = 0f;
-        DayGainLossPercent = 0f;
-        TotalGainLossPercent = 0f;
+
 
     }
-    
+
 }

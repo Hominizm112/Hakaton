@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundType: 5
   audioClip:
-  - {fileID: 8300000, guid: 60ba0d72e381ffd41b522bd69f5ef159, type: 3}
+  - {fileID: 8300000, guid: 1340ba1fa579f674ab71453241682a8a, type: 3}
   restrictSoundAmount: 1
