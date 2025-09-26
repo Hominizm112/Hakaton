@@ -10,6 +10,7 @@ public class TradeWindow : MonoBehaviour
     [SerializeField] private TMP_InputField _quantityInput;
     [SerializeField] private TMP_Text _totalText;
 
+
     private string _currentTicker;
     private float _currentPrice;
     private TradeType _currentTradeType;
@@ -21,7 +22,7 @@ public class TradeWindow : MonoBehaviour
 
     private void HandleOpenEvent(OpenTradeWindowEvent e)
     {
-        // заполнение данных в окне
+        // открытие и заполнение данных в окне
         gameObject.SetActive(true);
         _currentTicker = e.Ticker;
         _currentPrice = e.Price;
@@ -40,7 +41,7 @@ public class TradeWindow : MonoBehaviour
         _quantityInput.onValueChanged.AddListener(UpdateTotal);
     }
 
-    private void UpdateTotal(string newQuantity)
+    private void UpdateTotal(string newQuantity)//обновление стоимости сделки
     {
         if (int.TryParse(newQuantity, out int quantity) && quantity > 0)
         {
@@ -56,7 +57,7 @@ public class TradeWindow : MonoBehaviour
    {
         if (int.TryParse(_quantityInput.text, out int quantity))
         {
-            // Используем сохраненный тип операции
+            
             Mediator.Instance.GlobalEventBus.Publish(new TradeRequestEvent(_currentTradeType, _currentTicker, _currentPrice, quantity));
             gameObject.SetActive(false);
         }

@@ -24,7 +24,7 @@ public class PortfolioApp : MonoBehaviour, IApp
     [SerializeField] private Button _checkOtherBondsButton;
     [SerializeField] private Button _analyticsButton;
 
-    private Dictionary<string, GameObject> _activeUIElements = new Dictionary<string, GameObject>();
+    private Dictionary<Ticker, GameObject> _activeUIElements = new Dictionary<Ticker, GameObject>();
     private PortfollioService _portfolioService;
     Mediator _mediator;
     private AppController _appController;
@@ -73,7 +73,6 @@ public class PortfolioApp : MonoBehaviour, IApp
     {
         _cashBalanceText.text = summary.CashBalance.ToString("C");
         _totalValueText.text = summary.TotalValue.ToString("C");
-
         _bondsValueText.text = summary.BondsValue.ToString("C");
         _stocksValueText.text = summary.StocksValue.ToString("C");
         _totalGainText.text = summary.TotalGainLoss.ToString("C");
@@ -83,14 +82,14 @@ public class PortfolioApp : MonoBehaviour, IApp
         _countBonds.text = summary.CountBonds.ToString("C");
         _countStocks.text = summary.CountStocks.ToString("C");
 
-        Dictionary<string, int> allAssets = summary.MyStocks.Concat(summary.MyBonds).ToDictionary(x => x.Key, x => x.Value);
+        Dictionary<Ticker, int> allAssets = summary.MyStocks.Concat(summary.MyBonds).ToDictionary(x => x.Key, x => x.Value);
         _analyticsButton.gameObject.SetActive(true);
         _addCashButton.gameObject.SetActive(true);
         foreach (var entry in allAssets)
         {
-            string ticker = entry.Key;
+            Ticker ticker = entry.Key;
             int quantity = entry.Value;
-            if (quantity > 0)
+            if (quantity > 0 && ticker!= null)
             {
                 if (_activeUIElements.ContainsKey(ticker))
                 {
@@ -106,16 +105,20 @@ public class PortfolioApp : MonoBehaviour, IApp
                     CreateAssetUI(ticker, quantity);
                 }
             }
+            else
+            {
+                _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Информация об активе отсутствует"));
+            }
         }
-        //логика удаления проданных активов
-        List<string> tickersToRemove = _activeUIElements.Keys.Where(t => !allAssets.ContainsKey(t) || allAssets[t] == 0).ToList();
+        //логика удаления  кнопок проданных активов
+        List<Ticker> tickersToRemove = _activeUIElements.Keys.Where(t => !allAssets.ContainsKey(t) || allAssets[t] == 0).ToList();
         foreach (var ticker in tickersToRemove)
         {
             Destroy(_activeUIElements[ticker]);
             _activeUIElements.Remove(ticker);
         }
     }
-    private void CreateAssetUI(string ticker, int quantity)
+    private void CreateAssetUI(Ticker ticker, int quantity)
     {
         GameObject assetUI = Instantiate(_assetUIPrefab, _assetListContainer);
         _activeUIElements[ticker] = assetUI;

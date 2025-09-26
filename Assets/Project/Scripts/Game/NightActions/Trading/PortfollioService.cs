@@ -42,7 +42,7 @@ public class PortfollioService : MonoService, IPortfolioService
         }
     }
 
-    private object FindAssetByTicker(string ticker)
+    private object FindAssetByTicker(Ticker ticker)
     {
         if (AvailableStocks.TryGetValue(ticker, out Stock stock))
         {
@@ -61,15 +61,13 @@ public class PortfollioService : MonoService, IPortfolioService
        return _portfolioSummary;    
             
     }
-    public float GetAssetPrice(string ticker)//поиск цены по тикеру
+    public float GetAssetPrice(Ticker ticker)//поиск цены по тикеру
     {
 
         if (AvailableStocks.TryGetValue(ticker, out Stock stock))
 
         {
-
             return stock.CurrentValue;
-
         }
 
         if (AvailableBonds.TryGetValue(ticker, out Bond bond))
