@@ -23,14 +23,14 @@ public abstract class MonoService : MonoBehaviour, IService, IInitializable
     public bool AllServicesReady => requiredServices.Count == 0;
 
     private string LogPrefix => GetType().ToString() + "// ";
-    private bool _initialized;
+    [NonSerialized] public bool initialized;
 
 
     public virtual void Initialize(Mediator mediator = null)
     {
-        if (_initialized) return;
-        Debug.Log($"//: Initialized service {this}");
-        _initialized = true;
+        if (initialized) return;
+        ColorfulDebug.LogGreen($"//: Initialized service {this}");
+        initialized = true;
     }
 
     public void HandleServiceRegistration(ServiceRegisterEvent @event)
@@ -229,7 +229,7 @@ public class Mediator : MonoBehaviour
 
     private void DebugLogErrorEventHandler(DebugLogErrorEvent @event)
     {
-        Debug.LogError(@event.Message);
+        ColorfulDebug.LogError(@event.Message);
     }
 
     private void LoadSceneEventHandler(LoadSceneEvent @event)
@@ -380,10 +380,16 @@ public class Mediator : MonoBehaviour
 
     public void RegisterService<T>(T service) where T : class
     {
-        Debug.Log($"Registered service: {service}");
+        if (_services.ContainsKey(typeof(T)))
+        {
+            ColorfulDebug.LogWarning($"Service {typeof(T)} already registered!");
+            return;
+        }
+
+        ColorfulDebug.LogGreen($"Registered service: {service}");
         _services[typeof(T)] = service;
 
-        if (service is MonoService monoService)
+        if (service is MonoService monoService && !monoService.initialized)
         {
             if (monoService.AllServicesReady)
             {
@@ -401,6 +407,8 @@ public class Mediator : MonoBehaviour
 
     public void UnregisterService<T>(T service) where T : class
     {
+        ColorfulDebug.LogGreen($"Unregistered service: {service}");
+
         Type serviceType = typeof(T);
         _services.Remove(serviceType);
     }
@@ -412,7 +420,7 @@ public class Mediator : MonoBehaviour
             return service as T;
         }
 
-        Debug.LogError($"Service of type {typeof(T)} not registered!");
+        ColorfulDebug.LogError($"Service of type {typeof(T)} not registered!");
         return null;
     }
 
@@ -503,12 +511,20 @@ public class Mediator : MonoBehaviour
         }
 
         OnStateChanged = null;
+        OnLoadProgress = null;
+        OnSceneLoadStarted = null;
+        OnSceneLoadComplete = null;
+        OnInitializationCompleted = null;
+
+
         foreach (var callbackList in _stateChangeCallbacks.Values)
         {
             callbackList.Clear();
         }
         _stateChangeCallbacks.Clear();
         _initializables.Clear();
+        _services.Clear();
+        GlobalEventBus = null;
     }
 }
 

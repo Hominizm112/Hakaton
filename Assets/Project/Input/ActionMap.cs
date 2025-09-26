@@ -108,6 +108,15 @@ public partial class @ActionMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SwitchDebugConsole"",
+                    ""type"": ""Button"",
+                    ""id"": ""0aad238c-a3ca-493d-90c9-3a3972479c38"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -143,6 +152,17 @@ public partial class @ActionMap: IInputActionCollection2, IDisposable
                     ""action"": ""Point"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""84b82c8d-73c9-43e6-bf10-53b0a942757a"",
+                    ""path"": ""<Keyboard>/backslash"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchDebugConsole"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -153,6 +173,7 @@ public partial class @ActionMap: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_PointerClick = m_Player.FindAction("PointerClick", throwIfNotFound: true);
         m_Player_Point = m_Player.FindAction("Point", throwIfNotFound: true);
+        m_Player_SwitchDebugConsole = m_Player.FindAction("SwitchDebugConsole", throwIfNotFound: true);
     }
 
     ~@ActionMap()
@@ -235,6 +256,7 @@ public partial class @ActionMap: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_PointerClick;
     private readonly InputAction m_Player_Point;
+    private readonly InputAction m_Player_SwitchDebugConsole;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -254,6 +276,10 @@ public partial class @ActionMap: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Point".
         /// </summary>
         public InputAction @Point => m_Wrapper.m_Player_Point;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SwitchDebugConsole".
+        /// </summary>
+        public InputAction @SwitchDebugConsole => m_Wrapper.m_Player_SwitchDebugConsole;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -286,6 +312,9 @@ public partial class @ActionMap: IInputActionCollection2, IDisposable
             @Point.started += instance.OnPoint;
             @Point.performed += instance.OnPoint;
             @Point.canceled += instance.OnPoint;
+            @SwitchDebugConsole.started += instance.OnSwitchDebugConsole;
+            @SwitchDebugConsole.performed += instance.OnSwitchDebugConsole;
+            @SwitchDebugConsole.canceled += instance.OnSwitchDebugConsole;
         }
 
         /// <summary>
@@ -303,6 +332,9 @@ public partial class @ActionMap: IInputActionCollection2, IDisposable
             @Point.started -= instance.OnPoint;
             @Point.performed -= instance.OnPoint;
             @Point.canceled -= instance.OnPoint;
+            @SwitchDebugConsole.started -= instance.OnSwitchDebugConsole;
+            @SwitchDebugConsole.performed -= instance.OnSwitchDebugConsole;
+            @SwitchDebugConsole.canceled -= instance.OnSwitchDebugConsole;
         }
 
         /// <summary>
@@ -357,5 +389,12 @@ public partial class @ActionMap: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPoint(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SwitchDebugConsole" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwitchDebugConsole(InputAction.CallbackContext context);
     }
 }

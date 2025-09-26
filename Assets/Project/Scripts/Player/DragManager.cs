@@ -142,6 +142,6 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
 
     private void OnDestroy()
     {
-        _mediator?.GlobalEventBus.Unsubscribe<InputActionEvent>(OnInputAction);
+        _mediator?.GlobalEventBus?.Unsubscribe<InputActionEvent>(OnInputAction);
     }
 }

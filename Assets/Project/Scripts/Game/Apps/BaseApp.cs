@@ -9,6 +9,7 @@ public abstract class BaseApp : MonoBehaviour, IApp
     [SerializeField] protected UnityEvent OnOpen;
     [SerializeField] protected UnityEvent OnClose;
     [SerializeField] public bool requireKeypad;
+    [SerializeField] public bool requireAppLoad = true;
 
     public bool IsOpen { get; private set; }
 
@@ -25,12 +26,12 @@ public abstract class BaseApp : MonoBehaviour, IApp
 
     protected virtual void Initialize(ServiceRegisterEvent @event)
     {
-        if (@event.Service == typeof(AppController) as IService)
+        if (@event.Service is AppController)
         {
             _appController = _mediator.GetService<AppController>();
             _appController.RegisterApp(this);
-
         }
+
     }
     public void Open()
     {
@@ -43,6 +44,9 @@ public abstract class BaseApp : MonoBehaviour, IApp
             _appController?.SelectApp(this as IApp);
             _appController?.OnAppOpen?.Invoke();
         }
+
+        HandleAppOpen();
+
     }
 
     public void Close()
@@ -55,8 +59,10 @@ public abstract class BaseApp : MonoBehaviour, IApp
         {
             _appController?.DeselectApp(this);
             _appController?.OnAppClose?.Invoke();
-
         }
+
+        HandleAppClose();
+
     }
 
 
@@ -67,4 +73,7 @@ public abstract class BaseApp : MonoBehaviour, IApp
             obj.SetActive(active);
         }
     }
+
+    protected virtual void HandleAppOpen() { }
+    protected virtual void HandleAppClose() { }
 }
