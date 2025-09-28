@@ -1,0 +1,247 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6592037504058979804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa8f4b47e2c30243a88b178f3de1152, type: 3}
+  m_Name: MoveNode
+  m_EditorClassIdentifier: 
+  nodeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  inputs: []
+  outputs:
+  - {fileID: -6083393552833073960}
+  targetPosition: {x: 1.34, y: 0, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0
+--- !u!114 &-6083393552833073960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa8f4b47e2c30243a88b178f3de1152, type: 3}
+  m_Name: MoveNode
+  m_EditorClassIdentifier: 
+  nodeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  inputs:
+  - {fileID: -6592037504058979804}
+  outputs: []
+  targetPosition: {x: 0, y: -0.51, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0
+--- !u!114 &-5303100208458259042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa8f4b47e2c30243a88b178f3de1152, type: 3}
+  m_Name: MoveNode
+  m_EditorClassIdentifier: 
+  nodeRect:
+    serializedVersion: 2
+    x: 363
+    y: 342
+    width: 200
+    height: 100
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  inputs:
+  - {fileID: 1145201527762953856}
+  outputs: []
+  targetPosition: {x: 0, y: -0.51, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0
+--- !u!114 &-5023490968130560209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859cad87c19f6104a8fae9dbc5da5c90, type: 3}
+  m_Name: ScaleNode
+  m_EditorClassIdentifier: 
+  nodeRect:
+    serializedVersion: 2
+    x: 386
+    y: 197
+    width: 200
+    height: 100
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  inputs:
+  - {fileID: 1145201527762953856}
+  outputs: []
+  targetScale: {x: 1, y: 1, z: 1}
+  duration: 1
+  easeType: 1
+--- !u!114 &-2465770954039872646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa8f4b47e2c30243a88b178f3de1152, type: 3}
+  m_Name: MoveNode
+  m_EditorClassIdentifier: 
+  nodeRect:
+    serializedVersion: 2
+    x: 47
+    y: 227
+    width: 200
+    height: 100
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  inputs: []
+  outputs:
+  - {fileID: 3385511176763244269}
+  targetPosition: {x: 1.34, y: 0, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1705576f393e49645815d97035884067, type: 3}
+  m_Name: NewTweenSequence
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 1145201527762953856}
+  - {fileID: -5303100208458259042}
+  - {fileID: -5023490968130560209}
+  selectedNode: {fileID: 0}
+  saveData:
+    nodes:
+    - nodeType: MoveNode
+      nodeName: MoveNode
+      position: {x: 72, y: 266}
+      guid: 8fbf703d-d325-4158-a23a-9ab5520b770b
+      targetPosition: {x: 1.34, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 1
+      waitTime: 0
+    - nodeType: MoveNode
+      nodeName: MoveNode
+      position: {x: 363, y: 342}
+      guid: e6937b92-1f84-4d12-bf5e-dd8e66c9b3b9
+      targetPosition: {x: 0, y: -0.51, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 1
+      waitTime: 0
+    - nodeType: ScaleNode
+      nodeName: ScaleNode
+      position: {x: 386, y: 197}
+      guid: 3d8b4141-2d78-47e6-989a-b65313f5d8df
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 1, y: 1, z: 1}
+      duration: 1
+      waitTime: 0
+    connections:
+    - fromNodeGuid: 8fbf703d-d325-4158-a23a-9ab5520b770b
+      toNodeGuid: e6937b92-1f84-4d12-bf5e-dd8e66c9b3b9
+    - fromNodeGuid: 8fbf703d-d325-4158-a23a-9ab5520b770b
+      toNodeGuid: 3d8b4141-2d78-47e6-989a-b65313f5d8df
+    canvasOffset: {x: -208, y: 86}
+--- !u!114 &1145201527762953856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa8f4b47e2c30243a88b178f3de1152, type: 3}
+  m_Name: MoveNode
+  m_EditorClassIdentifier: 
+  nodeRect:
+    serializedVersion: 2
+    x: 72
+    y: 266
+    width: 200
+    height: 100
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  inputs: []
+  outputs:
+  - {fileID: -5303100208458259042}
+  - {fileID: -5023490968130560209}
+  targetPosition: {x: 1.34, y: 0, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0
+--- !u!114 &3385511176763244269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa8f4b47e2c30243a88b178f3de1152, type: 3}
+  m_Name: MoveNode
+  m_EditorClassIdentifier: 
+  nodeRect:
+    serializedVersion: 2
+    x: 338
+    y: 303
+    width: 200
+    height: 100
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  inputs:
+  - {fileID: -2465770954039872646}
+  outputs: []
+  targetPosition: {x: 0, y: -0.51, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0

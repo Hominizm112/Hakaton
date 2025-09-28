@@ -456,6 +456,11 @@ public class Mediator : MonoBehaviour
         }
     }
 
+    public void RegisterPersistent<T>(T obj) where T : UnityEngine.Object
+    {
+        DontDestroyOnLoad(obj);
+    }
+
     #endregion
 
     #region Scene Loading
