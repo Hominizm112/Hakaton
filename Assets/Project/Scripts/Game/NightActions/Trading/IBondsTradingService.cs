@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.LightTransport;
+using System;
 
 public interface IBondsTradingService
 {
@@ -17,8 +18,8 @@ public interface IBondsTradingService
 public class Bond : SampleActiv
 {
     public readonly BondConfig BondInfo;
-    public string RepaymentDate;
-    public string CouponPaymentDate;
+    public DateTime RepaymentDate;
+    public DateTime CouponPaymentDate;
     public int QuantityPayQuater;
 
     public Bond(BondConfig bondConfig)
@@ -26,8 +27,6 @@ public class Bond : SampleActiv
         BondInfo = bondConfig;
     }
 }
-
-
 
 public enum RatingIssuer
 {
