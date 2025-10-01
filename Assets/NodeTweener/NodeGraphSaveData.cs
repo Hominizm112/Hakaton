@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 [Serializable]
@@ -22,6 +23,11 @@ public class NodeSaveData
     public Vector3 targetScale;
     public float duration;
     public float waitTime;
+    public Ease easeType;
+    public string branchName;
+
+    // New generic field storage
+    public Dictionary<string, string> customFields;
 }
 
 [Serializable]

@@ -7,7 +7,11 @@ public enum NodeType
     None,
     Move,
     Scale,
-    Wait
+    Wait,
+    Start,
+    End,
+    Branch,
+    Rotate
 }
 public abstract class TweenNode : ScriptableObject
 {
@@ -15,6 +19,11 @@ public abstract class TweenNode : ScriptableObject
     public string nodeName = "Node";
     public bool isDragged;
     public bool isSelected;
+
+    [HideInInspector]
+    public string guid;
+
+    public virtual float nodeHeight => NodeRegistry.GetDefaultHeight(GetType());
 
     public List<TweenNode> inputs = new();
     public List<TweenNode> outputs = new();

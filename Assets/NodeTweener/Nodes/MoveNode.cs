@@ -1,8 +1,9 @@
 using DG.Tweening;
+using UnityEditor;
 using UnityEngine;
 
 
-[CreateAssetMenu(fileName = "MoveNode", menuName = "DOTween/Nodes/Move")]
+[NodeType("Move Node", NodeType.Move, 170f)]
 public class MoveNode : TweenNode
 {
     public Vector3 targetPosition;
@@ -31,5 +32,25 @@ public class MoveNode : TweenNode
 
         tweener.SetEase(easeType);
         return tweener;
+    }
+
+    public override void DrawNode()
+    {
+        GUIStyle centeredTitleStyle = new GUIStyle(EditorStyles.boldLabel);
+        centeredTitleStyle.alignment = TextAnchor.MiddleCenter;
+
+        GUILayout.Label("Move Node", centeredTitleStyle);
+
+        targetPosition = EditorGUILayout.Vector3Field("Position", targetPosition);
+
+        GUILayout.Space(5);
+        GUILayout.Label("Duration");
+        duration = EditorGUILayout.FloatField(duration);
+
+        GUILayout.Space(5);
+        GUILayout.Label("Ease");
+        easeType = (Ease)EditorGUILayout.EnumPopup(easeType);
+
+
     }
 }

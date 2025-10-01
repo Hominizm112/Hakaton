@@ -1,8 +1,10 @@
 using DG.Tweening;
+using UnityEditor;
 using UnityEngine;
 
 
 [CreateAssetMenu(fileName = "ScaleNode", menuName = "DOTween/Nodes/Scale")]
+[NodeType("Scale Node", NodeType.Scale, 170f)]
 public class ScaleNode : TweenNode
 {
 
@@ -21,5 +23,15 @@ public class ScaleNode : TweenNode
         var tweener = target.transform.DOScale(targetScale, duration);
         tweener.SetEase(easeType);
         return tweener;
+    }
+
+    public override void DrawNode()
+    {
+        GUILayout.Label("Scale Node", EditorStyles.boldLabel);
+        targetScale = EditorGUILayout.Vector3Field("Scale", targetScale);
+
+        GUILayout.Space(5);
+        GUILayout.Label("Duration");
+        duration = EditorGUILayout.FloatField(duration);
     }
 }
