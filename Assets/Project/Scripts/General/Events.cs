@@ -70,12 +70,14 @@ public class OpenTradeWindowEvent : IEvent//событие открытия ок
     public TradeType TradeType { get; }
     public int Quantity { get; }
 
-    public OpenTradeWindowEvent(Ticker ticker, float price, TradeType tradeType, int quantity)
+}
+
+public class AssetListChangedEvent : IEvent
+{
+    public readonly Ticker NewAssetTicker;
+    public AssetListChangedEvent(Ticker newAssetTicker)
     {
-        Ticker = ticker;
-        Price = price;
-        TradeType = tradeType;
-        Quantity = quantity;
+        NewAssetTicker = newAssetTicker;
     }
 }
 
