@@ -8,8 +8,6 @@ public class Connection
     public ConnectionPoint inPoint;
     public ConnectionPoint outPoint;
 
-    public string FromNodeGiud => outPoint?.node?.guid;
-    public string ToNodeGiud => inPoint?.node?.guid;
 
     public Connection(ConnectionPoint inPoint, ConnectionPoint outPoint)
     {
@@ -17,10 +15,28 @@ public class Connection
         this.outPoint = outPoint;
     }
 
+
+    public Rect GetBounds()
+    {
+        if (inPoint == null || outPoint == null)
+            return new Rect(0, 0, 0, 0);
+
+        Vector2 start = inPoint.rect.center;
+        Vector2 end = outPoint.rect.center;
+        Vector2 startTangent = start + Vector2.left * 50f;
+        Vector2 endTangent = end - Vector2.left * 50f;
+
+        float minX = Mathf.Min(start.x, end.x, startTangent.x, endTangent.x);
+        float minY = Mathf.Min(start.y, end.y, startTangent.y, endTangent.y);
+        float maxX = Mathf.Max(start.x, end.x, startTangent.x, endTangent.x);
+        float maxY = Mathf.Max(start.y, end.y, startTangent.y, endTangent.y);
+
+        return new Rect(minX - 12f, minY - 12f, (maxX - minX) + 24f, (maxY - minY) + 24f);
+    }
+
     public void Draw(bool isHovered)
     {
         if (inPoint == null || outPoint == null) return;
-
 
         Color connectionColor = isHovered ? HexColorUtility.ParseHex("#fdcb6e") : HexColorUtility.ParseHex("#d0ddd7");
         float thickness = isHovered ? 5f : 3f;
@@ -59,7 +75,8 @@ public class Connection
     {
         if (inPoint == null || outPoint == null) return false;
 
-        if (!IsPointNearBoundingBox(mousePosition, maxDistance))
+        Rect bounds = GetBounds();
+        if (!bounds.Contains(mousePosition))
             return false;
 
         Vector2 start = inPoint.rect.center;
@@ -70,17 +87,30 @@ public class Connection
         return IsPointNearBezier(mousePosition, start, end, startTangent, endTangent, maxDistance);
     }
 
-    private bool IsPointNearBoundingBox(Vector2 point, float maxDistance)
+    private bool IsPointNearBoundingBox(Vector2 point, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float maxDistance)
     {
-        Vector2 start = inPoint.rect.center;
-        Vector2 end = outPoint.rect.center;
+        int segments = 6;
+        float minDistance = float.MaxValue;
 
-        float minX = Mathf.Min(start.x, end.x) - maxDistance;
-        float maxX = Mathf.Max(start.x, end.x) + maxDistance;
-        float minY = Mathf.Min(start.y, end.y) - maxDistance;
-        float maxY = Mathf.Max(start.y, end.y) + maxDistance;
+        Vector2 previousPoint = p0;
 
-        return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY;
+        for (int i = 1; i <= segments; i++)
+        {
+            float t = i / (float)segments;
+            Vector2 currentPoint = CalculateBezierPoint(t, p0, p1, p2, p3);
+
+            float distance = DistanceToLineSegment(point, previousPoint, currentPoint);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                if (minDistance <= maxDistance)
+                    return true;
+            }
+
+            previousPoint = currentPoint;
+        }
+
+        return minDistance <= maxDistance;
     }
 
     private bool IsPointNearBezier(Vector2 point, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float maxDistance)
@@ -109,7 +139,7 @@ public class Connection
         return minDistance <= maxDistance;
     }
 
-    private Vector2 CalculateBezierPoint(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+    public Vector2 CalculateBezierPoint(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
     {
         float u = 1 - t;
         float tt = t * t;
@@ -117,15 +147,15 @@ public class Connection
         float uuu = uu * u;
         float ttt = tt * t;
 
-        Vector2 p = uuu * p0; // (1-t)^3 * p0
-        p += 3 * uu * t * p1; // 3(1-t)^2 * t * p1
-        p += 3 * u * tt * p2; // 3(1-t) * t^2 * p2
-        p += ttt * p3; // t^3 * p3
+        Vector2 p = uuu * p0;
+        p += 3 * uu * t * p1;
+        p += 3 * u * tt * p2;
+        p += ttt * p3;
 
         return p;
     }
 
-    private float DistanceToLineSegment(Vector2 point, Vector2 lineStart, Vector2 lineEnd)
+    public float DistanceToLineSegment(Vector2 point, Vector2 lineStart, Vector2 lineEnd)
     {
         Vector2 line = lineEnd - lineStart;
         float lineLength = line.magnitude;

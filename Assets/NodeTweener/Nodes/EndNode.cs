@@ -3,10 +3,9 @@ using DG.Tweening;
 using UnityEngine;
 
 
-[NodeType("End Node", NodeType.Start, 60f)]
+[NodeType("End Node", 60f, 150f)]
 public class EndNode : TweenNode
 {
-    public override float nodeHeight => 50;
     public override DG.Tweening.Tweener Execute(GameObject target)
     {
         return DOTween.To(() => 0, x => { }, 0, 0);

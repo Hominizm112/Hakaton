@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
-using UnityEngine.Accessibility;
 using System.Collections;
+using UnityEngine.Events;
 
 public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -14,6 +14,20 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     [Header("Settings override")]
     [SerializeField] private bool spriteSwapDisable;
     [SerializeField] private bool textColorSwapDisable;
+
+
+    [SerializeField] private bool mouseDownAnimation;
+    [SerializeField, Tooltip("Use if ButtonExtended's creation dynamic")]
+    private string mouseDownAnimatorName;
+    [SerializeField] private TweenGraphRunner mouseDownAnimator;
+    [SerializeField] private bool mouseUpAnimation;
+    [SerializeField] private TweenGraphRunner mouseUpAnimator;
+    [SerializeField, Tooltip("Use if ButtonExtended's creation dynamic")]
+    private string mouseUpAnimatorName;
+
+
+    [SerializeField] private UnityEvent OnMouseDown;
+    [SerializeField] private UnityEvent OnMouseUp;
 
     public Action OnButtonClick;
     public Action OnButtonHold;
@@ -60,7 +74,31 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
             }
         }
 
+
+
     }
+
+    private void OnEnable()
+    {
+        if (mouseDownAnimation && mouseDownAnimator == null && !string.IsNullOrEmpty(mouseDownAnimatorName))
+        {
+            if (Mediator.Instance.TryGetService(out BaseGraphRunnerService service))
+            {
+                mouseDownAnimator = service.GetRunner(mouseDownAnimatorName);
+            }
+        }
+
+        if (mouseUpAnimation && mouseUpAnimator == null && !string.IsNullOrEmpty(mouseUpAnimatorName))
+        {
+            if (Mediator.Instance.TryGetService(out BaseGraphRunnerService service))
+            {
+                mouseUpAnimator = service.GetRunner(mouseUpAnimatorName);
+
+            }
+        }
+    }
+
+
 
     protected virtual void OnClick()
     {
@@ -86,6 +124,12 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         _isPointerDown = true;
+        OnMouseDown?.Invoke();
+        if (mouseDownAnimation)
+        {
+            mouseDownAnimator?.PlaySequence(gameObject);
+            mouseUpAnimator?.StopSequence();
+        }
 
         if (settings.holdDelay > 0)
         {
@@ -107,6 +151,13 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     {
         _isPointerDown = false;
         _isHolding = false;
+        OnMouseUp?.Invoke();
+
+        if (mouseUpAnimation)
+        {
+            mouseUpAnimator?.PlaySequence(gameObject);
+            mouseDownAnimator?.StopSequence();
+        }
 
         if (_holdCoroutine != null)
         {

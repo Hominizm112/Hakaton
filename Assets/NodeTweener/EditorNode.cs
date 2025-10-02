@@ -10,7 +10,6 @@ public class EditorNode
     public TweenNode node;
     public bool isDragged;
     public bool isSelected;
-    public NodeType nodeType;
     public string guid;
 
     public ConnectionPoint inPoint;
@@ -28,12 +27,11 @@ public class EditorNode
     private bool showInPoint = true;
     private bool showOutPoint = true;
 
-    public EditorNode(Vector2 position, float width, GUIStyle nodeStyle, GUIStyle selectedStyle
+    public EditorNode(Vector2 position, GUIStyle nodeStyle, GUIStyle selectedStyle
        , GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint
-       , Action<EditorNode> OnClickRemoveNode, Action<EditorNode> OnNodeSelected, System.Type nodeType, TweenNode nodeAsset)
+       , Action<EditorNode> OnClickRemoveNode, Action<EditorNode> OnNodeSelected, TweenNode nodeAsset)
     {
-        rect = new Rect(position.x, position.y, width, nodeAsset.nodeHeight);
-        this.nodeType = NodeRegistry.GetNodeType(nodeType);
+        rect = new Rect(position.x, position.y, nodeAsset.nodeWidth, nodeAsset.nodeHeight);
         this.guid = System.Guid.NewGuid().ToString();
         style = nodeStyle;
         defaultNodeStyle = nodeStyle;

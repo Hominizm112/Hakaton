@@ -5,13 +5,13 @@ using System;
 public class NodeTypeAttribute : Attribute
 {
     public string MenuName { get; }
-    public NodeType Type { get; }
     public float DefaultHeight { get; }
+    public float DefaultWidth { get; }
 
-    public NodeTypeAttribute(string menuName, NodeType type, float defaultHeight = 100f)
+    public NodeTypeAttribute(string menuName, float defaultHeight = 100f, float defaultWidth = 200f)
     {
         MenuName = menuName;
-        Type = type;
         DefaultHeight = defaultHeight;
+        DefaultWidth = defaultWidth;
     }
 }

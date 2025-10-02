@@ -135,6 +135,7 @@ public class EventBus
         Debug.Log($"Subscribed to {eventType.Name}");
     }
 
+
     public void Unsubscribe<T>(Action<T> handler) where T : IEvent
     {
         Type eventType = typeof(T);

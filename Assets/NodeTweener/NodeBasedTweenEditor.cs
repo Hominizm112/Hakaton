@@ -33,24 +33,19 @@ public class NodeBasedTweenEditor : EditorWindow
     private ConnectionPoint selectedOutPoint;
     private EditorNode selectedNode;
     private Connection hoveredConnection;
-    private Vector2 lastMousePosition;
-    private Dictionary<Connection, Rect> connectionBoundsCache = new Dictionary<Connection, Rect>();
 
-    private Color currentNodeColor = new Color(0.3f, 0.3f, 0.3f);
     private bool stylesInitialized = false;
 
     private double lastAutoSaveTime;
     private const double AUTO_SAVE_INTERVAL = 300;
 
     [SerializeField] private TweenGraph activeGraphAsset;
-    private bool isGraphAssetLoaded = false;
     private bool isCompiling = false;
-
-    private const string EDITOR_PREFS_KEY = "DOTweenNodeEditor_GraphData";
-
 
     private Texture2D defaultNodeTexture;
     private Texture2D selectedNodeTexture;
+
+    private bool debugMode = false;
 
 
     #region Debug
@@ -113,17 +108,25 @@ public class NodeBasedTweenEditor : EditorWindow
         DrawGrid(20, 0.05f, HexColorUtility.ParseHex("#594e36"));
         DrawGrid(100, 0.1f, HexColorUtility.ParseHex("#594e36"));
 
-        DrawToolbar();
-        DrawExecutionToolbar();
+
 
         DrawConnections();
         DrawConnectionLine(Event.current);
         DrawNodes();
 
+
+        DrawToolbar();
+        DrawExecutionToolbar();
         DrawDebugInfo();
+
+
+        CheckCompilationHover(Event.current.mousePosition);
 
         ProcessNodeEvents(Event.current);
         ProcessEvents(Event.current);
+
+
+
 
         if (GUI.changed) Repaint();
     }
@@ -230,6 +233,9 @@ public class NodeBasedTweenEditor : EditorWindow
 
             bool isHovered = conn == hoveredConnection;
             conn.Draw(isHovered);
+
+            DrawConnectionBounds(conn, isHovered);
+
         }
 
         if (needsRepaint)
@@ -273,6 +279,17 @@ public class NodeBasedTweenEditor : EditorWindow
         }
     }
 
+    private void DrawConnectionBounds(Connection conn, bool isHovered)
+    {
+        if (!debugMode) return;
+
+
+        // Rect bounds = conn.GetBounds();
+        // Handles.color = isHovered ? Color.green : Color.red;
+        // Handles.DrawWireCube(bounds.center, bounds.size);
+        // Handles.color = Color.white;
+    }
+
     private void CreateNodeStyles()
     {
         if (defaultNodeTexture == null || selectedNodeTexture == null)
@@ -310,7 +327,6 @@ public class NodeBasedTweenEditor : EditorWindow
 
     public void SetNodeColor(Color newColor)
     {
-        currentNodeColor = newColor;
         CreateNodeStyles();
         Repaint();
     }
@@ -348,6 +364,7 @@ public class NodeBasedTweenEditor : EditorWindow
             case EventType.MouseDown:
                 if (e.button == 1)
                 {
+                    ClearConnectionSelection();
                     EditorNode clickedNode = GetNodeAtPosition(e.mousePosition);
                     if (clickedNode == null)
                     {
@@ -358,9 +375,15 @@ public class NodeBasedTweenEditor : EditorWindow
 
                 if (e.button == 0)
                 {
-                    if (hoveredConnection != null)
+                    Connection clickedConnection = GetConnectionAtPosition(e.mousePosition);
+                    if (clickedConnection != null)
                     {
-                        RemoveConnection(hoveredConnection);
+                        RemoveConnection(clickedConnection);
+                        e.Use();
+                    }
+                    else
+                    {
+                        hoveredConnection = null;
                     }
                 }
                 break;
@@ -369,9 +392,15 @@ public class NodeBasedTweenEditor : EditorWindow
                 if (e.button == 0)
                 {
                     OnDrag(e.delta);
+
+
                 }
                 break;
 
+            case EventType.MouseMove:
+                Repaint();
+                e.Use();
+                break;
 
 
             case EventType.KeyDown:
@@ -509,7 +538,6 @@ public class NodeBasedTweenEditor : EditorWindow
 
             Debug.Log($"Saving to: {savePath}");
 
-            // Create or update the graph asset
             TweenGraph graphToSave;
             bool isNewAsset = false;
 
@@ -543,6 +571,7 @@ public class NodeBasedTweenEditor : EditorWindow
                     {
                         AssetDatabase.AddObjectToAsset(editorNode.node, graphToSave);
                     }
+                    EditorUtility.SetDirty(editorNode.node);
                 }
             }
 
@@ -564,7 +593,7 @@ public class NodeBasedTweenEditor : EditorWindow
             activeGraphAsset = graphToSave;
             currentSavePath = savePath;
             hasUnsavedChanges = false;
-            isGraphAssetLoaded = true;
+
 
             titleContent = new GUIContent($"DOTween Node Editor - {Path.GetFileName(savePath)}");
             Debug.Log($"✅ Saved: {editorNodes.Count} nodes, {connections.Count} connections");
@@ -612,9 +641,7 @@ public class NodeBasedTweenEditor : EditorWindow
         connections.Clear();
         currentSavePath = null;
         hasUnsavedChanges = false;
-        isGraphAssetLoaded = false;
 
-        // Always start with Start and End nodes
         CreateDefaultNodes();
 
         titleContent = new GUIContent("DOTween Node Editor - New Graph");
@@ -626,23 +653,22 @@ public class NodeBasedTweenEditor : EditorWindow
         var saveData = new NodeGraphSaveData();
         saveData.canvasOffset = offset;
 
-        // Save node data
         foreach (var editorNode in editorNodes)
         {
             if (editorNode?.node != null)
             {
                 var nodeData = new NodeSaveData
                 {
-                    nodeType = editorNode.node.GetType().AssemblyQualifiedName, // Use full type name
+                    nodeType = editorNode.node.GetType().AssemblyQualifiedName,
                     nodeName = editorNode.node.name,
                     position = editorNode.rect.position,
-                    guid = editorNode.guid ?? Guid.NewGuid().ToString() // Ensure GUID exists
+                    guid = editorNode.guid ?? Guid.NewGuid().ToString()
                 };
+
                 saveData.nodes.Add(nodeData);
             }
         }
 
-        // Save connections
         foreach (var connection in connections)
         {
             if (connection?.outPoint?.node != null && connection?.inPoint?.node != null)
@@ -657,6 +683,8 @@ public class NodeBasedTweenEditor : EditorWindow
 
         return saveData;
     }
+
+
 
     private void LoadGraphAsset(TweenGraph graphAsset)
     {
@@ -685,7 +713,6 @@ public class NodeBasedTweenEditor : EditorWindow
             }
 
             hasUnsavedChanges = false;
-            isGraphAssetLoaded = true;
             titleContent = new GUIContent($"DOTween Node Editor - {graphAsset.name}");
 
             Repaint();
@@ -703,14 +730,12 @@ public class NodeBasedTweenEditor : EditorWindow
 
         Debug.Log($"Loading: {saveData.nodes.Count} nodes, {saveData.connections.Count} connections");
 
-        // Clear current state
         editorNodes.Clear();
         connections.Clear();
         offset = saveData.canvasOffset;
 
         var guidToNodeMap = new Dictionary<string, EditorNode>();
 
-        // First pass: Create all editor nodes
         foreach (var nodeData in saveData.nodes)
         {
             try
@@ -722,16 +747,14 @@ public class NodeBasedTweenEditor : EditorWindow
                     continue;
                 }
 
-                // Create or find the node asset
                 TweenNode nodeAsset = FindNodeInAsset(nodeData.guid, nodeType) ?? CreateNodeAsset(nodeType);
+
                 nodeAsset.guid = nodeData.guid;
                 nodeAsset.name = nodeData.nodeName;
                 nodeAsset.nodeRect.position = nodeData.position;
 
-                // Create editor node
                 var editorNode = new EditorNode(
                     nodeData.position,
-                    200,
                     nodeStyle,
                     selectedNodeStyle,
                     inPointStyle,
@@ -740,7 +763,6 @@ public class NodeBasedTweenEditor : EditorWindow
                     OnClickOutPoint,
                     OnClickRemoveNode,
                     OnClickSelectNode,
-                    nodeType,
                     nodeAsset
                 );
 
@@ -756,7 +778,6 @@ public class NodeBasedTweenEditor : EditorWindow
             }
         }
 
-        // Second pass: Create connections
         foreach (var connectionData in saveData.connections)
         {
             try
@@ -769,7 +790,6 @@ public class NodeBasedTweenEditor : EditorWindow
                         var connection = new Connection(toNode.inPoint, fromNode.outPoint);
                         connections.Add(connection);
 
-                        // Update node references
                         if (!fromNode.node.outputs.Contains(toNode.node))
                             fromNode.node.outputs.Add(toNode.node);
 
@@ -786,7 +806,6 @@ public class NodeBasedTweenEditor : EditorWindow
             }
         }
 
-        // Ensure graph is properly synced
         SyncGraphWithEditorNodes();
         Repaint();
     }
@@ -813,6 +832,13 @@ public class NodeBasedTweenEditor : EditorWindow
     private void AutoRestoreGraph()
     {
         Debug.Log("Attempting auto-restore of graph...");
+
+        // Don't auto-restore during play mode as assets might be in temporary state
+        if (EditorApplication.isPlaying)
+        {
+            Debug.Log("Skipping auto-restore during Play Mode");
+            return;
+        }
 
         // Priority 1: Active graph asset
         if (activeGraphAsset != null)
@@ -848,9 +874,12 @@ public class NodeBasedTweenEditor : EditorWindow
 
     private void OnEnable()
     {
+
+
+
+
         if (editorNodes == null) editorNodes = new List<EditorNode>();
         if (connections == null) connections = new List<Connection>();
-        if (connectionBoundsCache == null) connectionBoundsCache = new Dictionary<Connection, Rect>();
 
         LoadNodeTextures();
         CreateNodeStyles();
@@ -860,8 +889,9 @@ public class NodeBasedTweenEditor : EditorWindow
         EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         EditorApplication.update += CheckCompilationStatus;
 
-        AutoRestoreGraph();
+        EditorApplication.projectChanged += OnProjectChanged;
 
+        AutoRestoreGraph();
         Repaint();
     }
 
@@ -869,9 +899,28 @@ public class NodeBasedTweenEditor : EditorWindow
 
     private void OnDisable()
     {
+
+
         EditorApplication.update -= OnEditorUpdate;
         EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        EditorApplication.update -= CheckCompilationStatus;
+        EditorApplication.projectChanged -= OnProjectChanged;
+
         StopPreview();
+    }
+
+    private void OnProjectChanged()
+    {
+        if (activeGraphAsset != null)
+        {
+            EditorApplication.delayCall += () =>
+            {
+                if (activeGraphAsset != null)
+                {
+                    LoadGraphAsset(activeGraphAsset);
+                }
+            };
+        }
     }
 
     private void OnDestroy()
@@ -904,6 +953,27 @@ public class NodeBasedTweenEditor : EditorWindow
 
         switch (state)
         {
+            case PlayModeStateChange.ExitingEditMode:
+                if (hasUnsavedChanges && activeGraphAsset != null)
+                {
+                    Debug.Log("Auto-saving before Play Mode");
+                    SaveGraph();
+                }
+                StopPreview();
+                AutoRestoreGraph();
+
+                break;
+
+            case PlayModeStateChange.EnteredPlayMode:
+                isPreviewPlaying = false;
+                previewSequence = null;
+                EditorApplication.delayCall += () =>
+                {
+                    AutoRestoreGraph();
+                    Repaint();
+                };
+                break;
+
             case PlayModeStateChange.ExitingPlayMode:
                 StopPreview();
                 break;
@@ -911,19 +981,17 @@ public class NodeBasedTweenEditor : EditorWindow
             case PlayModeStateChange.EnteredEditMode:
                 EditorApplication.delayCall += () =>
                 {
-                    Debug.Log("Restoring after Play Mode...");
-                    AutoRestoreGraph();
+                    Debug.Log("Restoring graph after Play Mode");
+                    if (activeGraphAsset != null)
+                    {
+                        LoadGraphAsset(activeGraphAsset);
+                    }
+                    else
+                    {
+                        AutoRestoreGraph();
+                    }
                     Repaint();
                 };
-                break;
-
-            case PlayModeStateChange.ExitingEditMode:
-                if (hasUnsavedChanges && activeGraphAsset != null)
-                {
-                    SaveGraph();
-                }
-                ClearConnectionSelection();
-                selectedNode = null;
                 break;
         }
     }
@@ -936,6 +1004,15 @@ public class NodeBasedTweenEditor : EditorWindow
             {
                 SaveGraph(currentSavePath);
                 lastAutoSaveTime = EditorApplication.timeSinceStartup;
+            }
+        }
+
+        if (EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isPlaying)
+        {
+            if (hasUnsavedChanges && activeGraphAsset != null)
+            {
+                Debug.Log("Auto-saving before entering Play Mode");
+                SaveGraph();
             }
         }
     }
@@ -957,6 +1034,7 @@ public class NodeBasedTweenEditor : EditorWindow
             }
         }
 
+
         GUI.changed = true;
     }
 
@@ -971,7 +1049,6 @@ public class NodeBasedTweenEditor : EditorWindow
 
         EditorNode editorNode = new EditorNode(
             mousePosition,
-            200,
             nodeStyle,
             selectedNodeStyle,
             inPointStyle,
@@ -980,13 +1057,14 @@ public class NodeBasedTweenEditor : EditorWindow
             OnClickOutPoint,
             OnClickRemoveNode,
             OnClickSelectNode,
-            nodeType,
             nodeAsset
         );
 
         editorNodes.Add(editorNode);
 
         SyncGraphWithEditorNodes();
+        hasUnsavedChanges = true;
+        SaveGraph();
         Repaint();
 
         Debug.Log($"Added node: {nodeType.Name}. Total nodes: {editorNodes.Count}");
@@ -1121,6 +1199,7 @@ public class NodeBasedTweenEditor : EditorWindow
 
     }
 
+
     private bool CheckConnectionDouble(ConnectionPoint inPoint, ConnectionPoint outPoint)
     {
         Connection connectionDouble = connections.Find(r => r.inPoint == inPoint && r.outPoint == outPoint);
@@ -1154,25 +1233,56 @@ public class NodeBasedTweenEditor : EditorWindow
     {
         if (connections == null || connections.Count == 0) return null;
 
-        if (connectionBoundsCache.Count != connections.Count)
-            UpdateConnectionBoundsCache();
+        Connection closestConnection = null;
+        float closestDistance = float.MaxValue;
 
-        for (int i = connections.Count - 1; i >= 0; i--)
+        foreach (var connection in connections)
         {
-            var connection = connections[i];
-            if (connectionBoundsCache.TryGetValue(connection, out Rect bounds) && bounds.Contains(position))
+            if (connection?.inPoint == null || connection?.outPoint == null)
+                continue;
+
+            if (connection.IsMouseOver(position, 12f))
             {
-                if (connection.IsMouseOver(position))
-                    return connection;
+                float distance = GetExactDistanceToConnection(position, connection);
+                if (distance < closestDistance)
+                {
+                    closestConnection = connection;
+                    closestDistance = distance;
+                }
             }
         }
 
-        return null;
+        return closestConnection;
     }
 
-    private bool IsMouseOverConnection(Vector2 position)
+    private float GetExactDistanceToConnection(Vector2 point, Connection connection)
     {
-        return GetConnectionAtPosition(position) != null;
+        if (connection?.inPoint == null || connection?.outPoint == null)
+            return float.MaxValue;
+
+        Vector2 start = connection.inPoint.rect.center;
+        Vector2 end = connection.outPoint.rect.center;
+        Vector2 startTangent = start + Vector2.left * 50f;
+        Vector2 endTangent = end - Vector2.left * 50f;
+
+        int samples = 30;
+        float minDistance = float.MaxValue;
+
+        Vector2 previousPoint = start;
+        for (int i = 1; i <= samples; i++)
+        {
+            float t = i / (float)samples;
+            Vector2 currentPoint = connection.CalculateBezierPoint(t, start, startTangent, endTangent, end);
+
+            float distance = connection.DistanceToLineSegment(point, previousPoint, currentPoint);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+            }
+            previousPoint = currentPoint;
+        }
+
+        return minDistance;
     }
 
 
@@ -1232,38 +1342,9 @@ public class NodeBasedTweenEditor : EditorWindow
 
     }
 
-    private void UpdateConnectionBoundsCache()
-    {
-        if (connections == null)
-        {
-            connectionBoundsCache.Clear();
-            return;
-        }
-
-        var newCache = new Dictionary<Connection, Rect>();
-
-        foreach (var connection in connections)
-        {
-            if (connection?.inPoint != null && connection?.outPoint != null)
-            {
-                Vector2 start = connection.inPoint.rect.center;
-                Vector2 end = connection.outPoint.rect.center;
-
-                newCache[connection] = new Rect(
-                    Mathf.Min(start.x, end.x) - 12f,
-                    Mathf.Min(start.y, end.y) - 12f,
-                    Mathf.Abs(end.x - start.x) + 24f,
-                    Mathf.Abs(end.y - start.y) + 24f
-                );
-            }
-        }
-
-        connectionBoundsCache = newCache;
-    }
 
     private void OnConnectionsChanged()
     {
-        UpdateConnectionBoundsCache();
         Repaint();
     }
 
@@ -1309,6 +1390,23 @@ public class NodeBasedTweenEditor : EditorWindow
         }
     }
 
+    private void CheckCompilationHover(Vector2 mousePosition)
+    {
+        var newHoveredConnection = GetConnectionAtPosition(mousePosition);
+
+        if (newHoveredConnection != hoveredConnection)
+        {
+            hoveredConnection = newHoveredConnection;
+            Repaint();
+
+            if (hoveredConnection != null)
+            {
+                Debug.Log($"Hovering connection: {hoveredConnection.outPoint?.node?.node?.name} -> {hoveredConnection.inPoint?.node?.node?.name}");
+            }
+        }
+
+    }
+
 
     #endregion
 
@@ -1327,8 +1425,10 @@ public class NodeBasedTweenEditor : EditorWindow
             if (!AssetDatabase.Contains(node))
             {
                 AssetDatabase.AddObjectToAsset(node, activeGraphAsset);
+
             }
         }
+
 
         return node;
     }
@@ -1400,75 +1500,7 @@ public class NodeBasedTweenEditor : EditorWindow
         return null;
     }
 
-    private NodeSaveData SerializeNode(TweenNode node)
-    {
-        NodeSaveData nodeData = new NodeSaveData
-        {
-            nodeType = node.GetType().Name,
-            nodeName = node.name,
-            position = node.nodeRect.position,
-            guid = node.guid
-        };
 
-        var fields = node.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-        foreach (var field in fields)
-        {
-            if (field.FieldType == typeof(List<TweenNode>) ||
-                field.FieldType == typeof(Rect) ||
-                field.Name == "nodeName" ||
-                field.Name == "guid")
-                continue;
-
-            var value = field.GetValue(node);
-            AddFieldToSaveData(nodeData, field.Name, value);
-        }
-
-        return nodeData;
-    }
-
-    private void DeserializeNode(TweenNode node, NodeSaveData nodeData)
-    {
-        node.name = nodeData.nodeName;
-        node.guid = nodeData.guid;
-        node.nodeRect.position = nodeData.position;
-
-        var fields = node.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-        foreach (var field in fields)
-        {
-            if (field.FieldType == typeof(List<TweenNode>) ||
-                field.FieldType == typeof(Rect) ||
-                field.Name == "nodeName" ||
-                field.Name == "guid")
-                continue;
-
-            var value = GetFieldFromSaveData(nodeData, field.Name, field.FieldType);
-            if (value != null)
-            {
-                field.SetValue(node, value);
-            }
-        }
-    }
-
-    private void AddFieldToSaveData(NodeSaveData nodeData, string fieldName, object value)
-    {
-        if (nodeData.customFields == null)
-            nodeData.customFields = new Dictionary<string, string>();
-
-        if (value != null)
-        {
-            string stringValue = ConvertValueToString(value);
-            nodeData.customFields[fieldName] = stringValue;
-        }
-    }
-
-    private object GetFieldFromSaveData(NodeSaveData nodeData, string fieldName, Type fieldType)
-    {
-        if (nodeData.customFields == null || !nodeData.customFields.ContainsKey(fieldName))
-            return null;
-
-        string stringValue = nodeData.customFields[fieldName];
-        return ConvertStringToValue(stringValue, fieldType);
-    }
 
     private void CreateDefaultNodes()
     {
@@ -1923,25 +1955,41 @@ public class NodeBasedTweenEditor : EditorWindow
     {
         if (value == null) return null;
 
-        if (value is Vector3 vector3)
+        try
         {
-            return $"{vector3.x},{vector3.y},{vector3.z}";
+            if (value is Vector3 vector3)
+            {
+                return $"{vector3.x},{vector3.y},{vector3.z}";
+            }
+            else if (value is Vector2 vector2)
+            {
+                return $"{vector2.x},{vector2.y}";
+            }
+            else if (value is Color color)
+            {
+                return ColorUtility.ToHtmlStringRGBA(color);
+            }
+            else if (value is Enum)
+            {
+                return value.ToString();
+            }
+            else if (value is bool boolValue)
+            {
+                return boolValue.ToString();
+            }
+            else if (value is float floatValue)
+            {
+                return floatValue.ToString("F6");
+            }
+            else
+            {
+                return value.ToString();
+            }
         }
-        else if (value is Ease ease)
+        catch (Exception e)
         {
-            return ((int)ease).ToString();
-        }
-        else if (value is Color color)
-        {
-            return ColorUtility.ToHtmlStringRGBA(color);
-        }
-        else if (value is Enum)
-        {
-            return value.ToString();
-        }
-        else
-        {
-            return value.ToString();
+            Debug.LogWarning($"Failed to convert value to string: {e.Message}");
+            return null;
         }
     }
 
@@ -1963,9 +2011,22 @@ public class NodeBasedTweenEditor : EditorWindow
                     );
                 }
             }
-            else if (targetType == typeof(Ease))
+            else if (targetType == typeof(Vector2))
             {
-                return (Ease)Enum.Parse(typeof(Ease), stringValue);
+                string[] parts = stringValue.Split(',');
+                if (parts.Length == 2)
+                {
+                    return new Vector2(
+                        float.Parse(parts[0]),
+                        float.Parse(parts[1])
+                    );
+                }
+            }
+            else if (targetType == typeof(Color))
+            {
+                Color color;
+                if (ColorUtility.TryParseHtmlString("#" + stringValue, out color))
+                    return color;
             }
             else if (targetType == typeof(float))
             {
@@ -1982,12 +2043,6 @@ public class NodeBasedTweenEditor : EditorWindow
             else if (targetType == typeof(string))
             {
                 return stringValue;
-            }
-            else if (targetType == typeof(Color))
-            {
-                Color color;
-                if (ColorUtility.TryParseHtmlString("#" + stringValue, out color))
-                    return color;
             }
             else if (targetType.IsEnum)
             {

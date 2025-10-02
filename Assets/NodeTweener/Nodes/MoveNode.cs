@@ -1,23 +1,20 @@
+using System;
 using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
 
 
-[NodeType("Move Node", NodeType.Move, 170f)]
+[NodeType("Move Node", 150f)]
+[Serializable]
 public class MoveNode : TweenNode
 {
-    public Vector3 targetPosition;
-    public float duration = 1f;
-    public Ease easeType = Ease.Linear;
-    public bool relative = false;
+    [SerializeField] public Vector3 targetPosition;
+    [SerializeField] public float duration = 1f;
+    [SerializeField] public Ease easeType = Ease.Linear;
+    [SerializeField] public bool relative = false;
 
     public override DG.Tweening.Tweener Execute(GameObject target)
     {
-        if (target == null)
-        {
-            Debug.LogError("MoveNode: No target specified!");
-            return null;
-        }
 
         DG.Tweening.Tweener tweener;
 
@@ -41,16 +38,28 @@ public class MoveNode : TweenNode
 
         GUILayout.Label("Move Node", centeredTitleStyle);
 
-        targetPosition = EditorGUILayout.Vector3Field("Position", targetPosition);
+        targetPosition = EditorGUILayout.Vector3Field("Position:", targetPosition);
 
         GUILayout.Space(5);
-        GUILayout.Label("Duration");
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Duration:");
         duration = EditorGUILayout.FloatField(duration);
+        GUILayout.EndHorizontal();
 
         GUILayout.Space(5);
-        GUILayout.Label("Ease");
-        easeType = (Ease)EditorGUILayout.EnumPopup(easeType);
 
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Ease:");
+        easeType = (Ease)EditorGUILayout.EnumPopup(easeType);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(5);
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Relative:");
+        relative = EditorGUILayout.Toggle(relative);
+        GUILayout.EndHorizontal();
 
     }
 }

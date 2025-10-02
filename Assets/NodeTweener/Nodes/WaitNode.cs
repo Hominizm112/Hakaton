@@ -4,8 +4,7 @@ using UnityEngine;
 
 
 
-[CreateAssetMenu(fileName = "WaitNode", menuName = "DOTween/Nodes/Wait")]
-[NodeType("Wait Node", NodeType.Wait, 80f)]
+[NodeType("Wait Node", 65f)]
 public class WaitNode : TweenNode
 {
     public float waitTime = 1f;
@@ -18,8 +17,15 @@ public class WaitNode : TweenNode
 
     public override void DrawNode()
     {
-        GUILayout.Label("Wait Node", EditorStyles.boldLabel);
-        GUILayout.Label("Wait Time");
+        GUIStyle centeredTitle = new GUIStyle(EditorStyles.boldLabel);
+        centeredTitle.alignment = TextAnchor.MiddleCenter;
+
+        GUILayout.Label("Wait Node", centeredTitle);
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Wait Time:");
         waitTime = EditorGUILayout.FloatField(waitTime);
+        GUILayout.EndHorizontal();
+
     }
 }

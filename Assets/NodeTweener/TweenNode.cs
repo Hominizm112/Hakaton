@@ -1,35 +1,43 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public enum NodeType
-{
-    None,
-    Move,
-    Scale,
-    Wait,
-    Start,
-    End,
-    Branch,
-    Rotate
-}
+
+[Serializable]
 public abstract class TweenNode : ScriptableObject
 {
-    public Rect nodeRect;
-    public string nodeName = "Node";
-    public bool isDragged;
-    public bool isSelected;
 
-    [HideInInspector]
+    [SerializeField, HideInInspector]
+    private bool _isInitialized = false;
+
+    protected virtual void OnEnable()
+    {
+        if (!_isInitialized)
+        {
+            Initialize();
+            _isInitialized = true;
+        }
+    }
+
+
+    [SerializeField] public Rect nodeRect;
+    [SerializeField] public string nodeName = "Node";
+    [SerializeField] public bool isDragged;
+    [SerializeField] public bool isSelected;
+
+    [SerializeField, HideInInspector]
     public string guid;
 
-    public virtual float nodeHeight => NodeRegistry.GetDefaultHeight(GetType());
+    [SerializeField] public virtual float nodeHeight => NodeRegistry.GetDefaultHeight(GetType());
+    [SerializeField] public virtual float nodeWidth => NodeRegistry.GetDefaultWidth(GetType());
 
-    public List<TweenNode> inputs = new();
-    public List<TweenNode> outputs = new();
+    [SerializeField] public List<TweenNode> inputs = new();
+    [SerializeField] public List<TweenNode> outputs = new();
 
     public abstract DG.Tweening.Tweener Execute(GameObject target);
     public virtual void DrawNode() { }
-
     public virtual bool ProcessEvents(Event e) { return false; }
+    protected virtual void Initialize() { }
+
 }

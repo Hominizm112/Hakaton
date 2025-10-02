@@ -15,18 +15,39 @@ public class TweenGraphRunner : MonoBehaviour
     [Header("Target Object")]
     public GameObject targetObject;
 
-    private Sequence currentSequence;
-    private bool isPlaying = false;
+    [Header("Runner Settings")]
+    public string runnerName;
+    public bool registerAsService;
+    public BaseGraphRunnerService graphRunnerService;
 
-    private void Start()
+    private Sequence _currentSequence;
+    private bool _isPlaying = false;
+
+    private void Awake()
     {
+        if (registerAsService && graphRunnerService != null)
+        {
+            graphRunnerService.RegisterAnimator(runnerName, this);
+        }
+
         if (playOnStart)
         {
             PlaySequence();
         }
     }
 
-    public void PlaySequence()
+    private void OnDestroy()
+    {
+        if (registerAsService && graphRunnerService != null)
+        {
+            graphRunnerService.UnregisterAnimator(runnerName);
+        }
+
+        StopSequence();
+
+    }
+
+    public void PlaySequence(GameObject obj = null)
     {
         if (tweenGraph == null)
         {
@@ -34,68 +55,79 @@ public class TweenGraphRunner : MonoBehaviour
             return;
         }
 
+
         if (targetObject == null)
         {
             targetObject = gameObject;
         }
 
-        if (isPlaying)
+        GameObject target = targetObject;
+
+
+        if (obj != null)
+        {
+            target = obj;
+            if (target == null)
+            {
+                return;
+            }
+        }
+
+        if (_isPlaying)
         {
             StopSequence();
         }
 
-        currentSequence = tweenGraph.BuildSequence(targetObject);
+        _currentSequence = tweenGraph.BuildSequence(target);
 
         if (loop)
         {
-            currentSequence.SetLoops(loopCount, loopType);
+            _currentSequence.SetLoops(loopCount, loopType);
         }
 
-        currentSequence.OnStart(() =>
+        _currentSequence.OnStart(() =>
         {
-            isPlaying = true;
+            _isPlaying = true;
         });
 
-        currentSequence.OnComplete(() =>
+        _currentSequence.OnComplete(() =>
         {
-            isPlaying = false;
+            _isPlaying = false;
         });
 
-        currentSequence.Play();
+        _currentSequence.Play();
     }
 
     public void StopSequence()
     {
-        if (currentSequence != null && currentSequence.IsPlaying())
+        if (_currentSequence != null)
         {
-            currentSequence.Kill();
-            isPlaying = false;
+            _currentSequence.Kill();
+            _currentSequence = null;
+            _isPlaying = false;
         }
     }
 
     public void PauseSequence()
     {
-        if (currentSequence != null && currentSequence.IsPlaying())
+        if (_currentSequence != null && _currentSequence.IsPlaying())
         {
-            currentSequence.Pause();
+            _currentSequence.Pause();
         }
     }
 
     public void ResumeSequence()
     {
-        if (currentSequence != null && !currentSequence.IsPlaying())
+        if (_currentSequence != null && !_currentSequence.IsPlaying())
         {
-            currentSequence.Play();
+            _currentSequence.Play();
         }
     }
 
     public bool IsPlaying()
     {
-        return isPlaying;
+        return _isPlaying;
     }
 
-    private void OnDestroy()
-    {
-        StopSequence();
-    }
+
 }

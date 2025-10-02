@@ -230,7 +230,7 @@ public class TimeService : MonoService
         StopTracking();
         OnTrackComplete = null;
         OnTrackUpdate = null;
-        Mediator.Instance.UnregisterService(this);
+        Mediator.Instance?.UnregisterService(this);
     }
 
 

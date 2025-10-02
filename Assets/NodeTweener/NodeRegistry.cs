@@ -7,7 +7,6 @@ using UnityEngine;
 public static class NodeRegistry
 {
     private static Dictionary<Type, NodeTypeAttribute> _nodeTypes;
-    private static Dictionary<NodeType, Type> _typeByNodeType;
 
     static NodeRegistry()
     {
@@ -17,7 +16,6 @@ public static class NodeRegistry
     private static void DiscoverNodeTypes()
     {
         _nodeTypes = new();
-        _typeByNodeType = new();
 
         var nodeTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(TweenNode)) && !t.IsAbstract);
 
@@ -27,7 +25,6 @@ public static class NodeRegistry
             if (attribute != null)
             {
                 _nodeTypes[type] = attribute;
-                _typeByNodeType[attribute.Type] = type;
             }
         }
     }
@@ -42,19 +39,14 @@ public static class NodeRegistry
         return _nodeTypes.TryGetValue(nodeType, out var attribute) ? attribute.MenuName : nodeType.Name;
     }
 
-    public static NodeType GetNodeType(Type nodeType)
-    {
-        return _nodeTypes.TryGetValue(nodeType, out var attribute) ? attribute.Type : NodeType.None;
-    }
-
     public static float GetDefaultHeight(Type nodeType)
     {
         return _nodeTypes.TryGetValue(nodeType, out var attribute) ? attribute.DefaultHeight : 100f;
     }
 
-    public static Type GetTypeFromNodeType(NodeType nodeType)
+    public static float GetDefaultWidth(Type nodeType)
     {
-        return _typeByNodeType.TryGetValue(nodeType, out var type) ? type : null;
+        return _nodeTypes.TryGetValue(nodeType, out var attribute) ? attribute.DefaultWidth : 200f;
     }
 
     public static NodeTypeAttribute GetAttribute(Type nodeType)

@@ -26,8 +26,8 @@ public class NodeSaveData
     public Ease easeType;
     public string branchName;
 
-    // New generic field storage
-    public Dictionary<string, string> customFields;
+    public string serializedData;
+    public Dictionary<string, string> fieldValues;
 }
 
 [Serializable]
@@ -43,7 +43,6 @@ public class EditorNodeData
     public string nodeType;
     public string guid;
     public Vector2 position;
-    public NodeType visualNodeType;
     public string nodeAssetGuid;
 }
 
