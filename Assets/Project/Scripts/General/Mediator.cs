@@ -135,6 +135,7 @@ public class EventBus
         Debug.Log($"Subscribed to {eventType.Name}");
     }
 
+
     public void Unsubscribe<T>(Action<T> handler) where T : IEvent
     {
         Type eventType = typeof(T);
@@ -454,6 +455,11 @@ public class Mediator : MonoBehaviour
                 _services.Remove(keyValuePair.Key);
             }
         }
+    }
+
+    public void RegisterPersistent<T>(T obj) where T : UnityEngine.Object
+    {
+        DontDestroyOnLoad(obj);
     }
 
     #endregion

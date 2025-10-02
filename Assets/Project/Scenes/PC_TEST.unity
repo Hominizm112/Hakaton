@@ -860,6 +860,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &108474135
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,6 +1037,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 0872709d72c2a9c4e9a43be3dd3b0f2e, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 0
+  mouseDownAnimatorName: 
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 0
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: 
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &119980563
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,6 +1714,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &209657403
 GameObject:
   m_ObjectHideFlags: 0
@@ -3407,6 +3443,71 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: af319dd5c2758894dafe540bf5368afa, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 0
+  mouseDownAnimatorName: 
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 0
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: 
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &532387793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 532387794}
+  - component: {fileID: 532387795}
+  m_Layer: 0
+  m_Name: PCButtonUp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &532387794
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532387793}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1586383394}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &532387795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532387793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce3471285c59fc64b93d38e844819c1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tweenGraph: {fileID: 11400000, guid: 6beec2bcd2e6d1e478a9b025c72275bb, type: 2}
+  playOnStart: 0
+  loop: 0
+  loopCount: -1
+  loopType: 0
+  targetObject: {fileID: 0}
+  runnerName: ButtonUp
+  registerAsService: 1
+  graphRunnerService: {fileID: 1586383395}
 --- !u!1 &560654917
 GameObject:
   m_ObjectHideFlags: 0
@@ -3557,6 +3658,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &597204212
 GameObject:
   m_ObjectHideFlags: 0
@@ -3874,6 +3987,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: 
+  mouseDownAnimator: {fileID: 1876025578}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 532387795}
+  mouseUpAnimatorName: 
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &636585101
 GameObject:
   m_ObjectHideFlags: 0
@@ -4148,6 +4273,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: af319dd5c2758894dafe540bf5368afa, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 0
+  mouseDownAnimatorName: 
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 0
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: 
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &693993005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4380,6 +4517,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &742579726
 GameObject:
   m_ObjectHideFlags: 0
@@ -4518,6 +4667,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &755775929
 GameObject:
   m_ObjectHideFlags: 0
@@ -4792,6 +4953,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &809964455
 GameObject:
   m_ObjectHideFlags: 0
@@ -5032,6 +5205,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &866098099
 GameObject:
   m_ObjectHideFlags: 0
@@ -6624,6 +6809,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1097416502
 GameObject:
   m_ObjectHideFlags: 0
@@ -6864,6 +7061,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 0872709d72c2a9c4e9a43be3dd3b0f2e, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 0
+  mouseDownAnimatorName: 
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 0
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: 
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1150097598
 GameObject:
   m_ObjectHideFlags: 0
@@ -7341,6 +7550,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1286121246
 GameObject:
   m_ObjectHideFlags: 0
@@ -8256,6 +8477,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1455696720
 GameObject:
   m_ObjectHideFlags: 0
@@ -8747,6 +8980,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1569714816
 GameObject:
   m_ObjectHideFlags: 0
@@ -9220,6 +9465,65 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 0872709d72c2a9c4e9a43be3dd3b0f2e, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 0
+  mouseDownAnimatorName: 
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 0
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: 
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &1586383393
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1586383394}
+  - component: {fileID: 1586383395}
+  m_Layer: 0
+  m_Name: Animators
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1586383394
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586383393}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1876025577}
+  - {fileID: 532387794}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1586383395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586383393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 744e1a97ab53e5347b0edeb8cf32f0d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  registerToMediator: 1
 --- !u!1 &1599570441
 GameObject:
   m_ObjectHideFlags: 0
@@ -9433,6 +9737,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1607891646
 GameObject:
   m_ObjectHideFlags: 0
@@ -10837,6 +11153,18 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1807680027
 GameObject:
   m_ObjectHideFlags: 0
@@ -11419,6 +11747,71 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
   spriteSwapDisable: 0
   textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &1876025576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1876025577}
+  - component: {fileID: 1876025578}
+  m_Layer: 0
+  m_Name: PCButtonDown
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1876025577
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876025576}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1586383394}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1876025578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876025576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce3471285c59fc64b93d38e844819c1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tweenGraph: {fileID: 11400000, guid: 57a4749c67e8a5f449f82504766d881b, type: 2}
+  playOnStart: 0
+  loop: 0
+  loopCount: -1
+  loopType: 0
+  targetObject: {fileID: 0}
+  runnerName: ButtonDown
+  registerAsService: 1
+  graphRunnerService: {fileID: 1586383395}
 --- !u!1 &1879412623
 GameObject:
   m_ObjectHideFlags: 0
@@ -12433,3 +12826,4 @@ SceneRoots:
   - {fileID: 352663527}
   - {fileID: 809964459}
   - {fileID: 1213309455}
+  - {fileID: 1586383394}

@@ -1,0 +1,304 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7102056177172118769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e64499c3239bb6746974d3ae89faf8f5, type: 3}
+  m_Name: BranchNode_9c8981f6
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 141
+    y: 403
+    width: 35
+    height: 35
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: 04653963-3506-49a4-ab4d-331d49cfaf06
+  inputs: []
+  outputs: []
+--- !u!114 &-4206757176296738561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1300ed0bfb57b9f46b8901910c0ee7fc, type: 3}
+  m_Name: StartNode_4adffcad
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: -269
+    y: 240
+    width: 200
+    height: 60
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: b9cbd5e4-6146-4a3f-9658-17ab9165116e
+  inputs: []
+  outputs:
+  - {fileID: 1886534544235790872}
+--- !u!114 &-2149514703412436176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84bb0c923a990284584844d117b2367f, type: 3}
+  m_Name: EndNode_79f39cab
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 793
+    y: 231
+    width: 200
+    height: 60
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: c2bdcf4c-d16b-4e3b-8c05-9c046eade27d
+  inputs:
+  - {fileID: 2506752537982139487}
+  outputs: []
+--- !u!114 &-1478450655767855637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e623bb8cf30ffb4d9d87712a3ee7325, type: 3}
+  m_Name: RotateNode_af6704ea
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 360
+    y: 314
+    width: 200
+    height: 150
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: 7ed29ca1-def6-4e52-943f-775f49d6731b
+  inputs: []
+  outputs: []
+  targetRotation: {x: 0, y: 0, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1705576f393e49645815d97035884067, type: 3}
+  m_Name: NewTweenSequence
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -4206757176296738561}
+  - {fileID: -2149514703412436176}
+  - {fileID: 1886534544235790872}
+  - {fileID: 2506752537982139487}
+  - {fileID: -1478450655767855637}
+  - {fileID: 2088074632266195311}
+  - {fileID: -7102056177172118769}
+  selectedNode: {fileID: 0}
+  saveData:
+    nodes:
+    - nodeType: StartNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: StartNode_4adffcad
+      position: {x: -286, y: 242}
+      guid: b9cbd5e4-6146-4a3f-9658-17ab9165116e
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: EndNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: EndNode_79f39cab
+      position: {x: 776, y: 233}
+      guid: c2bdcf4c-d16b-4e3b-8c05-9c046eade27d
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: MoveNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: MoveNode_62b10e87
+      position: {x: 66, y: 163}
+      guid: 45a06144-c94a-4bbe-b7f1-583843b00a3e
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: ScaleNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: ScaleNode_277bb5bd
+      position: {x: 343, y: 161}
+      guid: 13ae9ae5-39b5-475b-937e-703b956b3a6d
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: RotateNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: RotateNode_af6704ea
+      position: {x: 343, y: 316}
+      guid: 7ed29ca1-def6-4e52-943f-775f49d6731b
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: WaitNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: WaitNode_51192821
+      position: {x: 65, y: 327}
+      guid: 9b92c90b-789d-4902-8af3-8503300fc769
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: BranchNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: BranchNode_9c8981f6
+      position: {x: 124, y: 405}
+      guid: 04653963-3506-49a4-ab4d-331d49cfaf06
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    connections:
+    - fromNodeGuid: b9cbd5e4-6146-4a3f-9658-17ab9165116e
+      toNodeGuid: 45a06144-c94a-4bbe-b7f1-583843b00a3e
+    - fromNodeGuid: 45a06144-c94a-4bbe-b7f1-583843b00a3e
+      toNodeGuid: 13ae9ae5-39b5-475b-937e-703b956b3a6d
+    - fromNodeGuid: 13ae9ae5-39b5-475b-937e-703b956b3a6d
+      toNodeGuid: c2bdcf4c-d16b-4e3b-8c05-9c046eade27d
+    canvasOffset: {x: -1382, y: 2191}
+--- !u!114 &1886534544235790872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa8f4b47e2c30243a88b178f3de1152, type: 3}
+  m_Name: MoveNode_62b10e87
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 83
+    y: 161
+    width: 200
+    height: 150
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: 45a06144-c94a-4bbe-b7f1-583843b00a3e
+  inputs:
+  - {fileID: -4206757176296738561}
+  outputs:
+  - {fileID: 2506752537982139487}
+  targetPosition: {x: 1, y: 0, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0
+--- !u!114 &2088074632266195311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e46e2310b863114086223b64949862d, type: 3}
+  m_Name: WaitNode_51192821
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 82
+    y: 325
+    width: 200
+    height: 65
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: 9b92c90b-789d-4902-8af3-8503300fc769
+  inputs: []
+  outputs: []
+  waitTime: 1
+--- !u!114 &2506752537982139487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859cad87c19f6104a8fae9dbc5da5c90, type: 3}
+  m_Name: ScaleNode_277bb5bd
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 360
+    y: 159
+    width: 200
+    height: 150
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: 13ae9ae5-39b5-475b-937e-703b956b3a6d
+  inputs:
+  - {fileID: 1886534544235790872}
+  outputs:
+  - {fileID: -2149514703412436176}
+  targetScale: {x: 1, y: 8.5, z: 1}
+  duration: 1
+  easeType: 1
+  relative: 0

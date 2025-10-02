@@ -410,8 +410,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _button: {fileID: 0}
   settings: {fileID: 11400000, guid: 81e4252b78875cf419ac40dfa6568345, type: 2}
-  spriteSwapDisable: 1
-  textColorSwapDisable: 1
+  spriteSwapDisable: 0
+  textColorSwapDisable: 0
+  mouseDownAnimation: 1
+  mouseDownAnimatorName: ButtonDown
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 1
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: ButtonUp
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8390589364693662785
 MonoBehaviour:
   m_ObjectHideFlags: 0
