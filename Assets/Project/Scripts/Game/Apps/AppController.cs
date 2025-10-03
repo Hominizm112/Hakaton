@@ -71,7 +71,7 @@ public class AppController : MonoService
 
             if (baseApp.requireAppLoad && !disableAppLoadingScreen)
             {
-                AppLoader.StartLoading();
+                // AppLoader.StartLoading();
             }
         }
     }

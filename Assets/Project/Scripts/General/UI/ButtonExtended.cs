@@ -102,10 +102,6 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 
     protected virtual void OnClick()
     {
-        if (_audioHub != null)
-        {
-            _audioHub.PlayOneShot(settings.soundType, 0.1f);
-        }
         HandleClick();
     }
 
@@ -145,11 +141,23 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
         {
             _tMP_Text.color = settings.textColorToSwap;
         }
+        if (_audioHub != null)
+        {
+            _audioHub.PlayOneShot(settings.soundType, 0.1f);
+        }
     }
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
         _isPointerDown = false;
+
+        if (_isHolding)
+        {
+            if (_audioHub != null)
+            {
+                _audioHub.PlayOneShot(settings.soundType, 0.1f);
+            }
+        }
         _isHolding = false;
         OnMouseUp?.Invoke();
 
@@ -174,6 +182,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
         {
             _tMP_Text.color = _initialTextColor;
         }
+
     }
 
     private IEnumerator HoldCoroutine()
