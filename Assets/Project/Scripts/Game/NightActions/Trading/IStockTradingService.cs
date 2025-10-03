@@ -18,6 +18,8 @@ public class IStockTradingService
 public class Stock : SampleActiv//одна акция в портфеле
 {
     public readonly StockConfig StockInfo;
+    public override Ticker Ticker => StockInfo.Ticker; 
+    public override object Config => StockInfo;
     public float OpenPrice;
     public float ClosePrice;
     public float GainLossDay;
@@ -33,6 +35,7 @@ public class Stock : SampleActiv//одна акция в портфеле
 public enum Ticker
 {
     //акции
+    None,
     GDC,
     SRV,
     GWI,

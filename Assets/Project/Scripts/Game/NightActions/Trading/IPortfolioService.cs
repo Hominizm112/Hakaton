@@ -8,15 +8,14 @@ public interface IPortfolioService
     bool TradeAssets(TradeType tradeType, IActiv asset, int quantity);
     void AddCash(int amount);
     //покупка иных
-    //void CheckOtherStocks();
-    //void CheckOtherBonds();
+    void CheckOtherStocks();
+    void CheckOtherBonds();
     void CalculatDayGainLossPercent();
     void CalculateDayGainLoss();
     void CalculateTotalGainLossPercent();
     void CalculateTotalGainLoss();
     //Analytics
     void GeneratePortfolioReport();
-
 }
 
 public class PortfolioSummary
