@@ -34,6 +34,9 @@ public class ConnectionPoint
 
     }
 
+#if UNITY_EDITOR
+
+
     public void Draw()
     {
         rect.y = node.rect.y + (node.rect.height * 0.5f) - rect.height * 0.5f;
@@ -55,4 +58,7 @@ public class ConnectionPoint
             }
         }
     }
+
+#endif
+
 }

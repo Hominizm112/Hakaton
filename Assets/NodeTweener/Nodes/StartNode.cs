@@ -11,6 +11,8 @@ public class StartNode : TweenNode
         return DOTween.To(() => 0, x => { }, 0, 0);
     }
 
+#if UNITY_EDITOR
+
     public override void DrawNode()
     {
         GUIStyle centeredStyle = new GUIStyle(EditorStyles.boldLabel);
@@ -22,4 +24,6 @@ public class StartNode : TweenNode
         GUILayout.Label("START", centeredStyle);
         GUILayout.Label("Sequence Entry Point", miniCenteredStyle);
     }
+
+#endif
 }

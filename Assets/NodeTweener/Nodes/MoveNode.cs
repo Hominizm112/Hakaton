@@ -31,6 +31,8 @@ public class MoveNode : TweenNode
         return tweener;
     }
 
+#if UNITY_EDITOR
+
     public override void DrawNode()
     {
         GUIStyle centeredTitleStyle = new GUIStyle(EditorStyles.boldLabel);
@@ -62,4 +64,7 @@ public class MoveNode : TweenNode
         GUILayout.EndHorizontal();
 
     }
+
+#endif
+
 }

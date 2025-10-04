@@ -35,8 +35,8 @@ public class AssetPageManager : MonoBehaviour
     [SerializeField] private TMP_Text _tickerText;
     [SerializeField] private TMP_Text _priceText;
     [SerializeField] private TMP_Text _inPortfolioText;
-    [SerializeField] private QuickTradeButton _buyButton;
-    [SerializeField] private QuickTradeButton _sellButton;
+    // [SerializeField] private QuickTradeButton _buyButton;
+    // [SerializeField] private QuickTradeButton _sellButton;
 
 
     private PortfollioService _portfolioService;

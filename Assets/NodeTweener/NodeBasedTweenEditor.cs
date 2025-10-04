@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
@@ -5,8 +7,6 @@ using System;
 using System.IO;
 using DG.Tweening;
 using System.Linq;
-using System.Reflection;
-
 
 public class NodeBasedTweenEditor : EditorWindow
 {
@@ -2060,3 +2060,6 @@ public class NodeBasedTweenEditor : EditorWindow
     #endregion
 
 }
+
+
+#endif

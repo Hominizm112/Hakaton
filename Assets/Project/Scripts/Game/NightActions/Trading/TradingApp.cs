@@ -24,7 +24,7 @@ public class TradingApp : BaseApp
     {
         base.Awake();
         _portfolioService = _mediator.GetService<PortfollioService>();
-        _portfolioService.OnPortfolioUpdated += UpdateUI;
+        // _portfolioService.OnPortfolioUpdated += UpdateUI;
     }
 
     private void UpdateUI(PortfolioSummary summary)
@@ -63,14 +63,14 @@ public class TradingApp : BaseApp
             assetNameText.text = $"{ticker} (x{quantity})";
         }
 
-        QuickTradeButton sellButton = assetUI.GetComponentInChildren<QuickTradeButton>();
-        if (sellButton != null)
-        {
-            sellButton.Ticker = ticker;
-            sellButton.Price = _portfolioService.GetAssetPrice(ticker);
-            sellButton.TradeType = tradeType;
-            sellButton.gameObject.SetActive(true);
-        }
+        // QuickTradeButton sellButton = assetUI.GetComponentInChildren<QuickTradeButton>();
+        // if (sellButton != null)
+        // {
+        // sellButton.Ticker = ticker;
+        // sellButton.Price = _portfolioService.GetAssetPrice(ticker);
+        // sellButton.TradeType = tradeType;
+        // sellButton.gameObject.SetActive(true);
+        // }
     }
 
 }

@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System;
-using UnityEditor.MemoryProfiler;
-using System.Collections.Generic;
 
 public class EditorNode
 {
@@ -19,10 +17,12 @@ public class EditorNode
     public Action<EditorNode> OnSelectNode;
     public Action<ConnectionPoint> OnClickConnectionPoint;
 
+#if UNITY_EDITOR
 
     private GUIStyle style;
     private GUIStyle defaultNodeStyle;
     private GUIStyle selectedNodeStyle;
+#endif
 
     private bool showInPoint = true;
     private bool showOutPoint = true;
@@ -33,9 +33,12 @@ public class EditorNode
     {
         rect = new Rect(position.x, position.y, nodeAsset.nodeWidth, nodeAsset.nodeHeight);
         this.guid = System.Guid.NewGuid().ToString();
+#if UNITY_EDITOR
+
         style = nodeStyle;
         defaultNodeStyle = nodeStyle;
         selectedNodeStyle = selectedStyle;
+#endif
         this.node = nodeAsset;
 
         showInPoint = !(nodeAsset is StartNode);
@@ -74,12 +77,16 @@ public class EditorNode
         }
     }
 
+
+#if UNITY_EDITOR
+
     public void Draw()
     {
         if (node == null) return;
 
         if (showInPoint) inPoint?.Draw();
         if (showOutPoint) outPoint?.Draw();
+
 
 
         GUIStyle style = isSelected ? selectedNodeStyle : defaultNodeStyle;
@@ -91,12 +98,13 @@ public class EditorNode
         GUILayout.EndArea();
 
 
-
-
     }
+
+
 
     public bool ProcessEvents(Event e)
     {
+
         switch (e.type)
         {
             case EventType.MouseDown:
@@ -140,14 +148,23 @@ public class EditorNode
         }
 
         return false;
+
+
     }
 
     private void ProcessContextMenu(Vector2 mousePosition)
     {
+
+
         GenericMenu genericMenu = new();
         genericMenu.AddItem(new GUIContent("Remove node"), false, OnClickRemoveNode);
         genericMenu.ShowAsContext();
+
+
     }
+
+#endif
+
 
     public void RemoveNode()
     {

@@ -1,6 +1,3 @@
-using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.LightTransport;
 using System;
 
 public interface IBondsTradingService
@@ -21,11 +18,16 @@ public class Bond : SampleActiv
     public DateTime RepaymentDate;
     public DateTime CouponPaymentDate;
     public int QuantityPayQuater;
+    public override Ticker Ticker => throw new NotImplementedException();
+
+    public override object Config => throw new NotImplementedException();
 
     public Bond(BondConfig bondConfig)
     {
         BondInfo = bondConfig;
     }
+
+
 }
 
 public enum RatingIssuer

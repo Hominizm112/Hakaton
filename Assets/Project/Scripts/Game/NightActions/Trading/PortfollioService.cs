@@ -35,9 +35,11 @@ public class PortfollioService : MonoService // IPortfolioService
     public Dictionary<Ticker, Bond> AvailableBonds { get; private set; }
     //public IReadOnlyDictionary<Ticker, Stock> Stocks => AvailableStocks;
     ///public IReadOnlyDictionary<Ticker, Bond> Bondds => AvailableBonds;
-    
+
     private Dictionary<Ticker, IActiv> AvailableAssets { get; set; } = new();
-    public IReadOnlyDictionary<Ticker, IActiv> Assets => AvailableAssets; 
+    public IReadOnlyDictionary<Ticker, IActiv> Assets => AvailableAssets;
+
+    public Action<PortfolioSummary> OnPortfolioUpdated { get; internal set; }
 
     private void Awake()
     {
@@ -51,7 +53,7 @@ public class PortfollioService : MonoService // IPortfolioService
             return;
 
         AvailableAssets.Add(newAsset.Ticker, newAsset);
-        _mediator.GlobalEventBus.Publish(new AssetListChangedEvent(newAsset.Ticker)); 
+        _mediator.GlobalEventBus.Publish(new AssetListChangedEvent(newAsset.Ticker));
     }
     public void LoadInitialData()//логика сохранения и инициализации
     {
@@ -63,12 +65,12 @@ public class PortfollioService : MonoService // IPortfolioService
     }
 
 
-   // public PortfolioSummary GetPortfolioSummary()//отображение портфеля
+    // public PortfolioSummary GetPortfolioSummary()//отображение портфеля
     //{
 
-       // return _portfolioSummary;
+    // return _portfolioSummary;
 
-   // }
+    // }
 
     public float GetAssetPrice(Ticker ticker)//поиск цены по тикеру
     {
@@ -83,12 +85,12 @@ public class PortfollioService : MonoService // IPortfolioService
         return activ.CurrentValue;
     }
 
- 
+
     //кнопки быстрой продажи покупки
-    
+
     #region BuyActiv
 
-   public void BuyAsset(Type assetType, Ticker ticker, int quantity, float totalCost)
+    public void BuyAsset(Type assetType, Ticker ticker, int quantity, float totalCost)
     {
         _portfolioSummary.CashBalance -= totalCost;
         _portfolioSummary.MyActives[ticker].AddQuantity(quantity);
@@ -109,8 +111,8 @@ public class PortfollioService : MonoService // IPortfolioService
     }
     #endregion
 
-  #region SellActiv
-  public bool SellAsset(Type assetType, Ticker ticker, int quantity, float totalCost)
+    #region SellActiv
+    public bool SellAsset(Type assetType, Ticker ticker, int quantity, float totalCost)
     {
         _portfolioSummary.CashBalance += totalCost;
         _portfolioSummary.MyActives[ticker].RemoveQuantity(quantity);
@@ -166,7 +168,7 @@ public class PortfollioService : MonoService // IPortfolioService
     {
         _portfolioSummary.CashBalance += amount;
     }
-    
+
     public IActiv GetAssetByTicker(Ticker ticker)// поиск актива по тикеру
     {
 
@@ -184,7 +186,7 @@ public class PortfollioService : MonoService // IPortfolioService
         return null;
 
     }
-    
+
 
 
     //покупка иных
@@ -218,5 +220,10 @@ public class PortfollioService : MonoService // IPortfolioService
     {
 
 
+    }
+
+    internal PortfolioSummary GetPortfolioSummary()
+    {
+        throw new NotImplementedException();
     }
 }

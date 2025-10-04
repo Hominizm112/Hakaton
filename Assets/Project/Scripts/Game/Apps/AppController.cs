@@ -69,9 +69,17 @@ public class AppController : MonoService
                 KeypadApp.Open();
             }
 
-            if (baseApp.requireAppLoad && !disableAppLoadingScreen)
+            if (baseApp.requireAppLoad)
             {
-                // AppLoader.StartLoading();
+
+#if UNITY_EDITOR
+                if (disableAppLoadingScreen)
+                {
+                    return;
+                }
+#endif
+
+                AppLoader.StartLoading();
             }
         }
     }

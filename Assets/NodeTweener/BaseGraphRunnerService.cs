@@ -5,6 +5,7 @@ public class BaseGraphRunnerService : MonoService, IGraphRunnerService
 {
     [Header("Settings")]
     [SerializeField] private bool registerToMediator;
+    
 
     protected Dictionary<string, TweenGraphRunner> _registeredRunners = new();
 

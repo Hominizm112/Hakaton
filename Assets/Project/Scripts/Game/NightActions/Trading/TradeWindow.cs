@@ -1,8 +1,6 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 using MyGame.Enums;
-using UnityEditor.Toolbars;
 public class TradeWindow : MonoBehaviour
 {
     [SerializeField] private TMP_Text _headerText;

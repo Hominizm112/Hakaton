@@ -34,6 +34,9 @@ public class Connection
         return new Rect(minX - 12f, minY - 12f, (maxX - minX) + 24f, (maxY - minY) + 24f);
     }
 
+
+#if UNITY_EDITOR
+
     public void Draw(bool isHovered)
     {
         if (inPoint == null || outPoint == null) return;
@@ -65,6 +68,8 @@ public class Connection
         }
 
     }
+
+#endif
 
     private void ProcessEvents(Event e)
     {

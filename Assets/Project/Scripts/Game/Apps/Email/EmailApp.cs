@@ -16,6 +16,7 @@ public class EmailApp : BaseApp
 
     private void Start()
     {
+        emailConfigs = Email.LoadEmailConfigs();
         UnlockEmailFromConsole("Foo", 0);
     }
 

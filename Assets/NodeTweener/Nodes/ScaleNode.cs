@@ -32,6 +32,9 @@ public class ScaleNode : TweenNode
         return tweener;
     }
 
+#if UNITY_EDITOR
+
+
     public override void DrawNode()
     {
         GUIStyle centeredTitle = new GUIStyle(EditorStyles.boldLabel);
@@ -61,4 +64,6 @@ public class ScaleNode : TweenNode
         relative = EditorGUILayout.Toggle(relative);
         GUILayout.EndHorizontal();
     }
+
+#endif
 }

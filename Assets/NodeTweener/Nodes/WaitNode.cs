@@ -15,6 +15,8 @@ public class WaitNode : TweenNode
         return tweener;
     }
 
+#if UNITY_EDITOR
+
     public override void DrawNode()
     {
         GUIStyle centeredTitle = new GUIStyle(EditorStyles.boldLabel);
@@ -28,4 +30,6 @@ public class WaitNode : TweenNode
         GUILayout.EndHorizontal();
 
     }
+
+#endif
 }

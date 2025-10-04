@@ -11,6 +11,8 @@ public class EndNode : TweenNode
         return DOTween.To(() => 0, x => { }, 0, 0);
     }
 
+#if UNITY_EDITOR
+
     public override void DrawNode()
     {
         GUIStyle centeredStyle = new GUIStyle(EditorStyles.boldLabel);
@@ -23,4 +25,6 @@ public class EndNode : TweenNode
         GUILayout.Label("Sequence Exit Point", miniCenteredStyle);
 
     }
+
+#endif
 }
