@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Your Game Title</title>
+
+    <!-- Force landscape orientation and prevent scaling -->
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="screen-orientation" content="landscape">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="360-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
+        }
+
+        html,
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        /* Force landscape container */
+        #unity-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vh;
+            /* Use viewport height as width */
+            height: 100vw;
+            /* Use viewport width as height */
+            transform: rotate(90deg) translateY(-100vh);
+            transform-origin: top left;
+
+            background: #000;
+        }
+
+        #unity-canvas {
+            width: 100% !important;
+            height: 100% !important;
+
+            background: #000;
+        }
+
+        /* Portrait mode warning */
+        #orientation-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            color: white;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Show warning in portrait, hide game */
+        @media (orientation: portrait) {
+            #unity-container {
+                display: none;
+            }
+
+            #orientation-warning {
+                display: flex;
+            }
+        }
+
+        /* Hide warning in landscape, show game */
+        @media (orientation: landscape) {
+            #unity-container {
+                display: block;
+                /* Reset transforms for landscape */
+                width: 100vw;
+                height: 100vh;
+                transform: none;
+            }
+
+            #orientation-warning {
+                display: none;
+            }
+        }
+
+        /* Mobile-specific fixes */
+        @media (max-width: 768px) {
+            #unity-container {
+                width: 100vh;
+                height: 100vw;
+                transform: rotate(90deg) translateY(-100vh);
+            }
+
+            @media (orientation: landscape) {
+                #unity-container {
+                    width: 100vw;
+                    height: 100vh;
+                    transform: none;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Orientation Warning -->
+    <div id="orientation-warning">
+        <h2 style="margin-bottom: 20px;">Please Rotate Your Device</h2>
+        <p style="margin-bottom: 10px;">This game works best in landscape mode.</p>
+        <p>Turn your device sideways to continue playing.</p>
+    </div>
+
+    <!-- Unity Container -->
+    <div id="unity-container">
+        <canvas id="unity-canvas" width="{{{ WIDTH }}}" height="{{{ HEIGHT }}}"></canvas>
+        <div id="unity-loading-bar">
+            <div id="unity-logo"></div>
+            <div id="unity-progress-bar-empty">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+        </div>
+        <div id="unity-warning"></div>
+        <div id="unity-footer">
+            <div id="unity-webgl-logo"></div>
+            <div id="unity-fullscreen-button"></div>
+            <div id="unity-build-title">{{{ PRODUCT_NAME }}}</div>
+        </div>
+    </div>
+
+    <script>
+        // Orientation lock and resize handling
+        function setupOrientation() {
+            const container = document.getElementById('unity-container');
+            const canvas = document.getElementById('unity-canvas');
+            const warning = document.getElementById('orientation-warning');
+
+            function updateLayout() {
+                const isPortrait = window.innerHeight > window.innerWidth;
+
+                if (isPortrait) {
+                    // Portrait mode - show warning
+                    container.style.display = 'none';
+                    warning.style.display = 'flex';
+                } else {
+                    // Landscape mode - show game
+                    container.style.display = 'block';
+                    warning.style.display = 'none';
+
+                    // Ensure proper sizing in landscape
+                    container.style.width = '100vw';
+                    container.style.height = '100vh';
+                    container.style.transform = 'none';
+
+                    if (canvas) {
+                        canvas.style.width = '100%';
+                        canvas.style.height = '100%';
+                    }
+                }
+            }
+
+            // Initial setup
+            updateLayout();
+
+            // Handle orientation changes
+            window.addEventListener('orientationchange', updateLayout);
+            window.addEventListener('resize', updateLayout);
+
+            // Force landscape on mobile devices
+            function lockLandscape() {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(function (error) {
+                        console.log('Orientation lock not supported:', error);
+                    });
+                }
+            }
+
+            // Attempt to lock orientation after user interaction
+            document.addEventListener('click', lockLandscape);
+            document.addEventListener('touchstart', lockLandscape);
+
+            // Try initial lock
+            setTimeout(lockLandscape, 1000);
+        }
+
+        // Fullscreen handling
+        function setupFullscreen() {
+            function requestFullscreen() {
+                const element = document.documentElement;
+                if (element.requestFullscreen) {
+                    element.requestFullscreen().catch(err => { });
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                }
+            }
+
+            // Request fullscreen on any user interaction
+            document.addEventListener('click', requestFullscreen);
+            document.addEventListener('touchstart', requestFullscreen);
+        }
+
+        // Prevent default touch behaviors
+        document.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // Initialize when page loads
+        window.addEventListener('load', function () {
+            setupOrientation();
+            setupFullscreen();
+
+            // Your Unity WebGL loading code here
+            var buildUrl = "Build";
+            var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+            var config = {
+                dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+                frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+                codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+                streamingAssetsUrl: "StreamingAssets",
+                companyName: "{{{ COMPANY_NAME }}}",
+                productName: "{{{ PRODUCT_NAME }}}",
+                productVersion: "{{{ PRODUCT_VERSION }}}",
+            };
+
+            var script = document.createElement("script");
+            script.src = loaderUrl;
+            script.onload = function () {
+                createUnityInstance(document.querySelector("#unity-canvas"), config, function (progress) {
+                    // Progress bar update
+                    var progressBar = document.querySelector("#unity-progress-bar-full");
+                    if (progressBar) progressBar.style.width = (100 * progress) + "%";
+                }).then(function (instance) {
+                    // Game loaded
+                    var loadingBar = document.querySelector("#unity-loading-bar");
+                    if (loadingBar) loadingBar.style.display = "none";
+                }).catch(function (message) {
+                    alert(message);
+                });
+            };
+            document.body.appendChild(script);
+        });
+    </script>
+</body>
+
+</html>

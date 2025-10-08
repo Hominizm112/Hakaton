@@ -10,16 +10,19 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 {
     [SerializeField, Tooltip("Берет компонент объекта, можно указать явно, какая кнопка нужна, тогда будет использовать её.")]
     protected Button _button;
-    [SerializeField] protected ButtonExtendedSettings settings;
+    [SerializeField] public ButtonExtendedSettings settings;
     [Header("Settings override")]
-    [SerializeField] private bool spriteSwapDisable;
-    [SerializeField] private bool textColorSwapDisable;
+    [SerializeField] private bool spriteSwapOverride;
+    [SerializeField] private Sprite spriteOverride;
+    [SerializeField] private bool textColorSwapOverride;
+    [SerializeField] private Color textColorOverride;
 
-
+    [Header("Animation Settings")]
     [SerializeField] private bool mouseDownAnimation;
     [SerializeField, Tooltip("Use if ButtonExtended's creation dynamic")]
     private string mouseDownAnimatorName;
     [SerializeField] private TweenGraphRunner mouseDownAnimator;
+    [Space(5)]
     [SerializeField] private bool mouseUpAnimation;
     [SerializeField] private TweenGraphRunner mouseUpAnimator;
     [SerializeField, Tooltip("Use if ButtonExtended's creation dynamic")]
@@ -42,6 +45,16 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     private bool _isHolding = false;
     private Coroutine _holdCoroutine;
 
+    public bool SpriteSwapOverride => spriteSwapOverride;
+    public bool TextColorSwapOverride => textColorSwapOverride;
+    public Sprite OverrideSprite => spriteOverride;
+    public Color OverrideTextColor => textColorOverride;
+
+    private bool UseSpriteSwap => spriteSwapOverride || (settings != null ? settings.spriteToSwap : null);
+    private Sprite TargetSprite => spriteSwapOverride ? spriteOverride : (settings != null ? settings.spriteToSwap : null);
+    private bool UseTextColorSwap => textColorSwapOverride || (settings != null && settings.textColorSwap);
+    private Color TargetTextColor => textColorSwapOverride ? textColorOverride : (settings != null ? settings.textColorToSwap : Color.white);
+
     protected virtual void Start()
     {
         if (_button == null)
@@ -51,29 +64,41 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
         OnButtonClick += OnClick;
         _button.onClick.AddListener(() => OnButtonClick?.Invoke());
 
+        if (UseSpriteSwap)
+        {
+            _image = GetComponent<Image>();
+            if (_image != null)
+            {
+                _initialSprite = _image.sprite;
+                _button.transition = Selectable.Transition.None;
+            }
+        }
 
-        if (!spriteSwapDisable && settings.spriteSwap)
+
+        if (UseTextColorSwap)
+        {
+            _tMP_Text = GetComponentInChildren<TMP_Text>();
+            if (_tMP_Text != null)
+            {
+                _initialTextColor = _tMP_Text.color;
+            }
+        }
+
+        if (!spriteSwapOverride && (settings.spriteSwap || spriteOverride))
         {
             _image = GetComponent<Image>();
             _initialSprite = _image.sprite;
             _button.transition = Selectable.Transition.None;
         }
 
-        if (!textColorSwapDisable && settings.textColorSwap)
+        if (settings != null && settings.soundType != SoundType.None)
         {
-            _tMP_Text = transform.GetChild(0).GetComponent<TMP_Text>();
-            _initialTextColor = _tMP_Text.color;
-        }
-
-        if (settings.soundType != SoundType.None)
-        {
-            _audioHub = Mediator.Instance.GetService<AudioHub>();
+            _audioHub = Mediator.Instance?.GetService<AudioHub>();
             if (_audioHub == null)
             {
-                Mediator.Instance.GlobalEventBus.Publish(new DebugLogErrorEvent(("AudioHub service not found!", this).ToString()));
+                Mediator.Instance?.GlobalEventBus?.Publish(new DebugLogErrorEvent(("AudioHub service not found!", this).ToString()));
             }
         }
-
 
 
     }
@@ -82,7 +107,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     {
         if (mouseDownAnimation && mouseDownAnimator == null && !string.IsNullOrEmpty(mouseDownAnimatorName))
         {
-            if (Mediator.Instance.TryGetService(out BaseGraphRunnerService service))
+            if (Mediator.Instance?.TryGetService(out BaseGraphRunnerService service) == true)
             {
                 mouseDownAnimator = service.GetRunner(mouseDownAnimatorName);
             }
@@ -90,10 +115,9 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 
         if (mouseUpAnimation && mouseUpAnimator == null && !string.IsNullOrEmpty(mouseUpAnimatorName))
         {
-            if (Mediator.Instance.TryGetService(out BaseGraphRunnerService service))
+            if (Mediator.Instance?.TryGetService(out BaseGraphRunnerService service) == true)
             {
                 mouseUpAnimator = service.GetRunner(mouseUpAnimatorName);
-
             }
         }
     }
@@ -121,27 +145,31 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     {
         _isPointerDown = true;
         OnMouseDown?.Invoke();
+
         if (mouseDownAnimation)
         {
             mouseDownAnimator?.PlaySequence(gameObject);
             mouseUpAnimator?.StopSequence();
         }
 
-        if (settings.holdDelay > 0)
+        if (settings != null && settings.holdDelay > 0)
         {
             _holdCoroutine = StartCoroutine(HoldCoroutine());
         }
 
-        if (!spriteSwapDisable && settings.spriteSwap)
+        // Apply sprite swap (override or settings)
+        if (UseSpriteSwap && _image != null && TargetSprite != null)
         {
-            _image.sprite = settings.spriteToSwap;
+            _image.sprite = TargetSprite;
         }
 
-        if (!textColorSwapDisable && settings.textColorSwap)
+        // Apply text color swap (override or settings)
+        if (UseTextColorSwap && _tMP_Text != null)
         {
-            _tMP_Text.color = settings.textColorToSwap;
+            _tMP_Text.color = TargetTextColor;
         }
-        if (_audioHub != null)
+
+        if (_audioHub != null && settings != null)
         {
             _audioHub.PlayOneShot(settings.soundType, 0.1f);
         }
@@ -153,7 +181,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 
         if (_isHolding)
         {
-            if (_audioHub != null)
+            if (_audioHub != null && settings != null)
             {
                 _audioHub.PlayOneShot(settings.soundType, 0.1f);
             }
@@ -173,12 +201,12 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
             _holdCoroutine = null;
         }
 
-        if (!spriteSwapDisable && settings.spriteSwap)
+        if (UseSpriteSwap && _image != null && _initialSprite != null)
         {
             _image.sprite = _initialSprite;
         }
 
-        if (!textColorSwapDisable && settings.textColorSwap)
+        if (UseTextColorSwap && _tMP_Text != null)
         {
             _tMP_Text.color = _initialTextColor;
         }
@@ -198,6 +226,28 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
                 OnHold();
             }
         } while (_isHolding);
+    }
+
+    public void SetSpriteOverride(Sprite newSprite, bool enableOverride = true)
+    {
+        spriteSwapOverride = enableOverride;
+        spriteOverride = newSprite;
+    }
+
+    public void SetTextColorOverride(Color newColor, bool enableOverride = true)
+    {
+        textColorSwapOverride = enableOverride;
+        textColorOverride = newColor;
+    }
+
+    public void DisableSpriteOverride()
+    {
+        spriteSwapOverride = false;
+    }
+
+    public void DisableTextColorOverride()
+    {
+        textColorSwapOverride = false;
     }
 
 

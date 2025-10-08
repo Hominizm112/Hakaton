@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum SoundType
@@ -17,16 +18,21 @@ public class AudioHub : MonoBehaviour
 {
     [SerializeField] private int initialPoolSize = 5;
     [SerializeField] private float clipCooldown = 0.1f;
-    [SerializeField] private List<Sound> sounds;
+    [SerializeField] private string sounds_resource_path;
 
     private Dictionary<AudioClip, float> _lastPlayedTimes = new();
 
     private Queue<AudioSource> _audioSourcePool = new Queue<AudioSource>();
     private List<AudioSource> _activeSources = new List<AudioSource>();
     private Dictionary<SoundType, Sound> soundsDict = new();
+    private List<Sound> sounds;
+
 
     private void Awake()
     {
+        sounds = Resources.LoadAll<Sound>(sounds_resource_path).ToList();
+
+
         for (int i = 0; i < initialPoolSize; i++)
         {
             CreateNewPooledSource();

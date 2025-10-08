@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ed2e630e1c9caf34e9d2df39a5a90d16
+guid: 96602d9c8768c744b902d2a88f1ce576
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638953920092855351
+  platformSettingsDirtyTick: 638953922462772885
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -123,7 +123,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: ResizableBG Simple Thick UI PC
+  - name: ResizableBG Simple Thick Destructive Fill UI PC
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -135,7 +135,7 @@ ScriptedImporter:
       y: 4
       width: 8
       height: 8
-    spriteID: a0f185b8b5ea7a447bf7b4d16ecefb26
+    spriteID: 5c8440e80d6b6394d9d2222824d5a1ab
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -147,13 +147,13 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: -855988320
-    name: ResizableBG Simple Thick UI PC
+    guid: 975054907
+    name: ResizableBG Simple Thick Destructive Fill UI PC
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: ResizableBG Simple Thick UI PC
+    - name: ResizableBG Simple Thick Destructive Fill UI PC
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
@@ -161,7 +161,7 @@ ScriptedImporter:
         y: 0
         width: 8
         height: 8
-      spriteId: a0f185b8b5ea7a447bf7b4d16ecefb26
+      spriteId: 5c8440e80d6b6394d9d2222824d5a1ab
     linkedCells: []
     parentIndex: -1
   platformSettings:

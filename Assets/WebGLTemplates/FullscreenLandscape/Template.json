@@ -1,0 +1,5 @@
+{
+    "name": "Fullscreen Landscape",
+    "description": "Fullscreen landscape template for mobile WebGL",
+    "defaultScene": "Assets/Scenes/Boot.unity"
+}
