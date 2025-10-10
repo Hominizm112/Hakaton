@@ -65,7 +65,6 @@
 
 *   [Арина Зеркалова](https://github.com/Arina-bear) - Роль (UnityDev, GameDesigner)
 *   [Ульяна Богинская](https://github.com/Uliana108192) - Роль (Art Lead, GameDesigner)
-*   [Николай Капустин](https://github.com/Utygett) - Роль ()
 *   [Алексей Тетюков](https://github.com/Hominizm112) - Роль (Tech Lead, GameDesigner)
 
 ## 📄 Лицензия
