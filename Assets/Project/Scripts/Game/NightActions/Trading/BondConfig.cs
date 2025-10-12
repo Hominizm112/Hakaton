@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "BondConfig", menuName = "Portfolio/BondConfig")]
-public class BondConfig : ScriptableObject,IAssetConfig
+public class BondConfig : ScriptableObject, IAssetConfig
 {
     public Ticker Ticker { get; set; }
     public Country Country { get; }

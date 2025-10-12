@@ -57,14 +57,28 @@ public class PortfolioPresenter : MonoBehaviour
         kvp => kvp.Key.ToString()
     );
     }
-
-    private Dictionary<Ticker, string> GetAllAssetsForDisplay()
+    //для получения 
+ 
+    private Dictionary<Ticker, string> GetAllStocksForDisplay()
     {
-        var allAssets = _model.GetAllAvailableAssets();
-        return allAssets.ToDictionary(
-        kvp => kvp.Key,            
-        kvp => CompanyInfo.ActiveName[kvp.Key]
-    );
+
+        var allStocks = MarketData.AllMarketStocks;
+        return allStocks.ToDictionary(
+            kvp => kvp.Key,
+            kvp => CompanyInfo.ActiveName[kvp.Key]
+        );
+
+
+    }
+    
+    private Dictionary<Ticker, string> GetAllBondsForDisplay()
+    {
+
+        var allBonds = MarketData.AllMarketBonds;
+        return allBonds.ToDictionary(
+            kvp => kvp.Key,
+            kvp => CompanyInfo.ActiveName[kvp.Key]
+        );
     }
 
     //открытие окна торговли
@@ -77,10 +91,10 @@ public class PortfolioPresenter : MonoBehaviour
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Цена для актива {ticker} не найдена."));
             return;
         }
-        
+
         //IActiv asset = _model.GetAssetByTicker(ticker);
         _tradingWindowView.Show(tradeType, ticker, price);
-       // _tradingWindowView.UpdateAssetPrice(price);//<---заменить на int
+        // _tradingWindowView.UpdateAssetPrice(price);//<---заменить на int
     }
 
     private void HandleConfirmTrade(TradeType tradeType, Ticker ticker, int quantity)
@@ -95,7 +109,7 @@ public class PortfolioPresenter : MonoBehaviour
         _tradingWindowView.TradeWindowClose();
 
     }
-    
+
     private void HandleTradeActiv(TradeType tradeType, IActiv asset, int quantity)
     {
         if (asset == null)
@@ -215,7 +229,7 @@ public class PortfolioPresenter : MonoBehaviour
                     _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно {ticker} для продажи."));
                     return;
                 }
-                
+
         }
 
         _view.UpdatePortfolioView(_portfolioSummary);

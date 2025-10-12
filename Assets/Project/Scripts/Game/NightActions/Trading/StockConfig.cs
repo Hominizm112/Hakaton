@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "StockConfig", menuName = "Portfolio/StockConfig")]
-public class StockConfig : ScriptableObject,IAssetConfig
+public class StockConfig : ScriptableObject, IAssetConfig
 {
     public Ticker Ticker { get; }
     public LevelStability LevelStability { get; }//(фикс)
