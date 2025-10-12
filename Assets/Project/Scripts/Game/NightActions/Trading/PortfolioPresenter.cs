@@ -28,18 +28,10 @@ public class PortfolioPresenter : MonoBehaviour
         _mediator = mediator;
         _model = _mediator.GetService<PortfollioService>();
         _tradingWindowView = _mediator.GetService<TradingWindowView>();
-        _mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
+        //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
 
         SetupAssetList();
-        UpdatePortfolioSummary();
-
-    }
-    private void UpdatePortfolioSummary()
-    {
-        IReadOnlyDictionary<Ticker, SampleActiv> currentPortfolio =_portfolioSummary.MyActives;
-        int totalValue = _model.RecalculateTotalPortfolioValue();
-        int currentCash = _model.GetAvailableCash(); 
-        //_view.UpdateCashDisplay(currentCash); 
+        //update
 
     }
 
@@ -165,7 +157,7 @@ public class PortfolioPresenter : MonoBehaviour
 
     private void HandleBuy(Type AssetType, Ticker ticker, int quantity, int assetPrice)//<--int
     {
-       int totalCost = quantity * assetPrice;
+        int totalCost = quantity * assetPrice;
 
         BuyTransactionState transactionStatus = _model.BuyAsset(AssetType, ticker, assetPrice, quantity);
         switch (transactionStatus)
@@ -177,27 +169,25 @@ public class PortfolioPresenter : MonoBehaviour
                 }
             case BuyTransactionState.NeedCreatedButton:
                 {
-                    SampleActiv newAsset = _model.CreateAssetInstance(AssetType,ticker,assetPrice,quantity);
+                    SampleActiv newAsset = _model.CreateAssetInstance(AssetType, ticker, assetPrice, quantity);
                     AssetItemView newButtonView = _view.CreateAssetItemView();
                     _view.RegisterAssetButton(ticker, newButtonView);
                     newButtonView.Initialize(ticker, assetPrice, quantity, true);
                     newButtonView.OnOpenTradeRequested += HandleOpenTradeWindowRequest;
                     break;
-
                 }
             case BuyTransactionState.NoNeedCreatedButton:
                 {
                     int newAssetQuantity = _model.GetQuantityByTicker(ticker) + quantity;
                     _view.UpdateAssetButton(ticker, assetPrice, newAssetQuantity);
-                    ColorfulDebug.LogGreen($"Успешная покупка {ticker}");
+                    // ColorfulDebug.LogGreen($"Успешная покупка {ticker}");
                     break;
 
                 }
         }
 
-        _portfolioSummary.RecalculateValueCount(AssetType, true, totalCost, quantity);
-        _portfolioSummary.RecalculateCashBalance(true, totalCost);
-        _view.UpdatePortfolioView(_portfolioSummary);        
+        _view.UpdatePortfolioView(_portfolioSummary);
+        _model.UpdatePortfolioValue(AssetType,totalCost,quantity,TradeType.Buy);  
     }
 
     private void HandleSell(Type AssetType, Ticker ticker, int quantity, int assetPrice)
@@ -210,14 +200,14 @@ public class PortfolioPresenter : MonoBehaviour
         {
             case SellTransactionState.NoNeedRemovedButton:
                 {
-                    ColorfulDebug.LogGreen($"Успешная продажа {ticker}");
+                    //ColorfulDebug.LogGreen($"Успешная продажа {ticker}");
                     break;
                 }
             case SellTransactionState.NeedRemovedButton:
                 {
                     _view.DeactivateAssetButton(ticker);
                     _portfolioSummary.MyActives[ticker].RemoveQuantity(quantity);
-                    ColorfulDebug.LogGreen($"Кнопка {ticker} удалена");
+                    // ColorfulDebug.LogGreen($"Кнопка {ticker} удалена");
                     break;
                 }
             case SellTransactionState.NotEnough:
@@ -225,9 +215,12 @@ public class PortfolioPresenter : MonoBehaviour
                     _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно {ticker} для продажи."));
                     return;
                 }
+                
         }
+
         _view.UpdatePortfolioView(_portfolioSummary);
-        
+        _model.UpdatePortfolioValue(AssetType,totalCost,quantity,TradeType.Sell);
+    
     }
 
     private void HandleAddCash(int amount)
@@ -243,10 +236,10 @@ public class PortfolioPresenter : MonoBehaviour
             return;
         }
 
-        if (_mediator.GetService<CurrencyPresenter>().TrySpendCurrency(amount))
-        {
-            _model.AddCash(amount);
-        }
+       // if (_mediator.GetService<CurrencyPresenter>().TrySpendCurrency(amount))
+       // {
+         //   _model.AddCash(amount);
+        //}
     }
 
     private void HandleInfoActiv()
@@ -257,10 +250,10 @@ public class PortfolioPresenter : MonoBehaviour
     {
 
     }
-    private void HandleAssetListChanged(AssetListChangedEvent @event)
-    {
-        SetupAssetList();
-    }
+    //private void HandleAssetListChanged(AssetListChangedEvent @event)
+    //{
+       // SetupAssetList();
+    //}
     private void HandleCheckOtherStock()
     {
 

@@ -31,12 +31,12 @@ public abstract class SampleActiv : IActiv
 
 }
 
-public class PortfollioService : MonoService // IPortfolioService
+public class PortfollioService  //MonoService // IPortfolioService
 {
 
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
     private Mediator _mediator;
-    public override List<Type> requiredServices { get; protected set; } = new List<Type>();
+    //public override List<Type> requiredServices { get; protected set; } = new List<Type>();
     //public Dictionary<Ticker, Stock> AvailableStocks { get; private set; }
     //public Dictionary<Ticker, Bond> AvailableBonds { get; private set; }
     private Dictionary<Ticker, IActiv> AvailableAssets { get; set; } = new();
@@ -96,12 +96,10 @@ public class PortfollioService : MonoService // IPortfolioService
         }
     }
 
-    public void UpdatePortfolioValue(Type assetType, int totalCost, int quantity,bool TypeOperation)
-    {
-        _portfolioSummary.RecalculateValueCount(assetType, false, totalCost, quantity);
-        _portfolioSummary.RecalculateCashBalance(false, totalCost);
-
-
+    public void UpdatePortfolioValue(Type assetType, int totalCost, int quantity,TradeType TypeOperation)
+    {//true==buy
+        _portfolioSummary.RecalculateValueCount(assetType, TypeOperation, totalCost, quantity);
+        _portfolioSummary.RecalculateCashBalance(TypeOperation, totalCost);
     }
 
     //кнопки быстрой продажи покупки

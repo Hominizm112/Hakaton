@@ -49,7 +49,7 @@ public class TradingWindowView : MonoBehaviour
     public void TradeWindowClose()
     {
         this.gameObject.SetActive(false);
-        ColorfulDebug.LogGreen("Успешная операция");
+        //ColorfulDebug.LogGreen("Успешная операция закрытия окна торговли");
 
 
     }

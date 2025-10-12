@@ -88,7 +88,7 @@ public class PortfolioView : MonoBehaviour
             return;
         }
     }
-    public void UpdatePortfolioView(PortfolioSummary summary)//<--заменить на int,обновление информации на UI
+    public void UpdatePortfolioView(PortfolioSummary summary)
     {
         UpdateCashDisplay(summary.CashBalance);
         _totalValueText.text = summary.TotalValue.ToString();
@@ -102,7 +102,7 @@ public class PortfolioView : MonoBehaviour
             Ticker ticker = kvp.Key;
             if (summary.MyActives.TryGetValue(ticker, out SampleActiv activeAsset))
             {
-                int newPrice = activeAsset.CurrentValue; // <--int
+                int newPrice = activeAsset.CurrentValue;
                 int newQuantity = activeAsset.Quantity;
                 UpdateAssetButton(ticker, newPrice, newQuantity);
             }
@@ -147,7 +147,7 @@ public class PortfolioView : MonoBehaviour
 
     public void SnowPortfolioReport()
     {
-        ColorfulDebug.LogGreen("PortfolioReport is generate:");
+        //ColorfulDebug.LogGreen("PortfolioReport is generate:");
     }
 
 
@@ -166,7 +166,7 @@ public class PortfolioView : MonoBehaviour
 
     public void OpenOtherStockScreen()
     {
-        ColorfulDebug.LogYellow("This is stocks");
+       // ColorfulDebug.LogYellow("This is stocks");
 
     }
 
@@ -174,7 +174,7 @@ public class PortfolioView : MonoBehaviour
     public void OpenOtherBondScreen()
     {
 
-       ColorfulDebug.LogYellow("This is bonds");
+       //ColorfulDebug.LogYellow("This is bonds");
 
     }
 

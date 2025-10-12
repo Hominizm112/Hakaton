@@ -55,12 +55,21 @@ public class PortfolioSummary
 
     }
 
-    public void RecalculateValueCount(Type assetType, bool TypeOperation, int totalCost, int quantity)
+    public void RecalculateValueCount(Type assetType, TradeType TypeOperation, int totalCost, int quantity)
     {//true=buy
 
-        int costAdjustment = TypeOperation ? totalCost : -totalCost;
+        int factor = TypeOperation switch
+        {
+            TradeType.Buy => 1,
+            TradeType.Sell => -1,
+            _ => 0
 
-        int quantityAdjustment = TypeOperation ? quantity : -quantity;
+        };
+        
+        int costAdjustment = totalCost * factor;
+
+        int quantityAdjustment = quantity * (int)factor; 
+
 
         switch (assetType)
         {
@@ -75,20 +84,24 @@ public class PortfolioSummary
                 break;
 
             default:
-                ColorfulDebug.LogRed($"Неизвестный тип актива: {assetType}");
+                //ColorfulDebug.LogRed($"Неизвестный тип актива: {assetType}");
                 break;
 
         }
 
     }
 
-    public void RecalculateCashBalance(bool TypeOperation, int totalCost)//<--int
-    {//true=buy
+    public void RecalculateCashBalance(TradeType TypeOperation, int totalCost)//<--int
+    {
+        int factor = TypeOperation switch
+        {
+            TradeType.Buy => 1,
+            TradeType.Sell => -1,
+            _ => 0
 
-        int cashAdjustment = TypeOperation ? -totalCost : totalCost;//<--int
+        };
+        int cashAdjustment = totalCost * (-factor); 
         CashBalance += cashAdjustment;
-
-
     }
 
 
