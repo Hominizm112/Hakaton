@@ -1,18 +1,30 @@
-using UnityEngine;
+
 using System.Collections.Generic;
 using MyGame.Enums;
 using System;
+<<<<<<< Updated upstream
 using Unity.VisualScripting;
 using System.Linq;
+=======
+>>>>>>> Stashed changes
 
-public abstract class SampleActiv : IActiv
+
+public abstract class SampleActiv<TConfig> : IActiv<TConfig> where TConfig : IAssetConfig
 {
+<<<<<<< Updated upstream
     public abstract Ticker Ticker { get; }
     public abstract object Config { get; }
     public float CurrentValue { get; }
     private int quantity;
 
     public int Quantity => quantity;
+=======
+    private int _quantity;
+    public int Quantity => _quantity;
+    public abstract Ticker Ticker { get; }
+    public abstract TConfig Config { get; }  
+    public int CurrentValue { get; protected set; } 
+>>>>>>> Stashed changes
 
     public void AddQuantity(int amount)
     {
@@ -21,13 +33,30 @@ public abstract class SampleActiv : IActiv
 
     public void RemoveQuantity(int amount)
     {
+<<<<<<< Updated upstream
         quantity -= amount;
+=======
+        _quantity -= amount;
+    }
+
+    public SampleActiv(int initialValue, int initialQuantity, TConfig config)
+    {
+        CurrentValue = initialValue;
+        _quantity = initialQuantity;
+>>>>>>> Stashed changes
     }
 
 }
 
+<<<<<<< Updated upstream
 public class PortfollioService : MonoService // IPortfolioService
 {
+=======
+public class PortfollioService //MonoService // IPortfolioService
+{
+
+    private MarketData _marketData;
+>>>>>>> Stashed changes
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
     private Mediator _mediator;
     public override List<Type> requiredServices { get; protected set; } = new List<Type>();
@@ -46,6 +75,7 @@ public class PortfollioService : MonoService // IPortfolioService
         Mediator.Instance.RegisterService(this);
     }
 
+<<<<<<< Updated upstream
     public void AddNewAsset(IActiv newAsset)//добавление нового актива
     {
         if (newAsset == null || AvailableAssets.ContainsKey(newAsset.Ticker))
@@ -59,19 +89,30 @@ public class PortfollioService : MonoService // IPortfolioService
     {
         //AvailableStocks = new Dictionary<Ticker, Stock>();
         //AvailableBonds = new Dictionary<Ticker, Bond>();
+=======
+    public void PortfolioInitialize()
+    {
+>>>>>>> Stashed changes
         AvailableAssets = new Dictionary<Ticker, IActiv>();
+        
 
-        //загрузка активов портфолио
+        
     }
 
+    #region FindByTicker
 
-    // public PortfolioSummary GetPortfolioSummary()//отображение портфеля
-    //{
+    public IActiv GetAssetByTicker(Ticker ticker)// поиск актива по тикеру
+    {
 
-    // return _portfolioSummary;
+        if (_portfolioSummary.MyActives.TryGetValue(ticker, out IActiv activ))
+        {
+            return activ;
+        }
 
-    // }
+       // _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Актива с заданным тикером не существует"));
+        return null;
 
+<<<<<<< Updated upstream
     public float GetAssetPrice(Ticker ticker)//поиск цены по тикеру
     {
         SampleActiv activ = null;
@@ -81,20 +122,109 @@ public class PortfollioService : MonoService // IPortfolioService
 
         AvailableBonds.TryGetValue(ticker, out Bond bond);
         activ = bond.IsUnityNull() ? activ : bond;
-
-        return activ.CurrentValue;
+=======
     }
+    public int GetAssetPrice(Ticker ticker)//поиск цены по тикеру
+    {
+        if (_portfolioSummary.MyActives.TryGetValue(ticker, out IActiv activ))
+        {
+            return activ.CurrentValue;
+        }
+
+        throw new KeyNotFoundException($"Актив с тикером {ticker} не найден в портфеле игрока.");
+>>>>>>> Stashed changes
+
+    }
+
+<<<<<<< Updated upstream
+=======
+    public int GetQuantityByTicker(Ticker targetTicker)//возврат поля количества по тикеру
+    {
+
+        if (_portfolioSummary.MyActives.TryGetValue(targetTicker, out IActiv activ))
+        {
+            return activ.Quantity;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    
+#endregion
+    public void UpdatePortfolioValue(Type assetType, int totalCost, int quantity, TradeType TypeOperation)
+    {
+        _portfolioSummary.RecalculateValueCount(assetType, TypeOperation, totalCost, quantity);
+        _portfolioSummary.RecalculateCashBalance(TypeOperation, totalCost);
+    }
+>>>>>>> Stashed changes
 
 
     //кнопки быстрой продажи покупки
-
     #region BuyActiv
 
+<<<<<<< Updated upstream
     public void BuyAsset(Type assetType, Ticker ticker, int quantity, float totalCost)
     {
         _portfolioSummary.CashBalance -= totalCost;
         _portfolioSummary.MyActives[ticker].AddQuantity(quantity);
 
+=======
+    public BuyTransactionState BuyAsset(Type assetType, Ticker ticker, int price, int quantity)
+    {
+        if (!_marketData.AllMarketBonds.ContainsKey(ticker) || !HasEnoughCash(price*quantity))
+        {
+            return BuyTransactionState.NotEnough;
+        }
+
+        _portfolioSummary.AddQuantity(ticker,quantity);//обновление количества
+
+        if (_portfolioSummary.MyActives.TryGetValue(ticker, out IActiv asset))
+        {
+            return BuyTransactionState.NoNeedCreatedButton;
+        }
+
+        else
+        {
+            IActiv newAsset = CreateAssetInstance(assetType, ticker, price, quantity);
+            _portfolioSummary.AddMyActive(ticker, newAsset);
+            return BuyTransactionState.NeedCreatedButton;
+        }
+
+    }
+    
+
+    #region SellActiv
+    public SellTransactionState SellAsset(Type assetType, Ticker ticker, int quantity, int totalCost)
+    {
+        if (!HasEnoughQuantityActive(ticker, quantity))//недостаточно активов
+        {
+            return SellTransactionState.NotEnough;
+        }
+
+        IActiv asset = GetAssetByTicker(ticker);
+        _portfolioSummary.RemoveQuantity(ticker,quantity);
+
+        if (asset.Quantity <= 0)
+        {
+            _portfolioSummary.RemoveMyActive(ticker);
+            return SellTransactionState.NeedRemovedButton; //удаление кнопки
+        }
+        else
+        {
+            //просто изменение количества
+            return SellTransactionState.NoNeedRemovedButton;
+        }
+    }
+
+    #endregion
+    public IActiv CreateAssetInstance(Type assetType, Ticker ticker, int price, int quantity)
+    {
+        IAssetConfig baseConfig = _marketData.FindAssetConfigInMarket(ticker, assetType);
+        IActiv asset = null;
+
+        //switch??
+>>>>>>> Stashed changes
         if (assetType == typeof(Stock))
         {
             _portfolioSummary.StocksValue += totalCost;
@@ -103,14 +233,22 @@ public class PortfollioService : MonoService // IPortfolioService
 
         if (assetType == typeof(Bond))
         {
+<<<<<<< Updated upstream
             _portfolioSummary.BondsValue += totalCost;
             _portfolioSummary.CountBonds += quantity;
+=======
+            if (baseConfig is BondConfig bondConfig)
+            {
+                asset = new Bond(bondConfig, price, quantity);
+            }
+>>>>>>> Stashed changes
         }
 
         //OnPortfolioUpdated?.Invoke(_portfolioSummary);
     }
     #endregion
 
+<<<<<<< Updated upstream
     #region SellActiv
     public bool SellAsset(Type assetType, Ticker ticker, int quantity, float totalCost)
     {
@@ -149,26 +287,21 @@ public class PortfollioService : MonoService // IPortfolioService
         {
             return true;
         }
+=======
+    public bool HasEnoughQuantityActive(Ticker ticker, int quantity)
+    {
+       return !(!_portfolioSummary.MyActives.ContainsKey(ticker) || 
+             _portfolioSummary.MyActives[ticker].Quantity < quantity);
+>>>>>>> Stashed changes
     }
 
     public bool HasEnoughCash(float totalCost)//заменить на int
     {
-        if (_portfolioSummary.CashBalance < totalCost)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-
+        return _portfolioSummary.CashBalance >= totalCost;
     }
-    //пополнение баланса кошелька приложения
-    public void AddCash(int amount)
-    {
-        _portfolioSummary.CashBalance += amount;
-    }
+ 
 
+<<<<<<< Updated upstream
     public IActiv GetAssetByTicker(Ticker ticker)// поиск актива по тикеру
     {
 
@@ -188,35 +321,37 @@ public class PortfollioService : MonoService // IPortfolioService
     }
 
 
+=======
+>>>>>>> Stashed changes
 
     //покупка иных
-    private void CheckOtherStocks()
+    public void CheckOtherStocks()
     {
         ///
     }
-    private void CheckOtherBonds()
+    public void CheckOtherBonds()
     {
 
     }
-    public void CalculatDayGainLossPercent()
+    private void CalculatDayGainLossPercent()
     {
 
     }
 
-    public void CalculateDayGainLoss()
+    private void CalculateDayGainLoss()
     {
 
     }
-    public void CalculateTotalGainLossPercent()
+    private void CalculateTotalGainLossPercent()
     {
 
     }
-    public void CalculateTotalGainLoss()
+    private void CalculateTotalGainLoss()
     {
 
     }
     //Analytics
-    public void GeneratePortfolioReport()
+    private void GeneratePortfolioReport()
     {
 
 

@@ -2,23 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IStockTradingService
-{
-    //void UpdateStockPrices(Dictionary<string, float> newPrices);
-
-    //List<Stock> GetAvailableStocks();
-    // Stock GetStockData(string stockId);
-    // void CheckDescribeStocks();
-    //TradeResult BuyStock(string stockId, int quantity);
-    //TradeResult SellStock(string stockId, int quantity);
-    // List<StockPosition> GetStockPortfolio();
-    //decimal CalculateStockValue(string stockId, int quantity);
-}
-
-public class Stock : SampleActiv//одна акция в портфеле
+public class Stock :  SampleActiv<StockConfig>//одна акция в портфеле
 {
     public readonly StockConfig StockInfo;
     public override Ticker Ticker => StockInfo.Ticker; 
+<<<<<<< Updated upstream
     public override object Config => StockInfo;
     public float OpenPrice;
     public float ClosePrice;
@@ -28,6 +16,20 @@ public class Stock : SampleActiv//одна акция в портфеле
 
     public Stock(StockConfig stockConfig)
     {
+=======
+    private readonly StockConfig _config;
+    public override StockConfig Config => _config; 
+   // public float OpenPrice { get; private set; } //меняются извне
+    //public float ClosePrice { get; private set; }
+    //public float GainLossDay{ get; private set; }
+    //public float GainLossPercentDay{ get; private set; }
+    //public DateTime DateNextDiv;
+
+    public Stock(StockConfig stockConfig,int initialCurrentValue,int initialQuantity)
+        : base(initialCurrentValue, initialQuantity: initialQuantity, stockConfig)
+    {
+       // ClosePrice = initialCurrentValue;
+>>>>>>> Stashed changes
         StockInfo = stockConfig;
     }
 }
