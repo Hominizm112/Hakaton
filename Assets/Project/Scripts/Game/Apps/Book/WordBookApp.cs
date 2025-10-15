@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.Localization.Components;
 
 public class WordBookApp : BaseApp
 {
@@ -9,8 +8,8 @@ public class WordBookApp : BaseApp
     [SerializeField] private GameObject wordViewPrefab;
     [SerializeField] private Transform wordViewHolder;
     [SerializeField] private GameObject wordDescriptionView;
-    [SerializeField] private TMP_Text wordSelectedText;
-    [SerializeField] private TMP_Text wordDescriptionText;
+    [SerializeField] private LocalizeStringEvent wordSelectedText;
+    [SerializeField] private LocalizeStringEvent wordDescriptionText;
     public bool unlock;
 
     private List<WordOfPower> _wordOfPowers;
@@ -38,6 +37,14 @@ public class WordBookApp : BaseApp
         if (_wordOfPowers == null || _wordOfPowers.Count == 0)
         {
             _wordOfPowers = WordBook.LoadWords();
+
+            for (int i = _wordOfPowers.Count - 1; i >= 0; i--)
+            {
+                if (!_wordOfPowers[i].isUnlocked)
+                {
+                    _wordOfPowers.RemoveAt(i);
+                }
+            }
 
             if (_wordOfPowers.Count == 0)
             {
@@ -74,22 +81,20 @@ public class WordBookApp : BaseApp
     private void UpdateWordDescription(WordOfPower word)
     {
         wordDescriptionView.SetActive(true);
-        wordSelectedText.text = word.word;
+        wordSelectedText.StringReference = word.word;
+        wordDescriptionText.StringReference = word.description;
 
-        if (wordDescriptionText != null)
-        {
-            wordDescriptionText.text = word.description ?? "No description available.";
-        }
+
     }
 
     private void ClearSelection()
     {
         _currentSelectedWord = null;
-        wordSelectedText.text = string.Empty;
+        wordSelectedText.StringReference = null;
 
         if (wordDescriptionText != null)
         {
-            wordDescriptionText.text = string.Empty;
+            wordDescriptionText.StringReference = null;
         }
 
         wordDescriptionView.SetActive(false);

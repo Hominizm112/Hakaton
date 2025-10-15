@@ -233,7 +233,7 @@ public class TeaFactory : MonoBehaviour
             case TeaType.PuErh:
                 return UnityEngine.Random.value > 0.5f ? TeaFlavorTag.ForestFloor : TeaFlavorTag.Mushroom;
             default:
-                return TeaFlavorTag.Unique;
+                return TeaFlavorTag.Floral;
         }
     }
 

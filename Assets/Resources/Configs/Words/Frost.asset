@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 087b3c19d3e86d14196c9438193c2178, type: 3}
+  m_Name: Frost
+  m_EditorClassIdentifier: 
+  _id: tablereference(4044b460-8917-88a4-b998-9115f3a420c1_-_words)/tableentryreference(220958901645324_-_frost)
+  word:
+    m_TableReference:
+      m_TableCollectionName: GUID:4044b460891788a4b9989115f3a420c1
+    m_TableEntryReference:
+      m_KeyId: 220958901645324
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:4044b460891788a4b9989115f3a420c1
+    m_TableEntryReference:
+      m_KeyId: 228173066776585
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  category: 
+  wordToFlavorInfluences:
+  - wordInfuence: 1
+    teaFlavorTag: 34
+  - wordInfuence: 2
+    teaFlavorTag: 7
+  - wordInfuence: 2
+    teaFlavorTag: 4
+  tags: []
+  isUnlocked: 1
+  references:
+    version: 2
+    RefIds: []

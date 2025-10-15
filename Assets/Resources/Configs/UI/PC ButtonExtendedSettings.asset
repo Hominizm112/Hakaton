@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundType: 3
   spriteSwap: 1
-  spriteToSwap: {fileID: 21300000, guid: fa7ef62c8d32537419167ce180d42975, type: 3}
+  spriteToSwap: {fileID: 2867427468218365057, guid: 9c83b649285e20b4f95b5ac4a578288a, type: 3}
   textColorSwap: 1
   textColorToSwap: {r: 0.96470594, g: 0.9294118, b: 0.7568628, a: 1}
   holdSoundType: 0

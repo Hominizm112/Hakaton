@@ -26,7 +26,7 @@ public class KeypadApp : BaseApp
             item.button.onClick.AddListener(() => UpdateKeypadInput(item.number));
         }
         removeButton.onClick.AddListener(() => RemoveFromKeypadInput());
-        removeButton.GetComponent<BaseButtonExtended>().OnButtonHold += RemoveFromKeypadInput;
+        removeButton.GetComponent<BaseButtonExtended>().OnButtonHold += _ => RemoveFromKeypadInput();
 
         _audioHub = Mediator.Instance.GetService<AudioHub>();
 

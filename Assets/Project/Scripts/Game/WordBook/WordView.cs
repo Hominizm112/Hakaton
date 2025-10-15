@@ -3,10 +3,11 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using Unity.VisualScripting;
+using UnityEngine.Localization.Components;
 
 public class WordView : MonoBehaviour
 {
-    [SerializeField] private TMP_Text wordText;
+    [SerializeField] private LocalizeStringEvent localizeStringEvent;
 
     public WordOfPower WordOfPower { get; private set; }
 
@@ -39,9 +40,9 @@ public class WordView : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        if (wordText != null)
+        if (localizeStringEvent != null)
         {
-            wordText.text = WordOfPower.word;
+            localizeStringEvent.StringReference = WordOfPower.word;
         }
 
     }

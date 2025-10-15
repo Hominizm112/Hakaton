@@ -5,7 +5,14 @@ using TMPro;
 using UnityEngine.EventSystems;
 using System.Collections;
 using UnityEngine.Events;
+using System.Collections.Generic;
 
+[Serializable]
+public struct HoldSettings
+{
+    public float time;
+    public UnityEvent unityEvent;
+}
 public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField, Tooltip("Берет компонент объекта, можно указать явно, какая кнопка нужна, тогда будет использовать её.")]
@@ -31,9 +38,11 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 
     [SerializeField] private UnityEvent OnMouseDown;
     [SerializeField] private UnityEvent OnMouseUp;
+    [SerializeField] private List<HoldSettings> holdSettings;
 
     public Action OnButtonClick;
-    public Action OnButtonHold;
+    public Action<ButtonExtended> OnMouseDownWithReference;
+    public Action<float> OnButtonHold;
 
     private Image _image;
     private Sprite _initialSprite;
@@ -61,8 +70,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
         {
             _button = GetComponent<Button>();
         }
-        OnButtonClick += OnClick;
-        _button.onClick.AddListener(() => OnButtonClick?.Invoke());
+        _button.onClick.AddListener(HandleButtonClick);
 
         if (UseSpriteSwap)
         {
@@ -101,6 +109,13 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
         }
 
 
+    }
+
+    private void HandleButtonClick()
+    {
+        print("click");
+        OnClick();
+        OnButtonClick?.Invoke();
     }
 
     private void OnEnable()
@@ -145,6 +160,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     {
         _isPointerDown = true;
         OnMouseDown?.Invoke();
+        OnMouseDownWithReference?.Invoke(this);
 
         if (mouseDownAnimation)
         {
@@ -157,13 +173,11 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
             _holdCoroutine = StartCoroutine(HoldCoroutine());
         }
 
-        // Apply sprite swap (override or settings)
         if (UseSpriteSwap && _image != null && TargetSprite != null)
         {
             _image.sprite = TargetSprite;
         }
 
-        // Apply text color swap (override or settings)
         if (UseTextColorSwap && _tMP_Text != null)
         {
             _tMP_Text.color = TargetTextColor;
@@ -215,6 +229,8 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 
     private IEnumerator HoldCoroutine()
     {
+        float timeHolding = 0;
+        List<HoldSettings> holdSettingsContained = new(holdSettings);
         do
         {
             yield return new WaitForSeconds(settings.holdDelay);
@@ -222,11 +238,21 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
             if (_isPointerDown)
             {
                 _isHolding = true;
-                OnButtonHold?.Invoke();
+                OnButtonHold?.Invoke(timeHolding);
                 OnHold();
+                timeHolding += Time.deltaTime + settings.holdDelay;
+                for (int i = holdSettingsContained.Count - 1; i >= 0; i--)
+                {
+                    if (timeHolding >= holdSettingsContained[i].time)
+                    {
+                        holdSettingsContained[i].unityEvent?.Invoke();
+                        holdSettingsContained.RemoveAt(i);
+                    }
+                }
             }
         } while (_isHolding);
     }
+
 
     public void SetSpriteOverride(Sprite newSprite, bool enableOverride = true)
     {
@@ -260,5 +286,10 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
         {
             StopCoroutine(_holdCoroutine);
         }
+    }
+
+    public void Print(string message)
+    {
+        print(message);
     }
 }

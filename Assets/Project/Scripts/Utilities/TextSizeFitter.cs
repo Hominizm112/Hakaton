@@ -17,6 +17,7 @@ public class TextSizeFitter : MonoBehaviour
         }
     }
 
+
     public void UpdateSize()
     {
         if (rectTransform != null && text != null)

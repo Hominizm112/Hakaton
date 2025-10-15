@@ -179,5 +179,4 @@ public enum TeaFlavorTag
     Leather,
     Tobacco,
     Wine,
-    Unique
 }

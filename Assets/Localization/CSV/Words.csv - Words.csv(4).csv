@@ -1,0 +1,36 @@
+Key,Id,English(en),Russian(ru)
+Floral,907053346816,Floral,Цветочный
+PETAL,,Petal,Лепесток
+EMBER,,Ember,Уголек
+ROOT,,Root,Корень
+ZEST,,Zest,Цедра
+HONEY,,Honey,Мед
+SPICE,,Spice,Приправа
+WOOD,,Wood,Дерево
+STONE,,Stone,Камень
+BLOOM,,Bloom,Цветение
+HERB,,Herb,Трава
+CREAM,,Cream,Сливки
+NUT,,Nut,Орех
+BERRY,,Berry,Ягода
+DUSK,,Dusk,Сумерки
+DAWN,,Dawn,Рассвет
+FROST,,Frost,Мороз
+ROAST,,Roast,Жарить
+PETAL_D,,Gentle floral essence that blooms in warm water.,"Нежная цветочная эссенция, которая распускается в теплой воде."
+EMBER_D,,Smoldering warmth that transforms the brew.,"Согревающее тепло, преображающее напиток."
+ROOT_D,,Deep earthy connections from below the soil.,"Глубокие землистые нотки, исходящие из почвы."
+ZEST_D,,Bright citrus awakening for the senses.,"Яркие цитрусовые, пробуждающие чувства."
+HONEY_D,,Golden sweetness that coats the tongue.,"Золотистая сладость, обволакивающая язык."
+SPICE_D,,Warming aromatic complexity.,Согревающая ароматическая сложность.
+WOOD_D,,Aged timber and forest memories.,Выдержанная древесина и лесные воспоминания.
+STONE_D,,Mineral depth and clean finish.,Минеральная глубина и чистое послевкусие.
+BLOOM_D,,Fruit orchard in full spring glory.,Фруктовый сад в полном весеннем великолепии.
+HERB_D,,Fresh garden greenery and medicinal notes.,Свежая зелень сада и нотки лекарственных растений.
+CREAM_D,,Velvety smoothness and rich texture.,Бархатистая гладкость и насыщенная текстура.
+NUT_D,,Toasted kernels and earthy richness.,Поджаренные зерна и землистый вкус.
+BERRY_D,,Wild berry patch sweetness.,Сладость лесных ягод.
+DUSK_D,,Evening complexity with dark notes.,Вечерняя сложность с темными нотами.
+DAWN_D,,Morning freshness and delicate awakening.,Утренняя свежесть и деликатное пробуждение.
+FROST_D,,Crisp coolness and clean finish.,Хрустящая прохлада и чистое послевкусие.
+ROAST_D,,Fire-toasted depth and caramelization.,Глубина обжарки на огне и карамелизация.

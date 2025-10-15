@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public interface IDraggable
 {
     bool CanBeDragged { get; }
@@ -8,33 +7,30 @@ public interface IDraggable
     void OnDragContinue(Vector2 worldPosition, Vector2 delta);
     void OnDragEnd();
 }
+
 public class DragManager : MonoBehaviour, IInitializable, IStateListener
 {
-    [SerializeField] private LayerMask _draggableLayer = 1;
-    [SerializeField] private float _zDepth = 10f;
 
     private Mediator _mediator;
     private InputManager _inputManager;
-    private Camera _mainCamera;
+    private DragVelocityCalculator _velocityCalculator;
 
-    private GameObject _currentDraggedObject;
     private Vector2 _previousDragPosition;
+    private Vector2 _dragStartPosition;
     private bool _isDragging = false;
+    private bool _hasValidDrag = false;
 
     public void Initialize(Mediator mediator)
     {
         _mediator = mediator;
         _inputManager = mediator.GetService<InputManager>();
-        _mainCamera = Camera.main;
+        _velocityCalculator = new();
 
         mediator.RegisterService<DragManager>(this);
         mediator.SubscribeToState(this, Game.State.Gameplay);
 
         mediator.GlobalEventBus.Subscribe<InputActionEvent>(OnInputAction);
-
     }
-
-
 
     public void OnStateChanged(Game.State state)
     {
@@ -47,14 +43,13 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
     private void OnInputAction(InputActionEvent inputEvent)
     {
         if (!_mediator.IsCurrentState(Game.State.Gameplay)) return;
-
         switch (inputEvent.ActionName)
         {
-            case "Click" when inputEvent.Context.started:
+            case "PointerClick" when inputEvent.Context.started:
                 StartDrag();
                 break;
 
-            case "Click" when inputEvent.Context.canceled:
+            case "PointerClick" when inputEvent.Context.canceled:
                 EndDrag();
                 break;
         }
@@ -71,25 +66,14 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
     private void StartDrag()
     {
         var mousePosition = _inputManager.GetVector2("Point");
-        var hit = Physics2D.Raycast(_mainCamera.ScreenToWorldPoint(mousePosition), Vector2.zero,
-                                   Mathf.Infinity, _draggableLayer);
+        _dragStartPosition = mousePosition;
+        _previousDragPosition = mousePosition;
+        _isDragging = true;
+        _hasValidDrag = false;
 
-        if (hit.collider != null && hit.collider.TryGetComponent<IDraggable>(out var draggable))
-        {
-            if (draggable.CanBeDragged)
-            {
-                _currentDraggedObject = hit.collider.gameObject;
-                _previousDragPosition = mousePosition;
-                _isDragging = true;
+        _velocityCalculator.StartRecording(mousePosition);
 
-                draggable.OnDragStart();
-
-                _mediator.GlobalEventBus.Publish(new DragStartedEvent(
-                    mousePosition,
-                    _currentDraggedObject
-                ));
-            }
-        }
+        _mediator.GlobalEventBus.Publish(new DragStartedEvent(mousePosition));
     }
 
     private void ContinueDrag()
@@ -97,20 +81,20 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
         var currentPosition = _inputManager.GetVector2("Point");
         var delta = currentPosition - _previousDragPosition;
 
-        if (_currentDraggedObject != null &&
-            _currentDraggedObject.TryGetComponent<IDraggable>(out var draggable))
+        _velocityCalculator.UpdatePosition(currentPosition);
+
+
+        if (!_hasValidDrag)
         {
-            var worldPosition = _mainCamera.ScreenToWorldPoint(
-                new Vector3(currentPosition.x, currentPosition.y, _zDepth)
-            );
+            var dragDistance = Vector2.Distance(currentPosition, _dragStartPosition);
+            _hasValidDrag = dragDistance > 5f;
+        }
 
-            draggable.OnDragContinue(worldPosition, delta);
-
-            _mediator.GlobalEventBus.Publish(new DragContinuedEvent(
-                currentPosition,
-                delta,
-                _currentDraggedObject
-            ));
+        if (_hasValidDrag)
+        {
+            Vector2 currentVelocity = _velocityCalculator.GetSmoothedVelocity();
+            Vector2 direction = _velocityCalculator.GetDragDirection();
+            _mediator.GlobalEventBus.Publish(new DragContinuedEvent(currentPosition, delta, currentVelocity, direction));
         }
 
         _previousDragPosition = currentPosition;
@@ -122,23 +106,20 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
 
         var endPosition = _inputManager.GetVector2("Point");
 
-        if (_currentDraggedObject != null &&
-            _currentDraggedObject.TryGetComponent<IDraggable>(out var draggable))
-        {
-            draggable.OnDragEnd();
+        _mediator.GlobalEventBus.Publish(new DragEndedEvent(endPosition));
 
-            _mediator.GlobalEventBus.Publish(new DragEndedEvent(
-                endPosition,
-                _currentDraggedObject
-            ));
-        }
 
-        _currentDraggedObject = null;
+        _velocityCalculator.StopRecording();
         _isDragging = false;
+        _hasValidDrag = false;
     }
 
     public bool IsDragging() => _isDragging;
-    public GameObject GetCurrentDraggedObject() => _currentDraggedObject;
+    public bool HasValidDrag() => _hasValidDrag;
+    public Vector2 GetDragStartPosition() => _dragStartPosition;
+    public Vector2 GetCurrentDragPosition() => _inputManager.GetVector2("Point");
+    public Vector2 GetDragDelta() => _inputManager.GetVector2("Point") - _previousDragPosition;
+    public Vector2 GetCurrentVelocity => _velocityCalculator.GetSmoothedVelocity();
 
     private void OnDestroy()
     {

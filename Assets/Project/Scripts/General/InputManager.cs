@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 #region Events
@@ -22,12 +23,10 @@ public class InputActionEvent : IInputEvent
 public class DragStartedEvent : IInputEvent
 {
     public Vector2 ScreenPosition { get; }
-    public GameObject DraggedObject { get; }
 
-    public DragStartedEvent(Vector2 screenPosition, GameObject draggedObject = null)
+    public DragStartedEvent(Vector2 screenPosition)
     {
         ScreenPosition = screenPosition;
-        DraggedObject = draggedObject;
     }
 }
 
@@ -35,25 +34,25 @@ public class DragContinuedEvent : IInputEvent
 {
     public Vector2 ScreenPosition { get; }
     public Vector2 Delta { get; }
-    public GameObject DraggedObject { get; }
+    public Vector2 Velocity { get; }
+    public Vector2 Direction { get; }
 
-    public DragContinuedEvent(Vector2 screenPosition, Vector2 delta, GameObject draggedObject = null)
+    public DragContinuedEvent(Vector2 screenPosition, Vector2 delta, Vector2 velocity, Vector2 direction)
     {
         ScreenPosition = screenPosition;
         Delta = delta;
-        DraggedObject = draggedObject;
+        Velocity = velocity;
+        Direction = direction;
     }
 }
 
 public class DragEndedEvent : IInputEvent
 {
     public Vector2 ScreenPosition { get; }
-    public GameObject DraggedObject { get; }
 
-    public DragEndedEvent(Vector2 screenPosition, GameObject draggedObject = null)
+    public DragEndedEvent(Vector2 screenPosition)
     {
         ScreenPosition = screenPosition;
-        DraggedObject = DraggedObject;
     }
 }
 
@@ -291,6 +290,128 @@ public class InputManager : MonoService, IStateListener
         }
     }
 
+    #region Utils
+
+
+    /// <summary>
+    /// Gets the GameObject under the mouse pointer (3D and 2D objects)
+    /// </summary>
+    /// <param name="layerMask">Layer mask to filter objects</param>
+    /// <param name="maxDistance">Maximum raycast distance</param>
+    /// <returns>The GameObject under mouse, or null if none</returns>
+    public static GameObject GetObjectUnderMouse(LayerMask layerMask = default, float maxDistance = Mathf.Infinity)
+    {
+        if (layerMask.value == 0)
+        {
+            layerMask = -1;
+        }
+
+        if (Camera.main == null)
+        {
+            return null;
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit3D, maxDistance, layerMask))
+        {
+            return hit3D.collider.gameObject;
+        }
+
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
+
+
+        RaycastHit2D hit2D = Physics2D.Raycast(mousePos2D, Vector2.zero, maxDistance, layerMask);
+
+        if (hit2D.collider != null)
+        {
+            return hit2D.collider.gameObject;
+        }
+
+        return null;
+    }
+
+
+
+
+    /// <summary>
+    /// Gets the GameObject under the mouse pointer (UI elements)
+    /// </summary>
+    /// <returns>The UI GameObject under mouse, or null if none</returns>
+    public static GameObject GetUIUnderMouse()
+    {
+        if (EventSystem.current == null || !EventSystem.current.IsActive())
+        {
+            Debug.LogWarning("EventSystem is not available or active");
+            return null;
+        }
+
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = Input.mousePosition
+        };
+
+        var results = new System.Collections.Generic.List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        if (results.Count > 0)
+        {
+            return results[0].gameObject;
+        }
+
+        return null;
+    }
+
+
+
+    /// <summary>
+    /// Gets both UI and objects under mouse in one call
+    /// </summary>
+    /// <param name="layerMask">Layer mask for objects</param>
+    /// <returns>Tuple with (uiObject, worldObject)</returns>
+    public static (GameObject uiObject, GameObject worldObject) GetEverythingUnderMouse(LayerMask layerMask = default)
+    {
+        GameObject uiObject = GetUIUnderMouse();
+        GameObject worldObject = GetObjectUnderMouse(layerMask);
+
+        return (uiObject, worldObject);
+    }
+
+
+    /// <summary>
+    /// Gets a specific component from the object under mouse
+    /// </summary>
+    /// <typeparam name="T">Component type to look for</typeparam>
+    /// <param name="layerMask">Layer mask for objects</param>
+    /// <returns>The component, or null if not found</returns>
+    public static T GetComponentUnderMouse<T>(LayerMask layerMask = default) where T : Component
+    {
+        GameObject obj = GetObjectUnderMouse(layerMask);
+        if (obj != null)
+        {
+            return obj.GetComponent<T>();
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Gets a specific component from UI under mouse
+    /// </summary>
+    /// <typeparam name="T">Component type to look for</typeparam>
+    /// <returns>The component, or null if not found</returns>
+    public static T GetUIComponentUnderMouse<T>() where T : Component
+    {
+        GameObject uiObject = GetUIUnderMouse();
+        if (uiObject != null)
+        {
+            return uiObject.GetComponent<T>();
+        }
+        return null;
+    }
+
+
+    #endregion
 
 
 }

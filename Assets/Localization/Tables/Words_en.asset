@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Words_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 4044b460891788a4b9989115f3a420c1, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 907053346816
+    m_Localized: Floral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958897451008
+    m_Localized: Petal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958897451009
+    m_Localized: Ember
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958897451010
+    m_Localized: Root
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645312
+    m_Localized: Zest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645313
+    m_Localized: Honey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645314
+    m_Localized: Spice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645315
+    m_Localized: Wood
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645316
+    m_Localized: Stone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645317
+    m_Localized: Bloom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645318
+    m_Localized: Herb
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645319
+    m_Localized: Cream
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645320
+    m_Localized: Nut
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645321
+    m_Localized: Berry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645322
+    m_Localized: Dusk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645323
+    m_Localized: Dawn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645324
+    m_Localized: Frost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645325
+    m_Localized: Roast
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173012250624
+    m_Localized: Gentle floral essence that blooms in warm water.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582272
+    m_Localized: Smoldering warmth that transforms the brew.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582273
+    m_Localized: Deep earthy connections from below the soil.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582274
+    m_Localized: Bright citrus awakening for the senses.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582275
+    m_Localized: Golden sweetness that coats the tongue.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582276
+    m_Localized: Warming aromatic complexity.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776576
+    m_Localized: Aged timber and forest memories.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776577
+    m_Localized: Mineral depth and clean finish.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776578
+    m_Localized: Fruit orchard in full spring glory.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776579
+    m_Localized: Fresh garden greenery and medicinal notes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776580
+    m_Localized: Velvety smoothness and rich texture.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776581
+    m_Localized: Toasted kernels and earthy richness.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776582
+    m_Localized: Wild berry patch sweetness.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776583
+    m_Localized: Evening complexity with dark notes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776584
+    m_Localized: Morning freshness and delicate awakening.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776585
+    m_Localized: Crisp coolness and clean finish.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776586
+    m_Localized: Fire-toasted depth and caramelization.
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

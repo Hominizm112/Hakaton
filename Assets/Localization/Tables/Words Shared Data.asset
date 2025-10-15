@@ -1,0 +1,168 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Words Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Words
+  m_TableCollectionNameGuidString: 4044b460891788a4b9989115f3a420c1
+  m_Entries:
+  - m_Id: 907053346816
+    m_Key: Floral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958897451008
+    m_Key: PETAL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958897451009
+    m_Key: EMBER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958897451010
+    m_Key: ROOT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645312
+    m_Key: ZEST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645313
+    m_Key: HONEY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645314
+    m_Key: SPICE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645315
+    m_Key: WOOD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645316
+    m_Key: STONE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645317
+    m_Key: BLOOM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645318
+    m_Key: HERB
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645319
+    m_Key: CREAM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645320
+    m_Key: NUT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645321
+    m_Key: BERRY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645322
+    m_Key: DUSK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645323
+    m_Key: DAWN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645324
+    m_Key: FROST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 220958901645325
+    m_Key: ROAST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173012250624
+    m_Key: PETAL_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582272
+    m_Key: EMBER_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582273
+    m_Key: ROOT_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582274
+    m_Key: ZEST_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582275
+    m_Key: HONEY_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173062582276
+    m_Key: SPICE_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776576
+    m_Key: WOOD_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776577
+    m_Key: STONE_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776578
+    m_Key: BLOOM_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776579
+    m_Key: HERB_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776580
+    m_Key: CREAM_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776581
+    m_Key: NUT_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776582
+    m_Key: BERRY_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776583
+    m_Key: DUSK_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776584
+    m_Key: DAWN_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776585
+    m_Key: FROST_D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 228173066776586
+    m_Key: ROAST_D
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 2903083691181080895
+  references:
+    version: 2
+    RefIds:
+    - rid: 2903083691181080895
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1760181312630
