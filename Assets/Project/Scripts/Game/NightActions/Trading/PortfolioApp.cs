@@ -98,42 +98,8 @@ public class PortfolioApp : MonoBehaviour, IApp
 
     private void OnAnalyticsClick()
     {
-        _portfolioService.GeneratePortfolioReport();
-    }
-
-
-
-
-}
-
-
-class ActivView : MonoBehaviour
-{
-    public int Quantity => _sampleActiv.Quantity;
-
-    private SampleActiv _sampleActiv;
-    public void Initialize(SampleActiv sampleActiv)
-    {
-        _sampleActiv = sampleActiv;
-    }
-
-    public void Remove(int amount)
-    {
-        _sampleActiv.RemoveQuantity(amount);
-        HandleQuantityChange();
-    }
-
-    public void Add(int amount)
-    {
-        _sampleActiv.AddQuantity(amount);
-        HandleQuantityChange();
-    }
-
-    public void HandleQuantityChange()
-    {
-        if (Quantity <= 0)
-        {
-            Destroy(gameObject);
-        }
+        
     }
 }
+
+

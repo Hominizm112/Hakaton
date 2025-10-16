@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MyGame.Enums;
+using System;
 
 public interface IPortfolioService
 {
@@ -19,25 +20,7 @@ public interface IPortfolioService
 
 public class PortfolioSummary
 {//данные для отображения
-<<<<<<< Updated upstream
-    public int CountStocks;
-    public Dictionary<Ticker, SampleActiv> MyActives = new();
-    public int CountBonds;
-    public float CashBalance;
-    public float StocksValue;
-    public float BondsValue;
-    public float TotalValue => StocksValue + BondsValue + CashBalance;
-    public float TotalGainLoss;
-    public float TotalGainLossPercent;
-    public float DayGainLoss;
-    public float DayGainLossPercent;
-    public PortfolioSummary()
-    {
 
-
-    }
-
-=======
     private readonly Dictionary<Ticker, IActiv> _MyActives = new();
     public IReadOnlyDictionary<Ticker, IActiv> MyActives => _MyActives;
     private int _countStocks;
@@ -165,6 +148,4 @@ public class PortfolioSummary
         _cashBalance += cashAdjustment;
     }
 
-
->>>>>>> Stashed changes
 }

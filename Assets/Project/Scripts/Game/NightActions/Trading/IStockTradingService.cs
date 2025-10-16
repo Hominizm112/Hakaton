@@ -1,22 +1,8 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class Stock :  SampleActiv<StockConfig>//одна акция в портфеле
 {
     public readonly StockConfig StockInfo;
     public override Ticker Ticker => StockInfo.Ticker; 
-<<<<<<< Updated upstream
-    public override object Config => StockInfo;
-    public float OpenPrice;
-    public float ClosePrice;
-    public float GainLossDay;
-    public float GainLossPercentDay;
-    public DateTime DateNextDiv;
-
-    public Stock(StockConfig stockConfig)
-    {
-=======
     private readonly StockConfig _config;
     public override StockConfig Config => _config; 
    // public float OpenPrice { get; private set; } //меняются извне
@@ -29,10 +15,10 @@ public class Stock :  SampleActiv<StockConfig>//одна акция в порт�
         : base(initialCurrentValue, initialQuantity: initialQuantity, stockConfig)
     {
        // ClosePrice = initialCurrentValue;
->>>>>>> Stashed changes
         StockInfo = stockConfig;
     }
 }
+
 
 public enum Ticker
 {

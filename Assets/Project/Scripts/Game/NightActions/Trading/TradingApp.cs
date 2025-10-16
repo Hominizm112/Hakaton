@@ -37,19 +37,9 @@ public class TradingApp : BaseApp
         _activeUIElements.Clear();
 
         //полные списки доступных активов
-        var allStocks = _portfolioService.AvailableStocks;
-        var allBonds = _portfolioService.AvailableBonds;
+ 
 
-        //динамическое создание кнопок
-        foreach (var kvp in allStocks)
-        {
-            // CreateAssetUI(entry.Key, entry.Value.CurrentValue, summary.MyStocks);
-        }
-
-        foreach (var kvp in allBonds)
-        {
-            //CreateAssetUI(entry.Key, entry.Value.CurrentValue, summary.MyBonds);
-        }
+ 
     }
 
     private void CreateAssetUI(Ticker ticker, int quantity, TradeType tradeType)

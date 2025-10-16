@@ -4,20 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 //using UnityEngine.Localization.Components;
 
+//using UnityEngine.Localization.Components;
 
-<<<<<<< Updated upstream
-public class PortfolioPresenter : MonoBehaviour
-=======
+
 public class PortfolioPresenter
->>>>>>> Stashed changes
 {
     //[SerializeField] private LocalizeStringEvent localizeStringEvent;
     private PortfolioView _view;
     private MarketData _marketData;
+    //[SerializeField] private LocalizeStringEvent localizeStringEvent;
     private PortfollioService _model;
     private Mediator _mediator;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
     private TradingWindowView _tradingWindowView;
+    
     
     public void InitializeView(PortfolioView portfolioView)
     {
@@ -26,27 +26,25 @@ public class PortfolioPresenter
         _view.OnCheckOtherStocksClicked += HandleCheckOtherStock;
         _view.OnCheckOtherBondsClicked += HandleCheckOtherBond;
         _view.OnGetAnalyticsClicked += HandleGetPortfolioReport;
-        _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
+      //  _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
+       // _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
     }
 
     public void Initialize(Mediator mediator)
     {
         _mediator = mediator;
         _model = _mediator.GetService<PortfollioService>();
-<<<<<<< Updated upstream
-        _mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
+        //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
         var allAssets = _model.Assets;
         var allAssetsInfo = allAssets.ToDictionary(
         kvp => kvp.Key, 
         kvp => kvp.Key.ToString() // Используем Ticker как отображаемое имя
     );
-         SetupAssetList();
-=======
+
         _tradingWindowView = _mediator.GetService<TradingWindowView>();
         //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
 
         SetupAssetList();
->>>>>>> Stashed changes
 
     }
 
@@ -57,20 +55,14 @@ public class PortfolioPresenter
         _model.PortfolioInitialize();
 
         Dictionary<Ticker, string> allAssetsInfo = GetCombinedAssetInfo();
-        _view.ClearAssetListContainer();//очищение контейнера перед перерисовкой
         foreach (var kvp in allAssetsInfo)
         {
             Ticker ticker = kvp.Key;
             string displayName = kvp.Value;
-<<<<<<< Updated upstream
-            AssetItemView itemView = _view.CreateAssetItemView(displayName);
-            itemView.Initialize(ticker, displayName);
-=======
             AssetItemView itemView = _view.CreateAssetItemView();
             int price = _model.GetAssetPrice(ticker);
             int quantity = _model.GetQuantityByTicker(ticker);
             itemView.Initialize(ticker, price, quantity, true);//где взять price, quantit
->>>>>>> Stashed changes
             itemView.OnOpenTradeRequested += HandleOpenTradeWindowRequest;
             //itemView.OnAssetDetailsClicked += HandleAssetDetailsClicked;
         }
@@ -84,60 +76,35 @@ public class PortfolioPresenter
         kvp => kvp.Key.ToString()
     );
     }
-<<<<<<< Updated upstream
-
-    public void LoadInitialData()
-    {
-=======
  
-    private Dictionary<Ticker, string> GetAllStocksForDisplay()
-    {
-        var allStocks = _marketData.AllMarketStocks;
-        return allStocks.ToDictionary(
-            kvp => kvp.Key,
-            kvp => CompanyInfo.ActiveName[kvp.Key]
-        );
+    //private Dictionary<Ticker, string> GetAllStocksForDisplay()
+   //{
+       // var allStocks = _marketData.AllMarketStocks;
+        //return allStocks.ToDictionary(
+        //    kvp => kvp.Key
+           // kvp => CompanyInfo.ActiveName[kvp.Key]
+       // );
 
-
->>>>>>> Stashed changes
-    }
+   // }
     private void HandleInfoActiv()
     {
-<<<<<<< Updated upstream
-
-=======
-        var allBonds = _marketData.AllMarketBonds;
-        return allBonds.ToDictionary(
-            kvp => kvp.Key,
-            kvp => CompanyInfo.ActiveName[kvp.Key]
-        );
->>>>>>> Stashed changes
+    
     }
 
     //открытие окна торговли
     private void HandleOpenTradeWindowRequest(Ticker ticker, TradeType tradeType)
     {
-<<<<<<< Updated upstream
-        float price = _model.GetAssetPrice(ticker);
-=======
         int price = _model.GetAssetPrice(ticker);
->>>>>>> Stashed changes
 
         if (price <= 0.0f)
         {
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Цена для актива {ticker} не найдена."));
             return;
         }
-<<<<<<< Updated upstream
-        IActiv asset = _model.GetAssetByTicker(ticker);
-        _tradingWindowView.Show(tradeType, ticker);
-        _tradingWindowView.UpdateAssetPrice(price);//<---заменить на int
-=======
 
         //IActiv asset = _model.GetAssetByTicker(ticker);
         _tradingWindowView.Show(tradeType, ticker, price);
         // _tradingWindowView.UpdateAssetPrice(price);
->>>>>>> Stashed changes
     }
 
     private void HandleConfirmTrade(TradeType tradeType, Ticker ticker, int quantity)
@@ -160,11 +127,7 @@ public class PortfolioPresenter
             return;
         }
 
-<<<<<<< Updated upstream
-        float assetPrice = asset.CurrentValue;//<---заменить на int
-=======
         int assetPrice = asset.CurrentValue;
->>>>>>> Stashed changes
         Ticker ticker = asset.Ticker;
         Type assetType = asset.GetType();
 
@@ -177,13 +140,12 @@ public class PortfolioPresenter
             case TradeType.Buy:
                 {
                     HandleBuy(assetType, ticker, quantity, assetPrice);
-                    ColorfulDebug.LogGreen("Успешная покупка");
+
                 }
                 break;
             case TradeType.Sell:
                 {
                     HandleSell(assetType, ticker, quantity, assetPrice);
-                    ColorfulDebug.LogGreen("Успешная продажа");
                 }
                 break;
             default:
@@ -216,19 +178,13 @@ public class PortfolioPresenter
         }
     }
 
-<<<<<<< Updated upstream
-    private void HandleBuy(Type AssetType, Ticker ticker, int quantity, float assetPrice)
-=======
     private void HandleBuy(Type AssetType, Ticker ticker, int quantity, int assetPrice)
->>>>>>> Stashed changes
     {
-        float totalCost = quantity * assetPrice;
-        if (!_model.HasEnoughCash(totalCost))
+        int totalCost = quantity * assetPrice;
+
+        BuyTransactionState transactionStatus = _model.BuyAsset(AssetType, ticker, assetPrice, quantity);
+        switch (transactionStatus)
         {
-<<<<<<< Updated upstream
-            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Недостаточно средств для покупки"));
-            return;
-=======
             case BuyTransactionState.NotEnough:
                 {
                     _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Недостаточно средств для покупки"));
@@ -251,24 +207,23 @@ public class PortfolioPresenter
                     break;
 
                 }
->>>>>>> Stashed changes
         }
-        _model.BuyAsset(AssetType, ticker, quantity, totalCost);
-        ColorfulDebug.LogGreen($"Успешная покупка {ticker}");//или публикация события
+
+        _view.UpdatePortfolioView(_portfolioSummary);
+        _model.UpdatePortfolioValue(AssetType,totalCost,quantity,TradeType.Buy);  
     }
 
-    private void HandleSell(Type AssetType, Ticker ticker, int quantity, float assetPrice)
+    private void HandleSell(Type AssetType, Ticker ticker, int quantity, int assetPrice)
     {
-        float totalCost = quantity * assetPrice;
-        if (!_model.HasEnoughQuantityActive(ticker, quantity))
+        int totalCost = quantity * assetPrice;
+
+        SellTransactionState transactionStatus = _model.SellAsset(AssetType, ticker, quantity, totalCost);
+
+        switch (transactionStatus)
         {
-<<<<<<< Updated upstream
-            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно {ticker} для продажи."));
-            return;
-=======
             case SellTransactionState.NoNeedRemovedButton:
                 {
-                    //ColorfulDebug.LogGreen($"Успешная продажа {ticker}");
+                    ColorfulDebug.LogGreen($"Успешная продажа {ticker}");
                     break;
                 }
             case SellTransactionState.NeedRemovedButton:
@@ -283,36 +238,12 @@ public class PortfolioPresenter
                     return;
                 }
 
->>>>>>> Stashed changes
         }
-        _model.SellAsset(AssetType, ticker, quantity, totalCost);
-        ColorfulDebug.LogGreen($"Успешная продажа {ticker}");//или публикация события
+
+        _view.UpdatePortfolioView(_portfolioSummary);
+        _model.UpdatePortfolioValue(AssetType,totalCost,quantity,TradeType.Sell);
+    
     }
-
-   // private void HandleTradeRequest(TradeRequestEvent @event)
-   // {
-        // поиск и покупка нужного объекта
-       // IActiv activ = FindAssetByTicker(@event.Ticker);
-
-       // if (activ != null)
-       // {
-        //    HandleTradeActiv(@event.TradeType, activ, @event.Quantity);
-       // }
-   // }
-
-    //private IActiv FindAssetByTicker(Ticker ticker)
-    //{
-       // if (_model.AvailableStocks.TryGetValue(ticker, out Stock stock))
-       // {
-       //     return stock;
-       // }
-
-       // if (_model.AvailableBonds.TryGetValue(ticker, out Bond bond))
-      //  {
-       //     return bond;
-       // }
-       // return null;
-   // }
 
     private void HandleAddCash(int amount)
     {
@@ -323,18 +254,16 @@ public class PortfolioPresenter
         }
         _portfolioSummary.AddCashBalance(amount);
 
-<<<<<<< Updated upstream
-        if (_mediator.GetService<CurrencyPresenter>().TrySpendCurrency(amount))
-        {
-            _model.AddCash(amount);
-        }
-=======
->>>>>>> Stashed changes
     }
-    private void HandleAssetListChanged(AssetListChangedEvent @event)
+
+    private void UpdatePortfolioModel()
     {
-        SetupAssetList();
+
     }
+    //private void HandleAssetListChanged(AssetListChangedEvent @event)
+    //{
+       // SetupAssetList();
+    //}
     private void HandleCheckOtherStock()
     {
 

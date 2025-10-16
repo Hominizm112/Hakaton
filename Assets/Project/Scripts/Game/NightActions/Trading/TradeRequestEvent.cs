@@ -9,4 +9,21 @@ namespace MyGame.Enums
         Buy,
         Sell
     }
+
+    public enum BuyTransactionState
+    {
+        NotEnough,
+        NoNeedCreatedButton,
+        NeedCreatedButton,
+
+    }
+
+    public enum SellTransactionState
+    {
+        NotEnough,
+        NeedRemovedButton,
+        NoNeedRemovedButton,
+
+    }
+
 }
