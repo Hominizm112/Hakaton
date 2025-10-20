@@ -4,10 +4,12 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Localization.Components;
 
 
 public class PortfolioView : MonoBehaviour
 {
+    [SerializeField] private LocalizeStringEvent localizeStringEvent;
      private TMP_Text cashBalanceText;
      private TMP_Text totalValueText;
      private TMP_Text stocksValueText;
@@ -24,7 +26,6 @@ public class PortfolioView : MonoBehaviour
     private Button _checkOtherBondsButton;
     private Button _analyticsButton;
 
-
     //ссылки на кнопки
     private readonly Dictionary<Ticker, AssetItemView> _activeAssetViews = new Dictionary<Ticker, AssetItemView>();
     [SerializeField] private RectTransform _listContentParent; //Контейнер для строк
@@ -40,9 +41,9 @@ public class PortfolioView : MonoBehaviour
 
     private void Awake()
     {
-        //_mediator = Mediator.Instance;
+       // Mediator.Instance.RegisterService(this);
         //_mediator.OnInitializationCompleted += () => _mediator.GetService<PortfolioPresenter>().InitializeView(this);
-       // _activeInfoButton.onClick.AddListener(() => OnActiveInfoClicked.Invoke());
+        // _activeInfoButton.onClick.AddListener(() => OnActiveInfoClicked.Invoke());
         _checkOtherStocksButton.onClick.AddListener(() => OnCheckOtherStocksClicked.Invoke());
         _checkOtherBondsButton.onClick.AddListener(() => OnCheckOtherBondsClicked.Invoke());
         _analyticsButton.onClick.AddListener(() => OnGetAnalyticsClicked.Invoke());
@@ -62,8 +63,7 @@ public class PortfolioView : MonoBehaviour
         _analyticsButton.gameObject.SetActive(true);
         _checkOtherStocksButton.gameObject.SetActive(true);
         _checkOtherBondsButton.gameObject.SetActive(true);
-
-        //текст 
+        //текст
 
     }
 
@@ -94,30 +94,15 @@ public class PortfolioView : MonoBehaviour
             return;
         }
     }
-    public void UpdatePortfolioView(PortfolioSummary summary)
+    #region Update
+    public void UpdatePortfolioView(IPortfolioDisplayData data)
     {
-        UpdateCashDisplay(summary.CashBalance);
-        //totalValueText.text = summary.TotalValue.ToString();
-        //bondsValueText.text = summary.BondsValue.ToString();
-        //stocksValueText.text = summary.StocksValue.ToString();
-        //countStocks.text = summary.CountStocks.ToString();
-        //countBonds.text = summary.CountBonds.ToString();
-
-        foreach (var kvp in _activeAssetViews)
-        {
-            Ticker ticker = kvp.Key;
-            if (summary.MyActives.TryGetValue(ticker, out IActiv activeAsset))
-            {
-                int newPrice = activeAsset.CurrentValue;
-                int newQuantity = activeAsset.Quantity;
-                UpdateAssetButton(ticker, newPrice, newQuantity);
-            }
-            else
-            {
-
-            }
-        }
-
+        //UpdateCashDisplay(summary.CashBalance);
+       totalValueText.text =data.TotalValue.ToString();
+       bondsValueText.text = data.BondsValue.ToString();
+       stocksValueText.text = data.StocksValue.ToString();
+       countStocks.text = data.CountStocks.ToString();
+       countBonds.text = data.CountBonds.ToString();
     }
     //обновление одной кнопки актива
     public void UpdateAssetButton(Ticker newTicker,int newPrice, int newQuantity)
@@ -141,9 +126,10 @@ public class PortfolioView : MonoBehaviour
         }
         cashBalanceText.text = $"Баланс: {cash} UO";
     }
-//удаление со сцены
+    //удаление со сцены
 
 
+#endregion
     public void OpenAddCashWindow()
     {
 

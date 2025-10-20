@@ -2,72 +2,82 @@ using System;
 using MyGame.Enums;
 using System.Collections.Generic;
 using System.Linq;
-//using UnityEngine.Localization.Components;
+using UnityEngine;
+using UnityEngine.Localization.Components;
 
-//using UnityEngine.Localization.Components;
 
-
-public class PortfolioPresenter
+public class PortfolioPresenter: MonoService
 {
-    //[SerializeField] private LocalizeStringEvent localizeStringEvent;
+    [SerializeField] private LocalizeStringEvent localizeStringEvent;
     private PortfolioView _view;
     private MarketData _marketData;
-    //[SerializeField] private LocalizeStringEvent localizeStringEvent;
     private PortfollioService _model;
     private Mediator _mediator;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
     private TradingWindowView _tradingWindowView;
-    
-    
-    public void InitializeView(PortfolioView portfolioView)
-    {
-        _view = portfolioView;
-        _view.OnAddCashClicked += HandleAddCash;
-        _view.OnCheckOtherStocksClicked += HandleCheckOtherStock;
-        _view.OnCheckOtherBondsClicked += HandleCheckOtherBond;
-        _view.OnGetAnalyticsClicked += HandleGetPortfolioReport;
-      //  _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
-       // _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
-    }
 
-    public void Initialize(Mediator mediator)
+    public void Awake()
     {
-        _mediator = mediator;
+        Mediator.Instance.RegisterService(this);
+    }
+    public override void Initialize(Mediator mediator)
+    {
+        _mediator = mediator; 
+        base.Initialize();
         _model = _mediator.GetService<PortfollioService>();
         //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
-        var allAssets = _model.Assets;
+        //var allAssets = _model.Assets;
+        var allAssets = _portfolioSummary.MyActives;
         var allAssetsInfo = allAssets.ToDictionary(
-        kvp => kvp.Key, 
+        kvp => kvp.Key,
         kvp => kvp.Key.ToString() // Используем Ticker как отображаемое имя
     );
 
         _tradingWindowView = _mediator.GetService<TradingWindowView>();
+        if (_tradingWindowView != null)
+        {              //Mediator.Instance.GlobalEventBus.Subscribe<OpenTradeWindowEvent>(HandleOpenEvent);
+            _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
+        }
         //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
+        PortfolioInitialize();
+        InitializeView(_view);
 
-        SetupAssetList();
+    }
+    public void InitializeView(PortfolioView portfolioView)
+    {
+         _view = GetComponent<PortfolioView>(); 
+        _view.OnAddCashClicked += HandleAddCash;
+        _view.OnCheckOtherStocksClicked += HandleCheckOtherStock;
+        _view.OnCheckOtherBondsClicked += HandleCheckOtherBond;
+        _view.OnGetAnalyticsClicked += HandleGetPortfolioReport;
+        ///_tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
 
     }
 
-    private void SetupAssetList()//инициализация портфолио,создание кнопок
+    
+    private void PortfolioInitialize()//инициализация портфолио,создание кнопок
     {
+        //инициализация модели
         _portfolioSummary.UpdateCashBalance();
-        _view.CreatePortfolioView();
         _model.PortfolioInitialize();
+        PortfolioSummary summary = _model.GetSummary();
 
-        Dictionary<Ticker, string> allAssetsInfo = GetCombinedAssetInfo();
-        foreach (var kvp in allAssetsInfo)
+        //UI
+        _view.UpdatePortfolioView(summary);
+        foreach (var kvp in summary.MyActives)
         {
             Ticker ticker = kvp.Key;
-            string displayName = kvp.Value;
             AssetItemView itemView = _view.CreateAssetItemView();
             int price = _model.GetAssetPrice(ticker);
             int quantity = _model.GetQuantityByTicker(ticker);
-            itemView.Initialize(ticker, price, quantity, true);//где взять price, quantit
+            _view.CreateAssetItemView();
+            //_view.UpdateAssetButton(ticker, newPrice, newQuantity);
+            itemView.Initialize(ticker, price, quantity, true);
             itemView.OnOpenTradeRequested += HandleOpenTradeWindowRequest;
-            //itemView.OnAssetDetailsClicked += HandleAssetDetailsClicked;
         }
-    }
+        _view.CreatePortfolioView();
 
+    }
     private Dictionary<Ticker, string> GetCombinedAssetInfo()
     {
         var allAssets = _model.Assets;
@@ -96,7 +106,7 @@ public class PortfolioPresenter
     {
         int price = _model.GetAssetPrice(ticker);
 
-        if (price <= 0.0f)
+        if (price <= 0.0)
         {
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Цена для актива {ticker} не найдена."));
             return;
@@ -115,10 +125,12 @@ public class PortfolioPresenter
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Актив не найден"));
             return;
         }
-        float totalCost =asset.CurrentValue * quantity;
+        int totalCost = asset.CurrentValue * quantity;
         HandleTradeActiv(tradeType, asset, quantity);
-        
+
     }
+    
+    #region HandleTrade
     private void HandleTradeActiv(TradeType tradeType, IActiv asset, int quantity)
     {
         if (asset == null || quantity <= 0)
@@ -209,7 +221,7 @@ public class PortfolioPresenter
                 }
         }
 
-        _view.UpdatePortfolioView(_portfolioSummary);
+        _view.UpdatePortfolioView(_portfolioSummary);//старая сводка?
         _model.UpdatePortfolioValue(AssetType,totalCost,quantity,TradeType.Buy);  
     }
 
@@ -244,7 +256,7 @@ public class PortfolioPresenter
         _model.UpdatePortfolioValue(AssetType,totalCost,quantity,TradeType.Sell);
     
     }
-
+#endregion
     private void HandleAddCash(int amount)
     {
         if (amount <= 0)

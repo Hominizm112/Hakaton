@@ -15,6 +15,10 @@ public class AssetItemView : MonoBehaviour//отображение одной к
     private Ticker _assetTicker;
     public event Action<Ticker, TradeType> OnOpenTradeRequested;
     public event Action<Ticker> OnAssetDetailsClicked;//событие клика на кнопку актива(получение инфо)
+    private void Awake()
+    {
+        //Mediator.Instance.RegisterService(this);
+    }
 
     public void Initialize(Ticker ticker, int price, int quantity, bool isPortfolioView)
     {

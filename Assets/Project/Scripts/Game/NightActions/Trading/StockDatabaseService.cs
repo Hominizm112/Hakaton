@@ -10,10 +10,10 @@ public class MarketAssetInfo
     public MarketAssetInfo(IAssetConfig config)
     {
         Config = config;
-       // CurrentMarketPrice = config.InitialPrice;
+        //CurrentMarketPrice = config.InitialPrice;
+        CurrentMarketPrice = 200;//tests
     }
 }
-
 
 public class MarketData
 {
@@ -47,24 +47,31 @@ public class MarketData
 
         Debug.Log($"MarketData успешно загружена. Акций: {_allMarketStocks.Count}, Облигаций: {_allMarketBonds.Count}");
     }
+
+    private IReadOnlyDictionary<Ticker, MarketAssetInfo> GetTargetDictionary(Type assetType)
+    {
+        if (assetType == typeof(Stock))
+        {
+            return _allMarketStocks;
+        }
+        if (assetType == typeof(Bond))
+        {
+            return _allMarketBonds;
+        }
+        
+        throw new ArgumentException($"Неподдерживаемый тип актива: {assetType}. Ожидается Stock или Bond.");
+    }
 //поиск информации об активе по тикеру
     public IAssetConfig FindAssetConfigInMarket(Ticker ticker, Type assetType)
     {
         IReadOnlyDictionary<Ticker, MarketAssetInfo> targetDictionary = null;
 
-        targetDictionary = assetType switch
-        {
-            Type stockType when stockType == typeof(Stock) => _allMarketStocks,
-
-            Type bondType when bondType == typeof(Bond) => _allMarketBonds,
-
-            _ => throw new ArgumentException($"Неподдерживаемый тип актива: {assetType}. Ожидается Stock или Bond.")
-        };
-
+        targetDictionary = GetTargetDictionary(assetType);
         if (targetDictionary.TryGetValue(ticker, out MarketAssetInfo assetInfo))
         {
             return assetInfo.Config;
         }
+        
         throw new KeyNotFoundException($"Актив с тикером {ticker} типа {assetType.Name} не найден в данных рынка.");
 
     }
@@ -73,14 +80,7 @@ public class MarketData
     {
         //копия кода
         IReadOnlyDictionary<Ticker, MarketAssetInfo> targetDictionary = null;
-        targetDictionary = assetType switch
-        {
-            Type stockType when stockType == typeof(Stock) => _allMarketStocks,
-
-            Type bondType when bondType == typeof(Bond) => _allMarketBonds,
-
-            _ => throw new ArgumentException($"Неподдерживаемый тип актива: {assetType}. Ожидается Stock или Bond.")
-        };
+        targetDictionary = GetTargetDictionary(assetType);
 
         if (targetDictionary.TryGetValue(ticker, out MarketAssetInfo assetInfo))
         {

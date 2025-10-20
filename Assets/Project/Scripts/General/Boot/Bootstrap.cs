@@ -16,6 +16,7 @@ public class Bootstrap : MonoBehaviour
     private ShopkeeperService _shopkeeperService;
     private ConsoleService _consoleService;
     private TimeService _timeService;
+    private PortfollioService _portfolioService;
 
     private void Awake()
     {
@@ -37,6 +38,8 @@ public class Bootstrap : MonoBehaviour
 
         _timeService = Instantiate(Resources.Load<TimeService>("Prefabs/TimeService"));
 
+        _portfolioService = Instantiate(Resources.Load<PortfollioService>("Prefabs/PortfollioService"));
+
         RegisterPersistent(_mediator);
         RegisterPersistent(_audioHub);
         RegisterPersistent(_inputManager);
@@ -48,6 +51,7 @@ public class Bootstrap : MonoBehaviour
         RegisterPersistent(_shopkeeperService);
         RegisterPersistent(_consoleService);
         RegisterPersistent(_timeService);
+        RegisterPersistent(_portfolioService);
 
         _mediator.RegisterService(_audioHub);
         _mediator.RegisterService(_inputManager);
@@ -56,11 +60,13 @@ public class Bootstrap : MonoBehaviour
         _mediator.RegisterService(_shopkeeperService);
         _mediator.RegisterService(_consoleService);
         _mediator.RegisterService(_timeService);
+        _mediator.RegisterService(_portfolioService);
 
         _mediator.RegisterInitializable(_dragManager);
         _mediator.RegisterInitializable(_transitionScreen);
         _mediator.RegisterInitializable(_playerController);
         _mediator.RegisterInitializable(_playerCurrencyPresenter, true);
+        _mediator.RegisterInitializable(_portfolioService);
 
 
         _playerCurrencyPresenter.AddCurrency(1000);

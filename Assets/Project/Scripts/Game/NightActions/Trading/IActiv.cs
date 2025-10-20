@@ -1,7 +1,7 @@
 public interface IActiv
 {
     int CurrentValue { get; }
-    Ticker Ticker { get; }
+    Ticker Ticker { get;}
     int Quantity { get; } 
 }
 

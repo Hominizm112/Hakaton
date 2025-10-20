@@ -222,7 +222,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CoinSpinningAnimation UI PC-sheet_0: -1475574651659278934
+      CoinSpinningAnimation UI PC-sheet_1: -4731588893586808751
+      CoinSpinningAnimation UI PC-sheet_2: -2686027054379377105
+      CoinSpinningAnimation UI PC-sheet_3: -7061640600505665733
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

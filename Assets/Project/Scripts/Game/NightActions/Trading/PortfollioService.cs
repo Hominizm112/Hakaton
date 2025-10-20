@@ -30,7 +30,7 @@ public abstract class SampleActiv<TConfig> : IActiv<TConfig> where TConfig : IAs
 
 }
 
-public class PortfollioService //MonoService // IPortfolioService
+public class PortfollioService: MonoService,IInitializable
 {
 
     private MarketData _marketData;
@@ -41,22 +41,27 @@ public class PortfollioService //MonoService // IPortfolioService
     //public Dictionary<Ticker, Bond> AvailableBonds { get; private set; }
     private Dictionary<Ticker, IActiv> AvailableAssets { get; set; } = new();
     public IReadOnlyDictionary<Ticker, IActiv> Assets => AvailableAssets;
-
     public Action<PortfolioSummary> OnPortfolioUpdated { get; internal set; }
 
     private void Awake()
     {
         Mediator.Instance.RegisterService(this);
     }
+    public void Initialize()
+    {
+        PortfolioInitialize();
+
+    }
 
     public void PortfolioInitialize()
     {
-        AvailableAssets = new Dictionary<Ticker, IActiv>();
-        
-
-        
+        _portfolioSummary.PortfolioInitialState();  
     }
 
+    public PortfolioSummary GetSummary()
+    {
+        return _portfolioSummary;  
+    }
     #region FindByTicker
 
     public IActiv GetAssetByTicker(Ticker ticker)// поиск актива по тикеру
@@ -67,7 +72,7 @@ public class PortfollioService //MonoService // IPortfolioService
             return activ;
         }
 
-       // _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Актива с заданным тикером не существует"));
+        // _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Актива с заданным тикером не существует"));
         return null;
 
     }
@@ -84,7 +89,6 @@ public class PortfollioService //MonoService // IPortfolioService
 
     public int GetQuantityByTicker(Ticker targetTicker)//возврат поля количества по тикеру
     {
-
         if (_portfolioSummary.MyActives.TryGetValue(targetTicker, out IActiv activ))
         {
             return activ.Quantity;
@@ -101,7 +105,6 @@ public class PortfollioService //MonoService // IPortfolioService
         _portfolioSummary.RecalculateValueCount(assetType, TypeOperation, totalCost, quantity);
         _portfolioSummary.RecalculateCashBalance(TypeOperation, totalCost);
     }
-
 
     //кнопки быстрой продажи покупки
     #region BuyActiv
@@ -129,7 +132,6 @@ public class PortfollioService //MonoService // IPortfolioService
 
     }
     
-
     #region SellActiv
     public SellTransactionState SellAsset(Type assetType, Ticker ticker, int quantity, int totalCost)
     {
@@ -185,7 +187,6 @@ public class PortfollioService //MonoService // IPortfolioService
        return !(!_portfolioSummary.MyActives.ContainsKey(ticker) || 
              _portfolioSummary.MyActives[ticker].Quantity < quantity);
     }
-
     public bool HasEnoughCash(int totalCost)
     {
         return _portfolioSummary.CashBalance >= totalCost;
@@ -194,7 +195,8 @@ public class PortfollioService //MonoService // IPortfolioService
     //покупка иных
     public void CheckOtherStocks()
     {
-        ///
+        
+
     }
     public void CheckOtherBonds()
     {

@@ -88,6 +88,8 @@ public class InputManager : MonoService, IStateListener
         mediator.SubscribeToState(this, Game.State.Gameplay);
         mediator.SubscribeToState(this, Game.State.Paused);
         mediator.SubscribeToState(this, Game.State.Menu);
+        mediator.SubscribeToState(this, Game.State.NightScene);
+        mediator.SubscribeToState(this, Game.State.Trading);
 
         InitializeInputActions();
     }
@@ -152,6 +154,13 @@ public class InputManager : MonoService, IStateListener
             case Game.State.Loading:
                 SetInputEnabled(false);
                 break;
+            case Game.State.Trading:
+                SetInputEnabled(true);
+                break;   
+            case Game.State.NightScene:
+                SetInputEnabled(false);
+                break;
+            
         }
     }
 

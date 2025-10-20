@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ResizableBG Simple Thick Destructive Fill UI PC_0: -8338363790460999841
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

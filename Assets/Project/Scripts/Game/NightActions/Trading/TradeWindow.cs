@@ -3,30 +3,31 @@ using UnityEngine.UI;
 using TMPro;
 using MyGame.Enums;
 using System;
+using UnityEngine.Localization.Components;
+
 public class TradingWindowView : MonoBehaviour
 {
     [SerializeField] private Button _confirmButton;// кнопка подтвердить в окне торговли
-    //[SerializeField] private InputField _quantityInput;//ввод количества в окне торговли
+    [SerializeField] private LocalizeStringEvent localizeStringEvent;
     private TMP_Text _tickerText;
     private TMP_Text _activeNameText;
     private Ticker _currentTicker;
     private TMP_Text _currentPrice;
     private TradeType _currentTradeType;
-    public  event Action OnTradeConfirmed;
+    public  event Action<TradeType,Ticker ,int > OnTradeConfirmed;
 
+    public void Awake()
+    {
+        //_confirmButton.onClick.AddListener(HandleConfirmButtonClicked);
+    }
 
-    private void Awake()
+    public void Initialize(TradeType tradeType, Ticker ticker, int quantity)
     {
         _confirmButton.onClick.AddListener(() =>
         {
-            //localizestringevent
-            //int quantity;
-            //if (quantity > 0)
-            //{
-            //   OnTradeConfirmed?.Invoke(_currentTradeType, _currentTicker, quantity);
-            // }
-          //  Mediator.Instance.GlobalEventBus.Subscribe<OpenTradeWindowEvent>(HandleOpenEvent);
+            OnTradeConfirmed?.Invoke(tradeType,ticker,quantity);
         });
+        
     }
 
 
@@ -48,36 +49,9 @@ public class TradingWindowView : MonoBehaviour
     public void TradeWindowClose()
     {
         this.gameObject.SetActive(false);
-        //ColorfulDebug.LogGreen("Успешная операция закрытия окна торговли");
+        ColorfulDebug.LogGreen("Успешная операция закрытия окна торговли");
 
 
     }
 
-
-    // public void UpdateAssetPrice(float price)//<--заменить на int
-    // {
-    // _currentPrice.text = $"Текущая цена: {price}";
-    // }
-
-    // private void UpdateTotal(string newQuantity)//обновление стоимости сделки
-    // {
-    //   if (int.TryParse(newQuantity, out int quantity) && quantity > 0)
-    //  {
-    //      float total = _currentPrice * quantity;
-    //     _totalText.text = total.ToString("C");
-    // }
-    //  else
-    //  {
-    //     _totalText.text = "0";
-    //  }
-    //  }
-    //public void OnTradeButtonClick()
-    //  {
-    //  if (int.TryParse(_quantityInput.text, out int quantity))
-    //   {
-
-    //        Mediator.Instance.GlobalEventBus.Publish(new TradeRequestEvent(_currentTradeType, _currentTicker, _currentPrice, quantity));
-    //        gameObject.SetActive(false);
-    ////  }
-    // }
 }

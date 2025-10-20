@@ -4,7 +4,9 @@ using UnityEngine;
 public class StockConfig : ScriptableObject, IAssetConfig 
 {
 
-    public Ticker Ticker { get;}
+    [Header("Базовая конфигурация актива")]
+    [SerializeField] private Ticker _ticker;
+    public Ticker Ticker => _ticker;
 
 
     //[SerializeField] private Ticker Ticker;

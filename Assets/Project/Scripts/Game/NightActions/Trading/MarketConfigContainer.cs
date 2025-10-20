@@ -1,9 +1,19 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
-[CreateAssetMenu(fileName = "MarketConfigContainer", menuName = "Assets/Market Config Container")]
+[CreateAssetMenu(fileName = "MarketConfigContainer", menuName = "Market/Config Container")]
 public class MarketConfigContainer : ScriptableObject
 {
-    public StockConfig[] AllStockConfigs;
-    public BondConfig[] AllBondConfigs;
+    [Header("Конфигурации Акций")]
+    [SerializeField] 
+    private List<StockConfig> _allStockConfigs = new List<StockConfig>();
+
+    [Header("Конфигурации Облигаций")]
+    [SerializeField]
+    private List<BondConfig> _allBondConfigs = new List<BondConfig>();
+
+    public IEnumerable<IAssetConfig> AllStockConfigs => _allStockConfigs.Cast<IAssetConfig>();
+    public IEnumerable<IAssetConfig> AllBondConfigs => _allBondConfigs.Cast<IAssetConfig>();
 
 }
