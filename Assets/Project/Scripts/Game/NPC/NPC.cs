@@ -112,37 +112,19 @@ public struct NPCBuyResult
 [Serializable]
 public struct TeaComposite
 {
-    public List<TeaType> teaTypes;
     public List<TeaFlavorTag> teaFlavorTags;
-    public List<ProcessingLevel> processingLevels;
-    public List<TeaGrade> teaGrades;
 
-    [Range(0, 100)]
-    public int teaRatingThreshold;
 
     public int GetRating(TeaBaseMixed tea)
     {
         float rating = 0f;
 
-        // 20% weight
-        if (teaTypes.Contains(tea.teaType))
-            rating += 20f;
-
-        // 40% weight
         if (teaFlavorTags.Count > 0)
         {
             int flavorMatches = teaFlavorTags.Count(flavor => tea.teaFlavorTags.Contains(flavor));
             float flavorMatchPercent = (float)flavorMatches / teaFlavorTags.Count;
             rating += flavorMatchPercent;
         }
-
-        // 15% weight
-        if (processingLevels.Contains(tea.processingLevel))
-            rating += 15f;
-
-        // 25% weight
-        if (teaGrades.Contains(tea.teaGrade))
-            rating += 25f;
 
         Debug.Log($"calculated rating: {rating}");
 

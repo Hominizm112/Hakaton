@@ -85,7 +85,6 @@ public class StallService : MonoService
 
     private void StallBoxSelect(ButtonExtended stallBox)
     {
-        print("selected stall box");
         _lastSelectedStallBox = stallBox;
         _lastSelectedStallBoxStatic = stallBox;
 

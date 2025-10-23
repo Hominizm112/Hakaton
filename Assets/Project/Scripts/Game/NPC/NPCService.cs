@@ -17,13 +17,11 @@ public class NPCService : MonoService
 
 
     public NPC npc;
-    public TeaCommodity teaCommodity;
     private GameObject _activeNpc;
     private SpeechBubble _activeSpeechBubble;
     private EmotionIndicator _emotionIndicator;
     private Camera _mainCamera;
     private Vector3 _targetPosition;
-    private Mediator _mediator;
     private Sequence _currentAnimation;
     public bool NpcReadyToBuy;
 
