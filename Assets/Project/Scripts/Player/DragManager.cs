@@ -8,10 +8,9 @@ public interface IDraggable
     void OnDragEnd();
 }
 
-public class DragManager : MonoBehaviour, IInitializable, IStateListener
+public class DragManager : MonoService, IInitializable, IStateListener
 {
 
-    private Mediator _mediator;
     private InputManager _inputManager;
     private DragVelocityCalculator _velocityCalculator;
 
@@ -20,16 +19,17 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
     private bool _isDragging = false;
     private bool _hasValidDrag = false;
 
-    public void Initialize(Mediator mediator)
+    public override void Initialize(Mediator mediator)
     {
-        _mediator = mediator;
+        base.Initialize(mediator);
+
         _inputManager = mediator.GetService<InputManager>();
         _velocityCalculator = new();
 
-        mediator.RegisterService<DragManager>(this);
+        mediator.RegisterService(this);
         mediator.SubscribeToState(this, Game.State.Gameplay);
 
-        mediator.GlobalEventBus.Subscribe<InputActionEvent>(OnInputAction);
+        AddEvent(mediator.GlobalEventBus.Subscribe<InputActionEvent>(OnInputAction));
     }
 
     public void OnStateChanged(Game.State state)
@@ -121,8 +121,4 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
     public Vector2 GetDragDelta() => _inputManager.GetVector2("Point") - _previousDragPosition;
     public Vector2 GetCurrentVelocity => _velocityCalculator.GetSmoothedVelocity();
 
-    private void OnDestroy()
-    {
-        _mediator?.GlobalEventBus?.Unsubscribe<InputActionEvent>(OnInputAction);
-    }
 }

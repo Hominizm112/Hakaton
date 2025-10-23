@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IEvent { }
 
+
 public class LoadSceneEvent : IEvent
 {
     public string SceneName { get; }
@@ -80,5 +81,67 @@ public class AssetListChangedEvent : IEvent
         NewAssetTicker = newAssetTicker;
     }
 }
+
+#endregion
+
+#region Scene Management Related Events
+
+public class SceneLoadedEvent : IEvent
+{
+    public readonly string SceneName;
+    public SceneLoadedEvent(string sceneName)
+    {
+        SceneName = sceneName;
+    }
+}
+
+public class SceneUnloadEvent : IEvent
+{
+    public readonly string SceneName;
+
+    public SceneUnloadEvent(string sceneName)
+    {
+        SceneName = sceneName;
+    }
+}
+
+#endregion
+
+#region In-game Time Events
+
+public interface TimeEvent : IEvent { }
+
+public class TimeTrackStartEvent : TimeEvent
+{
+    public readonly int Minutes;
+    public readonly int Seconds;
+
+    public TimeTrackStartEvent(int minutes = 0, int seconds = 0)
+    {
+        Minutes = minutes;
+        Seconds = seconds;
+    }
+
+
+}
+
+public class TimeTrackStopEvent : TimeEvent { }
+
+public class TimeTrackCompletedEvent : TimeEvent { }
+
+#endregion
+
+
+#region Stall Related Events
+
+public class CustomerAtStallEvent : IEvent { }
+
+#endregion
+
+#region Save/Load Events
+
+public class LoadDataEvent : IEvent { }
+
+public class TeaRemovedFromSelectionEvent : IEvent { }
 
 #endregion

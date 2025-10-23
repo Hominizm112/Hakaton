@@ -19,8 +19,9 @@ public class EmotionIndicator : MonoService
         Mediator.Instance.RegisterService(this);
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
+        base.OnDestroy();
         OnComplete = null;
         timer.Dispose();
     }

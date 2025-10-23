@@ -5,7 +5,7 @@ public class TeaMixer : MonoBehaviour
 {
     public static TeaBaseMixed MixTea(TeaBase teaBase, List<WordOfPower> wordsOfPower)
     {
-        List<TeaFlavorTag> teaFlavorTags = teaBase.baseFlavorTags;
+        List<TeaFlavorTag> teaFlavorTags = new(teaBase.baseFlavorTags);
         List<TeaFlavorTag> teaFlavorsToRemove = new();
         foreach (var wordOfPower in wordsOfPower)
         {
@@ -40,6 +40,7 @@ public class TeaMixer : MonoBehaviour
         }
 
         return new(teaBase, teaFlavorTags);
+
     }
 
 
@@ -48,11 +49,12 @@ public class TeaMixer : MonoBehaviour
 public struct TeaBaseMixed
 {
     public TeaBase teaBase;
-    public List<TeaFlavorTag> additionalTeaFlavorTags;
+    public List<TeaFlavorTag> teaFlavorTags;
+
 
     public TeaBaseMixed(TeaBase teaBase, List<TeaFlavorTag> additionalTeaFlavorTags)
     {
         this.teaBase = teaBase;
-        this.additionalTeaFlavorTags = additionalTeaFlavorTags;
+        this.teaFlavorTags = additionalTeaFlavorTags;
     }
 }

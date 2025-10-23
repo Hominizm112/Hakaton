@@ -1,14 +1,20 @@
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.Localization;
 
 
 
 [CreateAssetMenu(fileName = "New Commodity", menuName = "Commodity/Base Commodity")]
+[Serializable]
 public class Commodity : ScriptableObject
 {
+    public string id;
+
     [Header("Basic Information")]
-    public string commodityName;
-    public string description;
+    public LocalizedString commodityName;
+    public LocalizedString description;
     public Sprite icon;
 
     [Header("Pricing")]
@@ -29,6 +35,10 @@ public class Commodity : ScriptableObject
     public RegionOfOrigin region;
 
     public int CurrentPrice => CalculateCurrentPrice();
+
+
+
+
 
     private int CalculateCurrentPrice()
     {
@@ -95,6 +105,32 @@ public class Commodity : ScriptableObject
 
 
 
+}
+
+[Serializable]
+public class CommodityEntry
+{
+    public Commodity commodity;
+    public int amount;
+
+    public CommodityEntry(Commodity commodity, int amount)
+    {
+        this.commodity = commodity;
+        this.amount = amount;
+    }
+}
+
+[Serializable]
+public class CommoditySaveData
+{
+    public string id;
+    public int amount;
+
+    public CommoditySaveData(string id, int amount)
+    {
+        this.id = id;
+        this.amount = amount;
+    }
 }
 
 public enum Rarity

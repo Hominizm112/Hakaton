@@ -1,0 +1,107 @@
+using System.Collections.Generic;
+using System.Linq;
+using DG.Tweening;
+using UnityEngine;
+
+public class CustomerService : MonoService
+{
+    [Header("Customer settings")]
+    [SerializeField] private GameObject customerPrefab;
+    [SerializeField] private Transform customersHolder;
+    [SerializeField] private Vector2 customerStartPosition;
+    [SerializeField] private Vector2 customerAtStallPosition;
+    [SerializeField] private Vector2 customerEndPosition;
+
+    [Header("Customer animation settings")]
+
+    [SerializeField] private float customerShowDuration;
+    [SerializeField] private Ease customerShowEase;
+    [SerializeField] private float customerHideDuration;
+    [SerializeField] private Ease customerHideEase;
+
+    private Customer _customerAtStall;
+
+    /// <summary>
+    /// Object pool for managing Customer instances with their activation states.
+    /// Key (Customer): The Customer instance associated with the activation state
+    /// Value (bool): Represents whether the customer is currently active (true) or available for reuse (false)
+    /// </summary>
+    private Dictionary<Customer, bool> _customersPool = new();
+
+    public void Start()
+    {
+        Mediator.Instance.RegisterService(this);
+
+        InitializeCustomers();
+    }
+
+    private void InitializeCustomers()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            _customersPool.Add(Instantiate(customerPrefab, customersHolder).GetComponent<Customer>(), false);
+            _customersPool.Last().Key.gameObject.SetActive(false);
+        }
+    }
+
+
+    private Customer GetFreeCustomer()
+    {
+        return _customersPool.FirstOrDefault(r => !r.Value).Key;
+    }
+
+    private void SetCustomerActive(Customer customer, bool active)
+    {
+        _customersPool[customer] = active;
+        customer.gameObject.SetActive(active);
+    }
+
+
+
+    public void RequestCustomer()
+    {
+        SpawnCustomer();
+    }
+
+    private void SpawnCustomer()
+    {
+        Customer customer = GetFreeCustomer();
+        if (customer == null)
+        {
+            ColorfulDebug.LogError("Free customer not found.");
+            return;
+        }
+
+        SetCustomerActive(customer, true);
+        customer.gameObject.transform.position = customerStartPosition;
+        customer.gameObject.transform.DOMove(customerAtStallPosition, customerShowDuration).SetEase(customerShowEase).OnComplete(() =>
+        {
+            _mediator.GlobalEventBus.Publish<CustomerAtStallEvent>(new());
+            _customerAtStall = customer;
+        });
+
+    }
+
+    public void DespawnCustomer()
+    {
+        if (_customerAtStall == null)
+        {
+            ColorfulDebug.LogError("Tried to despawn customer, but none is at stall.");
+            return;
+        }
+
+        _customerAtStall.gameObject.transform.DOMove(customerEndPosition, customerHideDuration).SetEase(customerHideEase).OnComplete(() =>
+        {
+            SetCustomerActive(_customerAtStall, false);
+        });
+
+        _customerAtStall = null;
+
+    }
+
+    public override void Dispose()
+    {
+        _mediator.UnregisterService(this);
+    }
+}
+

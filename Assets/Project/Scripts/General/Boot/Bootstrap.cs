@@ -62,7 +62,6 @@ public class Bootstrap : MonoBehaviour
         _mediator.RegisterService(_timeService);
         _mediator.RegisterService(_portfolioService);
 
-        _mediator.RegisterInitializable(_dragManager);
         _mediator.RegisterInitializable(_transitionScreen);
         _mediator.RegisterInitializable(_playerController);
         _mediator.RegisterInitializable(_playerCurrencyPresenter, true);
@@ -79,8 +78,7 @@ public class Bootstrap : MonoBehaviour
 
         _mediator.SubscribeToState(Game.State.Gameplay, (_) => _mediator.InitializeAll());
 
-
-
+        InjectEvents();
 
         _saveManager.LoadSaveData();
     }
@@ -88,5 +86,38 @@ public class Bootstrap : MonoBehaviour
     public void RegisterPersistent<T>(T obj) where T : Object
     {
         DontDestroyOnLoad(obj);
+    }
+
+    private void InjectEvents()
+    {
+        _mediator.GlobalEventBus.Subscribe<SceneLoadedEvent>((e) =>
+        {
+            if (e.SceneName == "DayScene")
+            {
+                _mediator.GlobalEventBus.Publish<TimeTrackStartEvent>(new(minutes: 600));
+            }
+        });
+
+        _mediator.GlobalEventBus.Subscribe<SceneUnloadEvent>((e) =>
+        {
+            if (e.SceneName == "DayScene")
+            {
+                _mediator.GlobalEventBus.Publish<TimeTrackStopEvent>(new());
+                _mediator.GetService<SaveManager>().SaveData();
+            }
+
+            if (e.SceneName == "PC_TEST")
+            {
+                _mediator.GetService<SaveManager>().SaveData();
+            }
+        });
+
+        // _mediator.GlobalEventBus.Subscribe<TimeTrackCompletedEvent>((e) =>
+        // {
+        //     _mediator.LoadScene("PC_TEST", Game.State.NightScene);
+        // });
+
+
+
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization.Components;
 
 public class CartItemData
 {
@@ -16,7 +17,7 @@ public class CartItemData
 
 public class CartItem : MonoBehaviour
 {
-    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private LocalizeStringEvent nameText;
     [SerializeField] private TMP_Text priceText;
     [SerializeField] private TMP_Text quantityText;
 
@@ -40,7 +41,7 @@ public class CartItem : MonoBehaviour
         if (_itemData != null && cartItemData != _itemData) return;
 
         _itemData = cartItemData;
-        nameText.text = cartItemData.commodity.commodityName;
+        nameText.StringReference = cartItemData.commodity.commodityName;
         priceText.text = (cartItemData.commodity.basePrice * cartItemData.quantity).ToString();
         quantityText.text = cartItemData.quantity.ToString();
     }

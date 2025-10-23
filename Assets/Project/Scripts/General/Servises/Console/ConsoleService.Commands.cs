@@ -50,5 +50,13 @@ public partial class ConsoleService
     }
 
 
+    [ConsoleCommand("save", "Save game data", "save")]
+    private CommandResult SaveCommand(CommandContext context)
+    {
+        _mediator.GetService<SaveManager>().SaveData();
+        return CommandResult.Ok("Game data saved.");
+    }
+
+
     #endregion
 }

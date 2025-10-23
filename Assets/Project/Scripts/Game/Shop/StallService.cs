@@ -11,30 +11,57 @@ public class StallService : MonoService
     [SerializeField] private List<ButtonExtended> stallButtons;
     [SerializeField] private Transform draggableItemHolder;
     [SerializeField] private AreaDetector itemPlaceZone;
-    [Header("Prefabs")]
+    [SerializeField] private Transform itemPlacePosition;
+
+
+    [Header("Item Preview Settings")]
     [SerializeField] private GameObject draggableItemPrefab;
-    private Mediator _mediator;
+    [SerializeField] private Vector2 itemDragOffset;
+    [SerializeField] private ParticleSystem itemDeselectedParticleEmitter;
+
+    [Header("Tea Selection For Stall Box")]
+    [SerializeField] private StallBoxUI teaSelectionScreen;
+
+
+    public override List<Type> requiredServices { get; protected set; } = new() { typeof(CustomerService) };
     private ButtonExtended _lastSelectedStallBox;
+    private ButtonExtended _lastSelectedStallBoxStatic;
     private GameObject _draggableItem;
     private VelocityBasedRotator _velocityBasedRotator;
+    private bool _teaSelectionScreenOpen;
+
+    private TeaBase _selectedCommodity;
+    public TeaBase SelectedCommodity => _selectedCommodity;
+
+    private CustomerService _customerService;
 
     #region Init
-    public void Start()
+
+    private void Start()
     {
-        _mediator = Mediator.Instance;
-        _mediator.RegisterService(this);
+        Mediator.Instance.RegisterService(this);
+    }
+
+    public override void Initialize(Mediator mediator)
+    {
+        base.Initialize(mediator);
+        _customerService = mediator.GetService<CustomerService>();
+
         SetupHandlers();
         SubscribeToStallButtons();
         CreateDraggableItem();
+
+        RequestCustomer();
     }
+
 
 
 
     private void SetupHandlers()
     {
-        _mediator.GlobalEventBus.Subscribe<DragContinuedEvent>(StallItemUpdateDragHandler);
-        _mediator.GlobalEventBus.Subscribe<DragEndedEvent>(StallItemEndDragHandler);
-        _mediator.GlobalEventBus.Subscribe<InputActionEvent>(MouseClickHandler);
+        AddEvent(_mediator.GlobalEventBus.Subscribe<DragContinuedEvent>(StallItemUpdateDragHandler));
+        AddEvent(_mediator.GlobalEventBus.Subscribe<DragEndedEvent>(StallItemEndDragHandler));
+        AddEvent(_mediator.GlobalEventBus.Subscribe<InputActionEvent>(MouseClickHandler));
     }
 
     private void SubscribeToStallButtons()
@@ -60,10 +87,17 @@ public class StallService : MonoService
     {
         print("selected stall box");
         _lastSelectedStallBox = stallBox;
+        _lastSelectedStallBoxStatic = stallBox;
+
+        if (_teaSelectionScreenOpen)
+        {
+            ShowTeaSelectionForStallBox();
+            return;
+        }
 
 
         Vector2 newPoint = _lastSelectedStallBox.transform.position;
-        _draggableItem.transform.position = newPoint;
+        _draggableItem.transform.position = newPoint + itemDragOffset;
         _velocityBasedRotator.OnDragStart();
 
     }
@@ -76,35 +110,33 @@ public class StallService : MonoService
             return;
         }
 
-        if (InputManager.GetObjectUnderMouse() == itemPlaceZone.gameObject)
-        {
-            _draggableItem.SetActive(false);
-        }
+
     }
 
 
     private void StallItemUpdateDragHandler(DragContinuedEvent @event)
     {
-        if (_lastSelectedStallBox == null)
+        if (_lastSelectedStallBox == null || _teaSelectionScreenOpen)
         {
             return;
         }
 
+
         _draggableItem.SetActive(true);
         Vector2 newPoint = Camera.main.ScreenToWorldPoint(@event.ScreenPosition);
-        _draggableItem.transform.position = newPoint;
+        _draggableItem.transform.position = newPoint + itemDragOffset;
         _velocityBasedRotator.OnDragContinue(@event.Velocity);
     }
 
     private void StallItemEndDragHandler(DragEndedEvent @event)
     {
-        if (itemPlaceZone.IsObjectInArea(_draggableItem))
+        if (itemPlaceZone.IsObjectInArea(_draggableItem) && _lastSelectedStallBox?.GetComponent<StallBox>().commodity is TeaBase)
         {
             PlaceItem();
         }
         else
         {
-            _draggableItem.SetActive(false);
+            HideItem();
         }
 
         _velocityBasedRotator.OnDragEnd();
@@ -113,10 +145,89 @@ public class StallService : MonoService
 
     private void PlaceItem()
     {
-        _draggableItem.transform.DOMove(itemPlaceZone.transform.position, 0.5f).SetEase(Ease.OutBack);
+        _selectedCommodity = _lastSelectedStallBox.GetComponent<StallBox>().commodity as TeaBase;
+        _draggableItem.transform.DOMove(itemPlacePosition.transform.position, 0.5f).SetEase(Ease.OutBack);
+    }
+
+    private void HideItem()
+    {
+        if (InputManager.GetObjectUnderMouse() != _draggableItem)
+        {
+            return;
+        }
+        if (!_draggableItem.activeSelf)
+        {
+            return;
+        }
+        _draggableItem.SetActive(false);
+
+        itemDeselectedParticleEmitter.transform.position = _draggableItem.transform.position;
+        itemDeselectedParticleEmitter.Play();
+
+        if (_selectedCommodity != null)
+        {
+            _mediator.GlobalEventBus.Publish<TeaRemovedFromSelectionEvent>(new());
+        }
+        _selectedCommodity = null;
+
     }
 
 
     #endregion
+
+    #region Tea Selection
+
+    public void SwitchTeaSelectionScreen()
+    {
+        teaSelectionScreen.gameObject.SetActive(!teaSelectionScreen.gameObject.activeSelf);
+        _teaSelectionScreenOpen = teaSelectionScreen.gameObject.activeSelf;
+
+    }
+
+    public void ShowTeaSelectionForStallBox()
+    {
+        Commodity commodity = _lastSelectedStallBox.GetComponent<StallBox>().commodity;
+        if (commodity != null)
+        {
+            teaSelectionScreen.SetCommodity(commodity);
+        }
+        else
+        {
+            teaSelectionScreen.UnsetCommodity();
+        }
+    }
+
+    public void SetSelectedCommodityToStallBox()
+    {
+        print(teaSelectionScreen.selectedCommodity is TeaBase);
+        if (teaSelectionScreen.selectedCommodity is TeaBase teaBase)
+        {
+            _lastSelectedStallBoxStatic.GetComponent<StallBox>().commodity = teaBase;
+        }
+    }
+
+
+    #endregion
+
+    #region Customer 
+
+    public void RequestCustomer()
+    {
+        _customerService.RequestCustomer();
+    }
+
+    public void CustomerCompletedHandler()
+    {
+
+    }
+
+
+    #endregion
+
+    public override void Dispose()
+    {
+        _mediator.UnregisterService(this);
+    }
+
 
 }

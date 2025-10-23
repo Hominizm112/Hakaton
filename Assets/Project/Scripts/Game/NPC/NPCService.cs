@@ -32,8 +32,9 @@ public class NPCService : MonoService
         Mediator.Instance.RegisterService(this);
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
+        base.OnDestroy();
         _currentAnimation?.Kill();
 
         if (_activeNpc != null)
@@ -71,9 +72,9 @@ public class NPCService : MonoService
         AnimateNPCIn();
     }
 
-    public void BuyTea(TeaCommodity tea)
+    public void BuyTea(TeaBaseMixed teaBaseMixed)
     {
-        npc.BuyTea(tea, HandleItemBought);
+        npc.BuyTea(teaBaseMixed, HandleItemBought);
     }
 
     #region  Animation

@@ -5,7 +5,7 @@ public class BaseGraphRunnerService : MonoService, IGraphRunnerService
 {
     [Header("Settings")]
     [SerializeField] private bool registerToMediator;
-    
+
 
     protected Dictionary<string, TweenGraphRunner> _registeredRunners = new();
 
@@ -24,15 +24,6 @@ public class BaseGraphRunnerService : MonoService, IGraphRunnerService
         Mediator.Instance.RegisterService(this);
     }
 
-    private void OnDestroy()
-    {
-        if (registerToMediator)
-        {
-            if (Mediator.Instance == null) return;
-            Mediator.Instance.UnregisterService(this);
-
-        }
-    }
 
     public void RegisterAnimator(string runnerName, TweenGraphRunner animator)
     {
@@ -69,5 +60,10 @@ public class BaseGraphRunnerService : MonoService, IGraphRunnerService
     {
         runner = GetRunner(runnerName);
         return runner != null;
+    }
+
+    public override void Dispose()
+    {
+        _mediator.UnregisterService(this);
     }
 }

@@ -20,11 +20,11 @@ public class NPC : ScriptableObject
     public TeaComposite unlovedTea;
 
 
-    public void BuyTea(TeaCommodity tea, Action<NPCBuyResult> OnComplete)
+    public void BuyTea(TeaBaseMixed tea, Action<NPCBuyResult> OnComplete)
     {
         NPCBuyResult npcBuyResult = new();
 
-        if (tea == null || buyReactions == null || buyReactions.Count == 0)
+        if (buyReactions == null || buyReactions.Count == 0)
         {
             return;
         }
@@ -68,7 +68,7 @@ public class NPC : ScriptableObject
         return NPCBuySatisfaction.Neutral;
     }
 
-    private TeaRating EvaluateTea(TeaCommodity tea)
+    private TeaRating EvaluateTea(TeaBaseMixed tea)
     {
         int favoriteScore = favoriteTea.GetRating(tea);
         int normalScore = normalTea.GetRating(tea);
@@ -120,7 +120,7 @@ public struct TeaComposite
     [Range(0, 100)]
     public int teaRatingThreshold;
 
-    public int GetRating(TeaCommodity tea)
+    public int GetRating(TeaBaseMixed tea)
     {
         float rating = 0f;
 
@@ -131,13 +131,9 @@ public struct TeaComposite
         // 40% weight
         if (teaFlavorTags.Count > 0)
         {
-            int flavorMatches = teaFlavorTags.Count(flavor => tea.flavorTags.Contains(flavor));
+            int flavorMatches = teaFlavorTags.Count(flavor => tea.teaFlavorTags.Contains(flavor));
             float flavorMatchPercent = (float)flavorMatches / teaFlavorTags.Count;
-            rating += flavorMatchPercent * 40f;
-        }
-        else
-        {
-            rating += 40f;
+            rating += flavorMatchPercent;
         }
 
         // 15% weight
@@ -150,7 +146,7 @@ public struct TeaComposite
 
         Debug.Log($"calculated rating: {rating}");
 
-        return rating > teaRatingThreshold ? Mathf.RoundToInt(rating) : 0;
+        return Mathf.RoundToInt(rating);
 
 
     }

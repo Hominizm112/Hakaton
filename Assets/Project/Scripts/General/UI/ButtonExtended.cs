@@ -92,7 +92,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
             }
         }
 
-        if (!spriteSwapOverride && (settings.spriteSwap || spriteOverride))
+        if (!spriteSwapOverride && settings != null && (settings.spriteSwap || spriteOverride))
         {
             _image = GetComponent<Image>();
             _initialSprite = _image.sprite;
@@ -113,7 +113,6 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 
     private void HandleButtonClick()
     {
-        print("click");
         OnClick();
         OnButtonClick?.Invoke();
     }

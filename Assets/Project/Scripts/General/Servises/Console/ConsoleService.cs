@@ -23,7 +23,6 @@ public partial class ConsoleService : MonoService
     [SerializeField] private bool logToDebug = true;
 
     private bool _consoleOppened;
-    private Mediator _mediator;
     private InputAction _toggleAction;
     private readonly List<string> _commandHistory = new();
     private int _historyIndex = -1;
@@ -330,8 +329,9 @@ public partial class ConsoleService : MonoService
     }
     #endregion
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
+        base.OnDestroy();
         if (_toggleAction != null)
         {
             _toggleAction.performed -= OnInputAction;

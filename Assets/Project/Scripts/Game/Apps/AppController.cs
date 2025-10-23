@@ -19,7 +19,7 @@ public class AppController : MonoService
     [SerializeField] private bool disableAppLoadingScreen;
 #endif
 
-    [SerializeReference] private List<IApp> apps = new();
+    private List<IApp> apps = new();
     private IApp _activeApp;
     private bool _keypadOpen => KeypadApp.IsOpen;
     public KeypadApp KeypadAppInstance => KeypadApp as KeypadApp;
@@ -27,7 +27,6 @@ public class AppController : MonoService
     private void Awake()
     {
         Mediator.Instance.RegisterService(this);
-        print(Mediator.Instance.GetService<AppController>());
     }
 
     public void RegisterApp(IApp app)
@@ -95,9 +94,9 @@ public class AppController : MonoService
         }
     }
 
-    public void OnDestroy()
+    public override void Dispose()
     {
-        apps.Clear();
-        Mediator.Instance?.UnregisterService(this);
+        _mediator.UnregisterService(this);
     }
+
 }

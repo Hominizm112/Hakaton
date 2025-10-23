@@ -1,15 +1,16 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.Localization.Components;
 
 public class ShopItem : MonoBehaviour
 {
     [SerializeField] private Commodity commodity;
-    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private LocalizeStringEvent nameLocalizeEvent;
     [SerializeField] private TMP_Text priceText;
 
     protected void Awake()
     {
-        nameText.text = commodity.commodityName;
+        nameLocalizeEvent.StringReference = commodity.commodityName;
         priceText.text = commodity.basePrice.ToString();
     }
 

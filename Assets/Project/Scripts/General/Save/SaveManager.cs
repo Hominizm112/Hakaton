@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 
 
@@ -18,20 +19,23 @@ public class SaveManager : UnitySingleton<SaveManager>
     public static event Action OnSaveCompleted;
 
     private const string SAVE_FILE_NAME = "savegame.json";
-
     private string SaveFilePath => Path.Combine(Application.persistentDataPath, SAVE_FILE_NAME);
 
-    private SaveData _currentSaveData;
-    public SaveData CurrentSaveData => _currentSaveData;
 
+    private JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+    {
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        NullValueHandling = NullValueHandling.Ignore,
+        DefaultValueHandling = DefaultValueHandling.Ignore,
+        Formatting = Formatting.Indented
+    };
+
+    public SaveData currentSaveData;
 
     protected override void Awake()
     {
         base.Awake();
         SetPersistent(this);
-
-        _currentSaveData = new SaveData();
-        Debug.Log($"Save file path: {SaveFilePath}");
     }
 
     /// <summary>
@@ -48,58 +52,56 @@ public class SaveManager : UnitySingleton<SaveManager>
         if (!File.Exists(SaveFilePath))
         {
             Debug.Log("No save file found. Using default data");
+            currentSaveData = new SaveData();
             OnSaveLoaded?.Invoke();
             yield break;
         }
-
-        var loadOperation = UnityEngine.Networking.UnityWebRequest.Get(SaveFilePath);
 
         string filePath = SaveFilePath;
 #if UNITY_WEBGL
         filePath = "file:///" + SaveFilePath;
 #endif
 
-        loadOperation = UnityEngine.Networking.UnityWebRequest.Get(filePath);
+        var loadOperation = UnityEngine.Networking.UnityWebRequest.Get(filePath);
         yield return loadOperation.SendWebRequest();
-
-        string encryptedJson = loadOperation.downloadHandler.text;
-
 
         if (loadOperation.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
         {
+            string json = loadOperation.downloadHandler.text.Trim('\uFEFF', '\u200B');
 
-            string decryptedJson = EncryptionUtility.Decrypt(encryptedJson);
-
-            if (decryptedJson != null)
+            try
             {
-                try
+                // DEBUG: Log what's being loaded
+                Debug.Log("=== LOAD DATA DEBUG ===");
+                Debug.Log("Raw JSON: " + json);
+
+                currentSaveData = JsonConvert.DeserializeObject<SaveData>(json, jsonSettings);
+
+                Debug.Log($"Loaded PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
+                if (currentSaveData.PlayerCommodities != null)
                 {
-                    _currentSaveData = JsonUtility.FromJson<SaveData>(decryptedJson);
-                    Debug.Log("Save data loaded succensfully.");
+                    foreach (var entry in currentSaveData.PlayerCommodities)
+                    {
+                        Debug.Log($"Loaded Commodity: {entry.id}, Amount: {entry.amount}");
+                    }
                 }
-                catch (Exception e)
-                {
-                    Debug.LogError($"Failed to parse save data: {e.Message}");
-                    _currentSaveData = new SaveData();
-                }
+                Debug.Log("=====================");
+
+                Debug.Log("Save data loaded successfully.");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to parse save data: {e.Message}");
+                currentSaveData = new SaveData();
             }
         }
         else
         {
-            Debug.LogWarning("Decryption failed. Attempting to load as plain text...");
-            try
-            {
-                _currentSaveData = JsonUtility.FromJson<SaveData>(encryptedJson);
-                Debug.Log("Legacy (unencrypted) save data loaded.");
-                SaveData();
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to load legacy save data: {e.Message}. Resetting to default.");
-                _currentSaveData = new SaveData();
-            }
+            Debug.LogError($"Failed to load save file: {loadOperation.error}");
+            currentSaveData = new SaveData();
         }
 
+        Mediator.Instance.GlobalEventBus.Publish<LoadDataEvent>(new());
         loadOperation.Dispose();
         OnSaveLoaded?.Invoke();
     }
@@ -115,38 +117,47 @@ public class SaveManager : UnitySingleton<SaveManager>
 
     private IEnumerator SaveDataRoutine()
     {
-        string plainJson = JsonUtility.ToJson(_currentSaveData, prettyPrint: true);
-
-        string encryptedJson = EncryptionUtility.Encrypt(plainJson);
-
-        byte[] bytes = Encoding.UTF8.GetBytes(encryptedJson);
-        var saveOperation = UnityEngine.Networking.UnityWebRequest.Put(SaveFilePath, bytes);
-        yield return saveOperation.SendWebRequest();
-
-        if (saveOperation.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
+        // DEBUG: Log what's actually being saved
+        Debug.Log("=== SAVE DATA DEBUG ===");
+        Debug.Log($"PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
+        if (currentSaveData.PlayerCommodities != null)
         {
+            foreach (var entry in currentSaveData.PlayerCommodities)
+            {
+                Debug.Log($"Commodity: {entry.id}, Amount: {entry.amount}");
+            }
+        }
+
+        string plainJson = JsonConvert.SerializeObject(currentSaveData, jsonSettings);
+        Debug.Log("Plain JSON: " + plainJson);
+        Debug.Log("=====================");
+
+        try
+        {
+            // Use File.WriteAllText for simplicity
+            File.WriteAllText(SaveFilePath, plainJson, Encoding.UTF8);
             Debug.Log("Game saved successfully!");
             OnSaveCompleted?.Invoke();
         }
-        else
+        catch (Exception e)
         {
-            Debug.LogError($"Failed to save game: {saveOperation.error}");
+            Debug.LogError($"Failed to save game: {e.Message}");
         }
 
-        saveOperation.Dispose();
+        yield return null;
     }
 
-    public void SetInt(string key, int value) => _currentSaveData.IntValues[key] = value;
-    public int GetInt(string key, int defaultValue = 0) => _currentSaveData.IntValues.TryGetValue(key, out int value) ? value : defaultValue;
+    public void SetInt(string key, int value) => currentSaveData.IntValues[key] = value;
+    public int GetInt(string key, int defaultValue = 0) => currentSaveData.IntValues.TryGetValue(key, out int value) ? value : defaultValue;
 
-    public void SetFloat(string key, float value) => _currentSaveData.FloatValues[key] = value;
-    public float GetFloat(string key, float defaultValue = 0) => _currentSaveData.FloatValues.TryGetValue(key, out float value) ? value : defaultValue;
+    public void SetFloat(string key, float value) => currentSaveData.FloatValues[key] = value;
+    public float GetFloat(string key, float defaultValue = 0) => currentSaveData.FloatValues.TryGetValue(key, out float value) ? value : defaultValue;
 
-    public void SetString(string key, string value) => _currentSaveData.StringValues[key] = value;
-    public string GetString(string key, string defaultValue = "") => _currentSaveData.StringValues.TryGetValue(key, out string value) ? value : defaultValue;
+    public void SetString(string key, string value) => currentSaveData.StringValues[key] = value;
+    public string GetString(string key, string defaultValue = "") => currentSaveData.StringValues.TryGetValue(key, out string value) ? value : defaultValue;
 
-    public void SetBool(string key, bool value) => _currentSaveData.BoolValues[key] = value;
-    public bool GetBool(string key, bool defaultValue = false) => _currentSaveData.BoolValues.TryGetValue(key, out bool value) ? value : defaultValue;
+    public void SetBool(string key, bool value) => currentSaveData.BoolValues[key] = value;
+    public bool GetBool(string key, bool defaultValue = false) => currentSaveData.BoolValues.TryGetValue(key, out bool value) ? value : defaultValue;
 
     /// <summary>
     /// Deletes the save file from disk and resets in-memory data.
@@ -156,14 +167,36 @@ public class SaveManager : UnitySingleton<SaveManager>
         if (File.Exists(SaveFilePath))
         {
             File.Delete(SaveFilePath);
-#if !UNITY_WEBGL
             Debug.Log("Save file deleted.");
-#endif
         }
-        _currentSaveData = new SaveData();
+        currentSaveData = new SaveData();
         Debug.Log("Save data reset to default.");
     }
+
+    [ContextMenu("Test Save Load")]
+    public void TestSaveLoad()
+    {
+        // Clear and add test data
+        currentSaveData = new SaveData();
+        currentSaveData.PlayerCommodities.Add(new CommoditySaveData(
+            "teabase",
+            42
+        ));
+
+        // Save
+        SaveData();
+
+        // Wait a frame then load
+        StartCoroutine(TestLoadCoroutine());
+    }
+
+    private IEnumerator TestLoadCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        LoadSaveData();
+    }
 }
+
 
 
 
@@ -178,6 +211,9 @@ public class SaveData
     public Dictionary<string, float> FloatValues = new Dictionary<string, float>();
     public Dictionary<string, string> StringValues = new Dictionary<string, string>();
     public Dictionary<string, bool> BoolValues = new Dictionary<string, bool>();
+
+    public List<CommoditySaveData> PlayerCommodities = new();
+
 
 }
 
