@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Zenject;
 
 public class NPCService : MonoService
 {
-    public override List<Type> requiredServices { get; protected set; } = new List<Type> { typeof(EmotionIndicator) };
     [SerializeField] private List<Emotion> emotions;
     [Header("Animation Settings")]
     [SerializeField] private float moveInDuration = 1.2f;
@@ -14,25 +14,20 @@ public class NPCService : MonoService
     [SerializeField] private Ease moveOutEase = Ease.InBack;
     [SerializeField] private float screenPadding = 1.5f;
 
+    [Inject] private EmotionIndicator _emotionIndicator;
 
 
     public NPC npc;
     private GameObject _activeNpc;
     private SpeechBubble _activeSpeechBubble;
-    private EmotionIndicator _emotionIndicator;
     private Camera _mainCamera;
     private Vector3 _targetPosition;
     private Sequence _currentAnimation;
     public bool NpcReadyToBuy;
 
-    private void Awake()
-    {
-        Mediator.Instance.RegisterService(this);
-    }
 
-    public override void OnDestroy()
+    public override void Dispose()
     {
-        base.OnDestroy();
         _currentAnimation?.Kill();
 
         if (_activeNpc != null)
@@ -42,15 +37,10 @@ public class NPCService : MonoService
     }
 
 
-    public override void Initialize(Mediator mediator)
+    public override void Initialize()
     {
         base.Initialize();
-    }
-
-    protected override void OnAllServicesReady()
-    {
         _mainCamera = Camera.main;
-        _emotionIndicator = GetService<EmotionIndicator>();
         if (_emotionIndicator != null)
         {
             CreateNPC();
@@ -60,6 +50,7 @@ public class NPCService : MonoService
             Debug.LogError("EmotionIndicator service not found!");
         }
     }
+
 
     public void CreateNPC()
     {

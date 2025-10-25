@@ -3,16 +3,15 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TransitionScreen : MonoBehaviour, IInitializable
+public class TransitionScreen : MonoBehaviour, IService
 {
     [SerializeField] private AnimationSettings animationSettings;
     [SerializeField] private Image image;
     [SerializeField] private Color _transitionColor;
     private Color _transparentColor;
 
-    public void Initialize(Mediator mediator)
+    public void Awake()
     {
-        mediator.RegisterService<TransitionScreen>(this);
         _transparentColor = _transitionColor;
         _transparentColor.a = 0;
         image.color = _transparentColor;

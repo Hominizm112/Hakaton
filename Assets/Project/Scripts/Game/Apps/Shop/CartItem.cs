@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Localization.Components;
+using Zenject;
 
 public class CartItemData
 {
@@ -15,7 +16,8 @@ public class CartItemData
     }
 }
 
-public class CartItem : MonoBehaviour
+[Bind(typeof(CartItem))]
+public class CartItem : InjectableBehaviour
 {
     [SerializeField] private LocalizeStringEvent nameText;
     [SerializeField] private TMP_Text priceText;
@@ -25,15 +27,17 @@ public class CartItem : MonoBehaviour
     [SerializeField] private Button addButton;
     [SerializeField] private Button reduceButton;
 
+    [Inject] private AppController _appController;
+
     private CartItemData _itemData;
     private ShopApp _shopApp;
 
-    private void Awake()
+    public override void OnConstruct()
     {
         removeButton.onClick.AddListener(HandleRemove);
         addButton.onClick.AddListener(HandleAdd);
         reduceButton.onClick.AddListener(HandleReduce);
-        _shopApp = Mediator.Instance.GetService<AppController>().GetApp<ShopApp>() as ShopApp;
+        _shopApp = _appController.GetApp<ShopApp>();
     }
 
     public void SetItem(CartItemData cartItemData)

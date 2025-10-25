@@ -5,8 +5,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
+using Zenject;
 
-public class StallBoxUI : MonoBehaviour
+public class StallBoxUI : InjectableBehaviour
 {
     [Header("Scene References")]
     [SerializeField] private Transform commodityViewsHolder;
@@ -18,14 +19,11 @@ public class StallBoxUI : MonoBehaviour
     [Header("Commodity View Settings")]
     [SerializeField] private GameObject commodityViewPrefab;
 
-
+    [Inject] private ShopkeeperService _shopkeeperService;
     public Commodity selectedCommodity;
 
 
     private Dictionary<string, CommodityView> _commodityViews = new();
-
-    private ShopkeeperService _shopkeeperService;
-
 
     private void OnEnable()
     {
@@ -60,7 +58,6 @@ public class StallBoxUI : MonoBehaviour
 
     public void RefreshCommodityViews()
     {
-        _shopkeeperService = Mediator.Instance.GetService<ShopkeeperService>();
         var playerCommodities = _shopkeeperService.GetAvailableCommodities();
         foreach (var commodityView_kvp in _commodityViews)
         {
@@ -75,7 +72,6 @@ public class StallBoxUI : MonoBehaviour
 
     public void CreateCommodityViews()
     {
-        _shopkeeperService = Mediator.Instance.GetService<ShopkeeperService>();
         var playerCommodities = _shopkeeperService.GetAvailableCommodities();
         foreach (var commodityEntry in playerCommodities)
         {

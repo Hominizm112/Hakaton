@@ -4,19 +4,18 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using Zenject;
 
-public class PlayerController : MonoBehaviour, IInitializable
+public class PlayerController : MonoService
 {
-    private Mediator _mediator;
-    private InputManager _inputManager;
+    [Inject] private InputManager _inputManager;
 
 
     public void Initialize(Mediator mediator)
     {
         _mediator = mediator;
-        _inputManager = mediator.GetService<InputManager>();
 
-        mediator.GetService<InputManager>().TryGetAction("PointerClick", out InputAction inputAction);
+        _inputManager.TryGetAction("PointerClick", out InputAction inputAction);
         inputAction.performed += OnInputAction;
 
     }

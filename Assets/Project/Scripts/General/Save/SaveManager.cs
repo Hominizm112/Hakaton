@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 /// A cross-platform save manager that handles both desktop and WebGL.
 /// Uses JSON serialization and async file operations for compatibility.
 /// </summary>
-public class SaveManager : UnitySingleton<SaveManager>
+public class SaveManager : MonoBehaviour
 {
     public static event Action OnSaveLoaded;
     public static event Action OnSaveCompleted;
@@ -31,12 +31,6 @@ public class SaveManager : UnitySingleton<SaveManager>
     };
 
     public SaveData currentSaveData;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        SetPersistent(this);
-    }
 
     /// <summary>
     /// Call this early (e.g., from Bootstrap) to load saved data.
@@ -72,20 +66,20 @@ public class SaveManager : UnitySingleton<SaveManager>
             try
             {
                 // DEBUG: Log what's being loaded
-                Debug.Log("=== LOAD DATA DEBUG ===");
-                Debug.Log("Raw JSON: " + json);
+                // Debug.Log("=== LOAD DATA DEBUG ===");
+                // Debug.Log("Raw JSON: " + json);
 
                 currentSaveData = JsonConvert.DeserializeObject<SaveData>(json, jsonSettings);
 
-                Debug.Log($"Loaded PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
+                // Debug.Log($"Loaded PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
                 if (currentSaveData.PlayerCommodities != null)
                 {
                     foreach (var entry in currentSaveData.PlayerCommodities)
                     {
-                        Debug.Log($"Loaded Commodity: {entry.id}, Amount: {entry.amount}");
+                        // Debug.Log($"Loaded Commodity: {entry.id}, Amount: {entry.amount}");
                     }
                 }
-                Debug.Log("=====================");
+                // Debug.Log("=====================");
 
                 Debug.Log("Save data loaded successfully.");
             }
@@ -118,19 +112,19 @@ public class SaveManager : UnitySingleton<SaveManager>
     private IEnumerator SaveDataRoutine()
     {
         // DEBUG: Log what's actually being saved
-        Debug.Log("=== SAVE DATA DEBUG ===");
-        Debug.Log($"PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
+        // Debug.Log("=== SAVE DATA DEBUG ===");
+        // Debug.Log($"PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
         if (currentSaveData.PlayerCommodities != null)
         {
             foreach (var entry in currentSaveData.PlayerCommodities)
             {
-                Debug.Log($"Commodity: {entry.id}, Amount: {entry.amount}");
+                // Debug.Log($"Commodity: {entry.id}, Amount: {entry.amount}");
             }
         }
 
         string plainJson = JsonConvert.SerializeObject(currentSaveData, jsonSettings);
-        Debug.Log("Plain JSON: " + plainJson);
-        Debug.Log("=====================");
+        // Debug.Log("Plain JSON: " + plainJson);
+        // Debug.Log("=====================");
 
         try
         {

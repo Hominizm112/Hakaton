@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using Zenject;
 
 #region Events
 public interface IInputEvent : IEvent { }
@@ -79,10 +80,9 @@ public class InputManager : MonoService, IStateListener
     private List<InputAction> _allActions = new();
     private bool _isInputEnabled = true;
 
-    public override void Initialize(Mediator mediator)
+    [Inject]
+    public void Construct()
     {
-        base.Initialize(mediator);
-
         _mediator.SubscribeToState(this, Game.State.Gameplay);
         _mediator.SubscribeToState(this, Game.State.Paused);
         _mediator.SubscribeToState(this, Game.State.Menu);
@@ -271,10 +271,8 @@ public class InputManager : MonoService, IStateListener
         }
     }
 
-    public override void OnDestroy()
+    public override void Dispose()
     {
-        base.OnDestroy();
-
         foreach (var action in _allActions)
         {
             action.performed -= OnInputActionPerformed;

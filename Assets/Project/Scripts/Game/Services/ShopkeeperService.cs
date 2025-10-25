@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class ShopkeeperService : MonoService
 {
+
+    [Inject] private SaveManager _saveService;
     public List<CommodityEntry> _playerCommodities = new();
 
     public List<CommodityEntry> GetAvailableCommodities() => new(_playerCommodities);
@@ -13,12 +16,11 @@ public class ShopkeeperService : MonoService
 
     }
 
-    public override void Initialize(Mediator mediator)
+    [Inject]
+    public void Construct()
     {
-        base.Initialize(mediator);
-
-        AddEvent(_mediator.GlobalEventBus.Subscribe<SceneUnloadEvent>(SaveData));
-        AddEvent(_mediator.GlobalEventBus.Subscribe<LoadDataEvent>(_ => LoadData()));
+        SubscribeToEvent<SceneUnloadEvent>(SaveData);
+        SubscribeToEvent<LoadDataEvent>(_ => LoadData());
         LoadData();
 
         print($"Loaded playerCommodities with count: {_playerCommodities.Count}");
@@ -26,7 +28,7 @@ public class ShopkeeperService : MonoService
 
     public void LoadData()
     {
-        var commodities = _mediator.GetService<SaveManager>().currentSaveData.PlayerCommodities;
+        var commodities = _saveService.currentSaveData.PlayerCommodities;
 
         foreach (var item in commodities)
         {
@@ -40,16 +42,16 @@ public class ShopkeeperService : MonoService
         {
             print($"Saved _playerCommodities: {_playerCommodities.Count}");
 
-            _mediator.GetService<SaveManager>().currentSaveData.PlayerCommodities.Clear();
+            _saveService.currentSaveData.PlayerCommodities.Clear();
 
             foreach (var item in _playerCommodities)
             {
                 print(item.commodity.id);
                 print(item.amount);
-                _mediator.GetService<SaveManager>().currentSaveData.PlayerCommodities.Add(new(item.commodity.id, item.amount));
+                _saveService.currentSaveData.PlayerCommodities.Add(new(item.commodity.id, item.amount));
 
             }
-            print($"Saved PlayerCommodities: {_mediator.GetService<SaveManager>().currentSaveData.PlayerCommodities.Count}");
+            print($"Saved PlayerCommodities: {_saveService.currentSaveData.PlayerCommodities.Count}");
         }
 
 
@@ -107,6 +109,5 @@ public class ShopkeeperService : MonoService
 
     public override void Dispose()
     {
-        _mediator.UnregisterService(this);
     }
 }

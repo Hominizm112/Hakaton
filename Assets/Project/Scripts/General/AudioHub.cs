@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public enum SoundType
 {
@@ -20,6 +21,7 @@ public class AudioHub : MonoBehaviour
     [SerializeField] private float clipCooldown = 0.1f;
     [SerializeField] private string sounds_resource_path;
 
+    [Inject] private EventBus _eventBus;
     private Dictionary<AudioClip, float> _lastPlayedTimes = new();
 
     private Queue<AudioSource> _audioSourcePool = new Queue<AudioSource>();
@@ -44,7 +46,6 @@ public class AudioHub : MonoBehaviour
     {
         foreach (var sound in sounds)
         {
-            print($"Added {sound.name}");
             soundsDict.Add(sound.soundType, sound);
         }
     }
@@ -86,7 +87,7 @@ public class AudioHub : MonoBehaviour
         soundsDict.TryGetValue(soundType, out Sound sound);
         if (sound == null)
         {
-            Mediator.Instance.GlobalEventBus.Publish(new DebugLogErrorEvent($"Sound not found with type of {soundType}"));
+            _eventBus.Publish(new DebugLogErrorEvent($"Sound not found with type of {soundType}"));
             return;
         }
         PlayClip(sound.AudioClip, volume, pitch, sound.restrictSoundAmount);

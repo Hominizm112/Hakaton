@@ -1,7 +1,12 @@
 using UnityEngine;
+using Zenject;
 
 public partial class ConsoleService
 {
+    [Inject] private CurrencyPresenter _currencyPresenter;
+    [Inject] private LazyInject<AppController> _appController;
+    [Inject] private SaveManager _saveService;
+
     #region Game-specific Commands
 
     [ConsoleCommand("god", "Toggle god mode", "god [on/off]")]
@@ -24,7 +29,7 @@ public partial class ConsoleService
             return CommandResult.Error("Usage: addcurrency <amount>");
 
         int amount = context.GetInt(0, 0);
-        _mediator.GetService<CurrencyPresenter>()?.AddCurrency(amount);
+        _currencyPresenter?.AddCurrency(amount);
         return CommandResult.Ok($"Added {amount} currency");
     }
 
@@ -45,7 +50,10 @@ public partial class ConsoleService
         if (context.ArgumentCount < 2)
             return CommandResult.Error("Usage: unlockemail <npcName> <friendLevel>");
 
-        _mediator.GetService<AppController>()?.GetApp<EmailApp>()?.UnlockEmailFromConsole(context.GetString(0, ""), context.GetInt(1, 0));
+        if (_appController.Value != null)
+        {
+            _appController.Value.GetApp<EmailApp>()?.UnlockEmailFromConsole(context.GetString(0, ""), context.GetInt(1, 0));
+        }
         return CommandResult.Ok($"Email unlocked.");
     }
 
@@ -53,7 +61,7 @@ public partial class ConsoleService
     [ConsoleCommand("save", "Save game data", "save")]
     private CommandResult SaveCommand(CommandContext context)
     {
-        _mediator.GetService<SaveManager>().SaveData();
+        _saveService.SaveData();
         return CommandResult.Ok("Game data saved.");
     }
 

@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Zenject;
 
 public class ShopApp : BaseApp
 {
     [SerializeField] private GameObject cartItemPrefab;
     [SerializeField] private Transform cartHolder;
     [SerializeField] private TMP_Text totalCostText;
+
+    [Inject] private CurrencyPresenter _currencyPresenter;
+    [Inject] private ShopkeeperService _shopkeeperService;
 
     private List<CartItemData> _cartList = new();
     private List<CartItem> _cartObjects = new();
@@ -16,9 +20,8 @@ public class ShopApp : BaseApp
     private int totalCost;
 
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
         _onCartChanged += _ => CalculateCartCost();
     }
 
@@ -111,13 +114,12 @@ public class ShopApp : BaseApp
 
     public void TryBuyItemsInCart()
     {
-        Mediator mediator = Mediator.Instance;
-        if (!mediator.GetService<CurrencyPresenter>().CanAfford(totalCost) || _cartObjects.Count == 0) return;
+        if (!_currencyPresenter.CanAfford(totalCost) || _cartObjects.Count == 0) return;
 
-        mediator.GetService<CurrencyPresenter>().TrySpendCurrency(totalCost);
+        _currencyPresenter.TrySpendCurrency(totalCost);
         foreach (var item in _cartList)
         {
-            mediator.GetService<ShopkeeperService>().AddCommodity(item.commodity, item.quantity);
+            _shopkeeperService.AddCommodity(item.commodity, item.quantity);
 
         }
 

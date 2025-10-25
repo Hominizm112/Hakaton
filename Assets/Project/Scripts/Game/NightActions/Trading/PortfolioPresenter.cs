@@ -4,27 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Localization.Components;
+using Zenject;
 
 
-public class PortfolioPresenter: MonoService
+public class PortfolioPresenter : MonoService
 {
     [SerializeField] private LocalizeStringEvent localizeStringEvent;
     private PortfolioView _view;
     private MarketData _marketData;
-    private PortfollioService _model;
-    private Mediator _mediator;
+    [Inject] private PortfollioService _model;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
-    private TradingWindowView _tradingWindowView;
+    [Inject] private TradingWindowView _tradingWindowView;
 
-    public void Awake()
+    public override void Initialize()
     {
-        Mediator.Instance.RegisterService(this);
-    }
-    public override void Initialize(Mediator mediator)
-    {
-        _mediator = mediator; 
         base.Initialize();
-        _model = _mediator.GetService<PortfollioService>();
         //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
         //var allAssets = _model.Assets;
         var allAssets = _portfolioSummary.MyActives;
@@ -33,7 +27,6 @@ public class PortfolioPresenter: MonoService
         kvp => kvp.Key.ToString() // Используем Ticker как отображаемое имя
     );
 
-        _tradingWindowView = _mediator.GetService<TradingWindowView>();
         if (_tradingWindowView != null)
         {              //Mediator.Instance.GlobalEventBus.Subscribe<OpenTradeWindowEvent>(HandleOpenEvent);
             _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
@@ -45,7 +38,7 @@ public class PortfolioPresenter: MonoService
     }
     public void InitializeView(PortfolioView portfolioView)
     {
-         _view = GetComponent<PortfolioView>(); 
+        _view = GetComponent<PortfolioView>();
         _view.OnAddCashClicked += HandleAddCash;
         _view.OnCheckOtherStocksClicked += HandleCheckOtherStock;
         _view.OnCheckOtherBondsClicked += HandleCheckOtherBond;
@@ -54,7 +47,7 @@ public class PortfolioPresenter: MonoService
 
     }
 
-    
+
     private void PortfolioInitialize()//инициализация портфолио,создание кнопок
     {
         //инициализация модели
@@ -82,23 +75,23 @@ public class PortfolioPresenter: MonoService
     {
         var allAssets = _model.Assets;
         return allAssets.ToDictionary(
-        kvp => kvp.Key,            
+        kvp => kvp.Key,
         kvp => kvp.Key.ToString()
     );
     }
- 
-    //private Dictionary<Ticker, string> GetAllStocksForDisplay()
-   //{
-       // var allStocks = _marketData.AllMarketStocks;
-        //return allStocks.ToDictionary(
-        //    kvp => kvp.Key
-           // kvp => CompanyInfo.ActiveName[kvp.Key]
-       // );
 
-   // }
+    //private Dictionary<Ticker, string> GetAllStocksForDisplay()
+    //{
+    // var allStocks = _marketData.AllMarketStocks;
+    //return allStocks.ToDictionary(
+    //    kvp => kvp.Key
+    // kvp => CompanyInfo.ActiveName[kvp.Key]
+    // );
+
+    // }
     private void HandleInfoActiv()
     {
-    
+
     }
 
     //открытие окна торговли
@@ -129,7 +122,7 @@ public class PortfolioPresenter: MonoService
         HandleTradeActiv(tradeType, asset, quantity);
 
     }
-    
+
     #region HandleTrade
     private void HandleTradeActiv(TradeType tradeType, IActiv asset, int quantity)
     {
@@ -143,10 +136,10 @@ public class PortfolioPresenter: MonoService
         Ticker ticker = asset.Ticker;
         Type assetType = asset.GetType();
 
-       // if (!TryGetAssetInfo(asset, out assetPrice, out ticker, out assetType))
-       // {
-         //   return;
-       // }
+        // if (!TryGetAssetInfo(asset, out assetPrice, out ticker, out assetType))
+        // {
+        //   return;
+        // }
         switch (tradeType)
         {
             case TradeType.Buy:
@@ -165,7 +158,7 @@ public class PortfolioPresenter: MonoService
                 break;
         }
     }
-    
+
     private bool TryGetAssetInfo(IActiv asset, out float price, out Ticker ticker, out Type type)
     {
         price = 0f;
@@ -222,7 +215,7 @@ public class PortfolioPresenter: MonoService
         }
 
         _view.UpdatePortfolioView(_portfolioSummary);//старая сводка?
-        _model.UpdatePortfolioValue(AssetType,totalCost,quantity,TradeType.Buy);  
+        _model.UpdatePortfolioValue(AssetType, totalCost, quantity, TradeType.Buy);
     }
 
     private void HandleSell(Type AssetType, Ticker ticker, int quantity, int assetPrice)
@@ -253,10 +246,10 @@ public class PortfolioPresenter: MonoService
         }
 
         _view.UpdatePortfolioView(_portfolioSummary);
-        _model.UpdatePortfolioValue(AssetType,totalCost,quantity,TradeType.Sell);
-    
+        _model.UpdatePortfolioValue(AssetType, totalCost, quantity, TradeType.Sell);
+
     }
-#endregion
+    #endregion
     private void HandleAddCash(int amount)
     {
         if (amount <= 0)
@@ -274,7 +267,7 @@ public class PortfolioPresenter: MonoService
     }
     //private void HandleAssetListChanged(AssetListChangedEvent @event)
     //{
-       // SetupAssetList();
+    // SetupAssetList();
     //}
     private void HandleCheckOtherStock()
     {
@@ -291,10 +284,6 @@ public class PortfolioPresenter: MonoService
 
     }
 
-    private void OnDestroy()
-    {
-
-    }
 
 
 }

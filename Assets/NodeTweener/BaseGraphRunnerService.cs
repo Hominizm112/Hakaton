@@ -3,26 +3,9 @@ using UnityEngine;
 
 public class BaseGraphRunnerService : MonoService, IGraphRunnerService
 {
-    [Header("Settings")]
-    [SerializeField] private bool registerToMediator;
-
 
     protected Dictionary<string, TweenGraphRunner> _registeredRunners = new();
 
-
-    private void Awake()
-    {
-        if (registerToMediator)
-        {
-            TryRegisterAsService();
-        }
-    }
-
-    private void TryRegisterAsService()
-    {
-        if (Mediator.Instance == null) return;
-        Mediator.Instance.RegisterService(this);
-    }
 
 
     public void RegisterAnimator(string runnerName, TweenGraphRunner animator)
@@ -64,6 +47,6 @@ public class BaseGraphRunnerService : MonoService, IGraphRunnerService
 
     public override void Dispose()
     {
-        _mediator.UnregisterService(this);
+        _registeredRunners.Clear();
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 public interface IDraggable
 {
@@ -8,10 +9,10 @@ public interface IDraggable
     void OnDragEnd();
 }
 
-public class DragManager : MonoService, IInitializable, IStateListener
+public class DragManager : MonoService, IStateListener
 {
 
-    private InputManager _inputManager;
+    [Inject] private InputManager _inputManager;
     private DragVelocityCalculator _velocityCalculator;
 
     private Vector2 _previousDragPosition;
@@ -19,17 +20,14 @@ public class DragManager : MonoService, IInitializable, IStateListener
     private bool _isDragging = false;
     private bool _hasValidDrag = false;
 
-    public override void Initialize(Mediator mediator)
+    [Inject]
+    public void Construct()
     {
-        base.Initialize(mediator);
-
-        _inputManager = mediator.GetService<InputManager>();
         _velocityCalculator = new();
 
-        mediator.RegisterService(this);
-        mediator.SubscribeToState(this, Game.State.Gameplay);
+        _mediator.SubscribeToState(this, Game.State.Gameplay);
 
-        AddEvent(mediator.GlobalEventBus.Subscribe<InputActionEvent>(OnInputAction));
+        SubscribeToEvent<InputActionEvent>(OnInputAction);
     }
 
     public void OnStateChanged(Game.State state)
@@ -82,7 +80,6 @@ public class DragManager : MonoService, IInitializable, IStateListener
         var delta = currentPosition - _previousDragPosition;
 
         _velocityCalculator.UpdatePosition(currentPosition);
-
 
         if (!_hasValidDrag)
         {

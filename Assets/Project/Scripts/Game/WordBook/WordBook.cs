@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
+using Zenject;
 
 public class WordBook : MonoService
 {
@@ -28,6 +29,8 @@ public class WordBook : MonoService
     [Header("Settings")]
     [SerializeField] private int maxWordCount = 3;
 
+    [Inject] private StallService _stall;
+
     private bool isOpen => window.activeSelf;
     private List<WordOfPower> _wordOfPowers;
     private List<WordView> _wordViews = new();
@@ -39,16 +42,12 @@ public class WordBook : MonoService
     public WordOfPower GetCurrentSelectedWord() => _currentSelectedWord;
 
 
-    public void Start()
-    {
-        Mediator.Instance.RegisterService(this);
-    }
 
-    public override void Initialize(Mediator mediator)
+    public override void Initialize()
     {
-        base.Initialize(mediator);
+        base.Initialize();
 
-        AddEvent(_mediator.GlobalEventBus.Subscribe<TeaRemovedFromSelectionEvent>(_ => ResetSelectedWords()));
+        SubscribeToEvent<TeaRemovedFromSelectionEvent>(_ => ResetSelectedWords());
     }
     public void SwitchWindow()
     {
@@ -90,7 +89,6 @@ public class WordBook : MonoService
 
     private void HandleWordSelection(WordOfPower wordOfPower)
     {
-        print(wordOfPower == null);
         if (wordOfPower == null)
         {
             return;
@@ -154,14 +152,13 @@ public class WordBook : MonoService
 
     private void SetWordsCount()
     {
-        var stall = _mediator.GetService<StallService>();
-        if (stall.SelectedCommodity != null)
+        if (_stall.SelectedCommodity != null)
         {
             selectedWordCountText.gameObject.SetActive(true);
             addButton.interactable = true;
             removeButton.interactable = true;
 
-            selectedWordCountText.text = $"{_selectedWords.Count}/{stall.SelectedCommodity.maxWordOfPower}";
+            selectedWordCountText.text = $"{_selectedWords.Count}/{_stall.SelectedCommodity.maxWordOfPower}";
 
         }
         else
@@ -189,8 +186,6 @@ public class WordBook : MonoService
         {
             item.Cleanup();
         }
-
-        _mediator.UnregisterService(this);
     }
 
 

@@ -8,6 +8,7 @@ using System;
 using UnityEngine.Events;
 using System.Runtime.CompilerServices;
 using MyGame.Enums;
+using Zenject;
 
 
 public class TradingApp : BaseApp
@@ -16,14 +17,16 @@ public class TradingApp : BaseApp
     [Header("UI Elements - Containers")]
     [SerializeField] private Transform _assetListContainer;// Контейнер, где будут создаваться кликабельные кнопки
     [SerializeField] private GameObject _assetUIPrefab;
+
+    [Inject] private PortfollioService _portfolioService;
+
+
+
     private PortfolioSummary _portfolioSummary;
-    private PortfollioService _portfolioService;
     private Dictionary<Ticker, GameObject> _activeUIElements = new();
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
-        _portfolioService = _mediator.GetService<PortfollioService>();
         // _portfolioService.OnPortfolioUpdated += UpdateUI;
     }
 
@@ -37,9 +40,9 @@ public class TradingApp : BaseApp
         _activeUIElements.Clear();
 
         //полные списки доступных активов
- 
 
- 
+
+
     }
 
     private void CreateAssetUI(Ticker ticker, int quantity, TradeType tradeType)

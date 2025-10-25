@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using MyGame.Enums;
 using System.Linq;
 using Unity.Mathematics;
+using Zenject;
 public class PortfolioApp : MonoBehaviour, IApp
 {
     [SerializeField] private Transform _assetListContainer; //для динамического добавления активов
@@ -13,16 +14,15 @@ public class PortfolioApp : MonoBehaviour, IApp
 
 
     // private Dictionary<Ticker, GameObject> _activeUIElements = new Dictionary<Ticker, GameObject>();
-    private PortfollioService _portfolioService;
-    Mediator _mediator;
-    private AppController _appController;
+    [Inject] private PortfollioService _portfolioService;
+    [Inject] private AppController _appController;
+    [Inject] private Mediator _mediator;
     private void Start()
     {
 
     }
     private void Awake()
     {
-        _portfolioService = Mediator.Instance.GetService<PortfollioService>();//?? 
         if (_portfolioService != null)
         {
             _portfolioService.OnPortfolioUpdated += UpdateUI;
@@ -32,8 +32,6 @@ public class PortfolioApp : MonoBehaviour, IApp
         {
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("PortfollioService  не найден"));
         }
-
-        _appController = Mediator.Instance.GetService<AppController>();
         // Регистрируем этот экран в AppController
         _appController?.RegisterApp(this);
     }
@@ -98,7 +96,7 @@ public class PortfolioApp : MonoBehaviour, IApp
 
     private void OnAnalyticsClick()
     {
-        
+
     }
 }
 

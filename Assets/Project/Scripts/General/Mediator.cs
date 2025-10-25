@@ -4,13 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public interface IInitializable
-{
-    void Initialize(Mediator mediator);
-}
-
-
+using Zenject;
 
 
 #region MonoService
@@ -18,103 +12,29 @@ public interface IService { }
 
 public abstract class MonoService : MonoBehaviour, IService, IInitializable, IDisposable
 {
-    public virtual List<Type> requiredServices { get; protected set; } = new List<Type>();
-    protected Dictionary<Type, IService> services = new Dictionary<Type, IService>();
-    public Dictionary<Type, IService> Services => services;
-    public bool AllServicesReady => requiredServices.Count == 0;
+    [Inject] protected Mediator _mediator;
+    [Inject] protected EventBus GlobalEventBus;
 
-    private string LogPrefix => GetType().ToString() + "// ";
 
-    protected Mediator _mediator;
-    protected List<IDisposable> _subscriptions = new();
-    [NonSerialized] public bool initialized;
-
-    public virtual void SubscribeToEvent<TEvent>(TEvent @event, Action<TEvent> handler) where TEvent : IEvent
+    public virtual void Initialize()
     {
-        Mediator.Instance.GlobalEventBus.Subscribe<TEvent>((e) => handler?.Invoke(e));
-    }
-
-    public void AddEvent(IDisposable @event)
-    {
-        _subscriptions.Add(@event);
-    }
-
-
-    public virtual void Initialize(Mediator mediator = null)
-    {
-        if (initialized) return;
         ColorfulDebug.LogGreen($"//: Initialized service {this}");
-        _mediator = mediator;
-        initialized = true;
     }
 
-    public void HandleServiceRegistration(ServiceRegisterEvent @event)
+
+    public virtual void SubscribeToEvent<TEvent>(Action<TEvent> handler) where TEvent : IEvent
     {
-        // Debug.Log($"{LogPrefix}Handling service registration: {@event.Service?.GetType().Name}");
-        if (@event.Service == null) return;
-
-        Type serviceType = @event.Service.GetType();
-        bool foundMatch = false;
-
-        foreach (var requiredType in requiredServices.ToArray())
-        {
-            if (requiredType.IsAssignableFrom(serviceType))
-            {
-                services[requiredType] = @event.Service;
-                requiredServices.Remove(requiredType);
-                Debug.Log($"{LogPrefix}Registered {requiredType.Name} service");
-                foundMatch = true;
-            }
-        }
-        if (foundMatch)
-        {
-            CheckAllServicesReady();
-        }
+        GlobalEventBus.Subscribe<TEvent>(handler);
     }
 
-    private void CheckAllServicesReady()
+    public void OnDestroy()
     {
-        Debug.Log($"=== {GetType()} Status ===");
-        Debug.Log($"AllServicesReady: {AllServicesReady}");
-        Debug.Log($"Required services remaining: {requiredServices.Count}");
-        foreach (var service in services)
-        {
-            Debug.Log($"{LogPrefix}Has service: {service.Key.Name}");
-        }
-        if (requiredServices.Count == 0)
-        {
-
-            OnAllServicesReady();
-            Initialize(Mediator.Instance);
-        }
-    }
-
-    protected virtual void OnAllServicesReady()
-    {
-        // Override in derived classes
-    }
-
-    protected T GetService<T>() where T : IService
-    {
-        if (services.TryGetValue(typeof(T), out IService service))
-        {
-            return (T)service;
-        }
-        return default;
-    }
-
-    public virtual void OnDestroy()
-    {
-        foreach (var subscription in _subscriptions)
-        {
-            subscription?.Dispose();
-        }
-        _subscriptions.Clear();
-
         Dispose();
     }
 
-    public virtual void Dispose() { }
+    public virtual void Dispose()
+    {
+    }
 }
 
 #endregion
@@ -181,7 +101,7 @@ public class EventBus
         var subscription = new Subscription(eventType, wrappedHandler, this);
         _eventSubscriptions[eventType].Add(subscription);
 
-        Debug.Log($"Subscribed to {eventType.Name}");
+        // Debug.Log($"Subscribed to {eventType.Name}");
         return subscription;
     }
 
@@ -233,6 +153,15 @@ public class EventBus
 #region Mediator
 public class Mediator : MonoBehaviour
 {
+
+    [Inject] public DiContainer _container;
+    [Inject] public readonly List<IInitializable> _initializables;
+    [Inject] public EventBus GlobalEventBus { get; private set; }
+    [Inject] private TransitionScreen _transitionScreen;
+
+
+
+
     [System.Serializable]
     public class GameSettings
     {
@@ -246,7 +175,6 @@ public class Mediator : MonoBehaviour
 
     public static Mediator Instance { get; private set; }
 
-    private readonly List<IInitializable> _initializables = new();
     private readonly Dictionary<Game.State, List<Action<Game.State>>> _stateChangeCallbacks = new();
     private readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
 
@@ -261,12 +189,12 @@ public class Mediator : MonoBehaviour
 
     private Game.State _currentState;
     public Game.State CurrentState => _currentState;
-    public EventBus GlobalEventBus { get; private set; }
     public GameSettings Settings { get; private set; } = new();
 
     #region Initialize
 
-    private void Awake()
+    [Inject]
+    public void Construct()
     {
         if (Instance != null && Instance != this)
         {
@@ -275,12 +203,8 @@ public class Mediator : MonoBehaviour
         }
 
         Instance = this;
-
-        GlobalEventBus = new EventBus();
         SubscribeToEvents();
         InitializeStateDictionary();
-
-        OnSceneLoadStarted += _ => ServiceCleanup();
     }
 
     private void SubscribeToEvents()
@@ -311,7 +235,7 @@ public class Mediator : MonoBehaviour
     {
         if (immediate)
         {
-            initializable.Initialize(this);
+            initializable.Initialize();
             return;
         }
         if (!_initializables.Contains(initializable))
@@ -322,38 +246,15 @@ public class Mediator : MonoBehaviour
 
     public void InitializeAll()
     {
-        Debug.Log($"Initializing {_initializables.Count} services");
-        foreach (var initializable in _initializables.ToArray()) // Copy to avoid modification
+        foreach (var initializable in _initializables.ToArray())
         {
-            initializable.Initialize(this);
-        }
-
-        foreach (var initializable in _initializables)
-        {
-            if (initializable is MonoService monoService)
-            {
-                GlobalEventBus.Subscribe<ServiceRegisterEvent>(monoService.HandleServiceRegistration);
-
-                CheckPreRegisteredServices(monoService);
-            }
+            initializable.Initialize();
         }
 
         _initializables.Clear();
         OnInitializationCompleted?.Invoke();
     }
 
-
-    private void CheckPreRegisteredServices(MonoService monoService)
-    {
-        foreach (var requiredType in monoService.requiredServices.ToArray())
-        {
-            if (_services.Values.Any(service => requiredType.IsAssignableFrom(service.GetType())))
-            {
-                var serviceInstance = _services.Values.First(s => requiredType.IsAssignableFrom(s.GetType()));
-                monoService.HandleServiceRegistration(new ServiceRegisterEvent(serviceInstance as MonoService));
-            }
-        }
-    }
 
     #endregion
 
@@ -441,66 +342,6 @@ public class Mediator : MonoBehaviour
 
     #region Service
 
-    public void RegisterService<T>(T service) where T : class
-    {
-        if (_services.ContainsKey(typeof(T)))
-        {
-            ColorfulDebug.LogWarning($"Service {typeof(T)} already registered!");
-            return;
-        }
-
-        ColorfulDebug.LogGreen($"Registered service: {service}");
-        _services[typeof(T)] = service;
-
-        if (service is MonoService monoService && !monoService.initialized)
-        {
-            if (monoService.AllServicesReady)
-            {
-                monoService.Initialize(this);
-            }
-            else
-            {
-                monoService.AddEvent(GlobalEventBus.Subscribe<ServiceRegisterEvent>(monoService.HandleServiceRegistration));
-                CheckPreRegisteredServices(monoService);
-
-            }
-        }
-        GlobalEventBus.Publish(new ServiceRegisterEvent(service as MonoService));
-    }
-
-    public void UnregisterService<T>(T service) where T : class
-    {
-        Type serviceType = typeof(T);
-
-        if (!_services.ContainsKey(serviceType))
-        {
-            ColorfulDebug.LogWarning($"Service {serviceType} not found for unregistration!");
-            return;
-        }
-
-
-        _services.Remove(serviceType);
-        ColorfulDebug.LogGreen($"Unregistered service: {service}");
-
-        ColorfulDebug.LogBlue($"Mediator services:");
-
-        foreach (var item in _services)
-        {
-            print(item.Value);
-        }
-
-    }
-
-    public T GetService<T>() where T : class
-    {
-        if (_services.TryGetValue(typeof(T), out object service))
-        {
-            return service as T;
-        }
-
-        ColorfulDebug.LogError($"Service of type {typeof(T)} not registered!");
-        return null;
-    }
 
     public bool TryGetService<T>(out T service) where T : class
     {
@@ -561,7 +402,7 @@ public class Mediator : MonoBehaviour
         SetState("Loading");
         if (useTransitionScreen)
         {
-            GetService<TransitionScreen>().StartTransition(() => StartCoroutine(LoadSceneAsync(sceneName, targetState)));
+            _transitionScreen.StartTransition(() => StartCoroutine(LoadSceneAsync(sceneName, targetState)));
         }
         else
         {
@@ -595,9 +436,9 @@ public class Mediator : MonoBehaviour
         OnSceneLoadComplete?.Invoke(sceneName);
         GlobalEventBus.Publish<SceneLoadedEvent>(new(sceneName));
 
-        if (GetService<TransitionScreen>() != null)
+        if (_transitionScreen != null)
         {
-            GetService<TransitionScreen>().EndTransition();
+            _transitionScreen.EndTransition();
         }
 
         ColorfulDebug.LogBlue($"Finished loading scene: {sceneName}");

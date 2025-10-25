@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using Zenject;
 
 public class CustomerService : MonoService
 {
@@ -28,15 +29,15 @@ public class CustomerService : MonoService
     /// </summary>
     private Dictionary<Customer, bool> _customersPool = new();
 
-    public void Start()
+    [Inject]
+    public void Awake()
     {
-        Mediator.Instance.RegisterService(this);
-
         InitializeCustomers();
     }
 
     private void InitializeCustomers()
     {
+        if (_customersPool.Count != 0) return;
         for (int i = 0; i < 2; i++)
         {
             _customersPool.Add(Instantiate(customerPrefab, customersHolder).GetComponent<Customer>(), false);
@@ -47,6 +48,7 @@ public class CustomerService : MonoService
 
     private Customer GetFreeCustomer()
     {
+
         return _customersPool.FirstOrDefault(r => !r.Value).Key;
     }
 
@@ -66,6 +68,13 @@ public class CustomerService : MonoService
     private void SpawnCustomer()
     {
         Customer customer = GetFreeCustomer();
+
+        if (customer == null)
+        {
+            InitializeCustomers();
+            customer = GetFreeCustomer();
+        }
+
         if (customer == null)
         {
             ColorfulDebug.LogError("Free customer not found.");
@@ -101,7 +110,6 @@ public class CustomerService : MonoService
 
     public override void Dispose()
     {
-        _mediator.UnregisterService(this);
     }
 }
 

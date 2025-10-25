@@ -30,12 +30,11 @@ public abstract class SampleActiv<TConfig> : IActiv<TConfig> where TConfig : IAs
 
 }
 
-public class PortfollioService : MonoService, IInitializable
+public class PortfollioService : MonoService
 {
 
     private MarketData _marketData;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
-    public override List<Type> requiredServices { get; protected set; } = new List<Type>();
     public Dictionary<Ticker, Stock> AvailableStocks { get; private set; }
     public Dictionary<Ticker, Bond> AvailableBonds { get; private set; }
     //public IReadOnlyDictionary<Ticker, Stock> Stocks => AvailableStocks;
@@ -45,11 +44,8 @@ public class PortfollioService : MonoService, IInitializable
     public IReadOnlyDictionary<Ticker, IActiv> Assets => AvailableAssets;
     public Action<PortfolioSummary> OnPortfolioUpdated { get; internal set; }
 
-    private void Awake()
-    {
-        Mediator.Instance.RegisterService(this);
-    }
-    public void Initialize()
+
+    public override void Initialize()
     {
         PortfolioInitialize();
 

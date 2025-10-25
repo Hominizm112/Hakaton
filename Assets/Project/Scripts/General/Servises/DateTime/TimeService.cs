@@ -156,9 +156,9 @@ public class TimeService : MonoService
     private Coroutine _timeTrackingCoroutine;
     private bool _stopCoroutine;
 
-    public override void Initialize(Mediator mediator = null)
+    public override void Initialize()
     {
-        base.Initialize(mediator);
+        base.Initialize();
 
         _mediator.GlobalEventBus.Subscribe<TimeTrackStartEvent>(StartTrackEventHandler);
         _mediator.GlobalEventBus.Subscribe<TimeTrackStopEvent>(StopTrackEventHandler);
@@ -258,9 +258,8 @@ public class TimeService : MonoService
         }
     }
 
-    public override void OnDestroy()
+    public override void Dispose()
     {
-        base.OnDestroy();
         StopTracking();
         OnTrackComplete = null;
         OnTrackUpdate = null;

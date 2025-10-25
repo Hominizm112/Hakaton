@@ -1,12 +1,15 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.Localization.Components;
+using Zenject;
 
 public class ShopItem : MonoBehaviour
 {
     [SerializeField] private Commodity commodity;
     [SerializeField] private LocalizeStringEvent nameLocalizeEvent;
     [SerializeField] private TMP_Text priceText;
+
+    [Inject] private AppController _appController;
 
     protected void Awake()
     {
@@ -17,11 +20,7 @@ public class ShopItem : MonoBehaviour
 
     public void Select()
     {
-        print("Selected");
-        print(Mediator.Instance.name);
-        print(Mediator.Instance.GetService<AppController>());
-        print(Mediator.Instance.GetService<AppController>().GetApp<ShopApp>());
-        Mediator.Instance.GetService<AppController>().GetApp<ShopApp>().AddToCart(commodity);
+        _appController.GetApp<ShopApp>().AddToCart(commodity);
     }
 
 

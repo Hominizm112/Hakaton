@@ -4,6 +4,7 @@ using DG.Tweening;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class StallService : MonoService
 {
@@ -22,8 +23,8 @@ public class StallService : MonoService
     [Header("Tea Selection For Stall Box")]
     [SerializeField] private StallBoxUI teaSelectionScreen;
 
+    [Inject] private CustomerService _customerService;
 
-    public override List<Type> requiredServices { get; protected set; } = new() { typeof(CustomerService) };
     private ButtonExtended _lastSelectedStallBox;
     private ButtonExtended _lastSelectedStallBoxStatic;
     private GameObject _draggableItem;
@@ -33,20 +34,12 @@ public class StallService : MonoService
     private TeaBase _selectedCommodity;
     public TeaBase SelectedCommodity => _selectedCommodity;
 
-    private CustomerService _customerService;
 
     #region Init
 
-    private void Start()
+    [Inject]
+    public void Construct()
     {
-        Mediator.Instance.RegisterService(this);
-    }
-
-    public override void Initialize(Mediator mediator)
-    {
-        base.Initialize(mediator);
-        _customerService = mediator.GetService<CustomerService>();
-
         SetupHandlers();
         SubscribeToStallButtons();
         CreateDraggableItem();
@@ -59,9 +52,9 @@ public class StallService : MonoService
 
     private void SetupHandlers()
     {
-        AddEvent(_mediator.GlobalEventBus.Subscribe<DragContinuedEvent>(StallItemUpdateDragHandler));
-        AddEvent(_mediator.GlobalEventBus.Subscribe<DragEndedEvent>(StallItemEndDragHandler));
-        AddEvent(_mediator.GlobalEventBus.Subscribe<InputActionEvent>(MouseClickHandler));
+        SubscribeToEvent<DragContinuedEvent>(StallItemUpdateDragHandler);
+        SubscribeToEvent<DragEndedEvent>(StallItemEndDragHandler);
+        SubscribeToEvent<InputActionEvent>(MouseClickHandler);
     }
 
     private void SubscribeToStallButtons()
@@ -225,7 +218,6 @@ public class StallService : MonoService
 
     public override void Dispose()
     {
-        _mediator.UnregisterService(this);
     }
 
 

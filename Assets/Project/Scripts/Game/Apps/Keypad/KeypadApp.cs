@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Zenject;
 
 public class KeypadApp : BaseApp
 {
@@ -15,11 +16,10 @@ public class KeypadApp : BaseApp
 
     private int _currentKeypadInput = 0;
     public int KeypadInput => _currentKeypadInput;
-    private AudioHub _audioHub;
+    [Inject] private AudioHub _audioHub;
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
         oppenable = false;
         foreach (var item in keypadKeys)
         {
@@ -27,8 +27,6 @@ public class KeypadApp : BaseApp
         }
         removeButton.onClick.AddListener(() => RemoveFromKeypadInput());
         removeButton.GetComponent<BaseButtonExtended>().OnButtonHold += _ => RemoveFromKeypadInput();
-
-        _audioHub = Mediator.Instance.GetService<AudioHub>();
 
         OnClose.AddListener(HandleClose);
     }

@@ -15,19 +15,12 @@ public class AppController : MonoService
     [SerializeField] public UnityEvent OnAppClose;
     [SerializeField] private BaseApp KeypadApp;
     [SerializeField] private AppLoader AppLoader;
-#if UNITY_EDITOR
     [SerializeField] private bool disableAppLoadingScreen;
-#endif
-
     private List<IApp> apps = new();
     private IApp _activeApp;
     private bool _keypadOpen => KeypadApp.IsOpen;
     public KeypadApp KeypadAppInstance => KeypadApp as KeypadApp;
 
-    private void Awake()
-    {
-        Mediator.Instance.RegisterService(this);
-    }
 
     public void RegisterApp(IApp app)
     {
@@ -71,12 +64,10 @@ public class AppController : MonoService
             if (baseApp.requireAppLoad)
             {
 
-#if UNITY_EDITOR
                 if (disableAppLoadingScreen)
                 {
                     return;
                 }
-#endif
 
                 AppLoader.StartLoading();
             }
@@ -96,7 +87,6 @@ public class AppController : MonoService
 
     public override void Dispose()
     {
-        _mediator.UnregisterService(this);
     }
 
 }
