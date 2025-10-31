@@ -39,13 +39,13 @@ public abstract class ButtonExtended : InjectableBehaviour, IPointerDownHandler,
     private string mouseUpAnimatorName;
 
 
-    [SerializeField] private UnityEvent OnMouseDown;
-    [SerializeField] private UnityEvent OnMouseUp;
+    [SerializeField] public UnityEvent OnMouseDown;
+    [SerializeField] public UnityEvent OnMouseUp;
     [SerializeField] private List<HoldSettings> holdSettings;
 
 
     [Inject] private AudioHub _audioHub;
-    [Inject] private Mediator _mediator;
+    [Inject] private EventBus _eventBus;
     [Inject(Optional = true)] private BaseGraphRunnerService _graphRunnerService;
 
 
@@ -111,7 +111,7 @@ public abstract class ButtonExtended : InjectableBehaviour, IPointerDownHandler,
         {
             if (_audioHub == null)
             {
-                _mediator.GlobalEventBus.Publish(new DebugLogErrorEvent(("AudioHub service not found!", this).ToString()));
+                _eventBus.Publish(new DebugLogErrorEvent(("AudioHub service not found!", this).ToString()));
             }
         }
 

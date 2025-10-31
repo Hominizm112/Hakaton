@@ -61,7 +61,16 @@ public partial class ConsoleService
     [ConsoleCommand("save", "Save game data", "save")]
     private CommandResult SaveCommand(CommandContext context)
     {
-        _saveService.SaveData();
+        _ = _saveService.SaveDataAsync();
+        return CommandResult.Ok("Game data saved.");
+    }
+
+
+
+    [ConsoleCommand("load", "Load game data", "load")]
+    private CommandResult LoadCommand(CommandContext context)
+    {
+        _ = _saveService.LoadDataAsync();
         return CommandResult.Ok("Game data saved.");
     }
 

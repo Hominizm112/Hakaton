@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 using Zenject;
 
 #region Events
-public interface IInputEvent : IEvent { }
 
 public class InputActionEvent : IInputEvent
 {
@@ -21,15 +20,6 @@ public class InputActionEvent : IInputEvent
 
 }
 
-public class DragStartedEvent : IInputEvent
-{
-    public Vector2 ScreenPosition { get; }
-
-    public DragStartedEvent(Vector2 screenPosition)
-    {
-        ScreenPosition = screenPosition;
-    }
-}
 
 public class DragContinuedEvent : IInputEvent
 {
@@ -47,15 +37,6 @@ public class DragContinuedEvent : IInputEvent
     }
 }
 
-public class DragEndedEvent : IInputEvent
-{
-    public Vector2 ScreenPosition { get; }
-
-    public DragEndedEvent(Vector2 screenPosition)
-    {
-        ScreenPosition = screenPosition;
-    }
-}
 
 public class InputEnabledEvent : IInputEvent
 {

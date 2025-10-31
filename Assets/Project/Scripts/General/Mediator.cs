@@ -10,7 +10,7 @@ using Zenject;
 #region MonoService
 public interface IService { }
 
-public abstract class MonoService : MonoBehaviour, IService, IInitializable, IDisposable
+public abstract class MonoService : MonoBehaviour, IService, IInitializable, IDisposable  //TODO переделать в отдельный класс
 {
     [Inject] protected Mediator _mediator;
     [Inject] protected EventBus GlobalEventBus;
@@ -45,13 +45,13 @@ public interface IStateListener
     void OnStateChanged(Game.State state);
 }
 
-#region EventBus
+#region EventBus  //TODO переделать в отдельный класс
 
 public class EventBus
 {
     private readonly Dictionary<Type, List<Subscription>> _eventSubscriptions = new();
 
-    private class Subscription : IDisposable
+    public class Subscription : IDisposable
     {
         public Type EventType { get; }
         public Action<IEvent> Handler { get; }
@@ -88,7 +88,7 @@ public class EventBus
             Debug.Log($"{kvp.Key.Name}: {kvp.Value.Count} handlers");
         }
     }
-    public IDisposable Subscribe<T>(Action<T> handler) where T : IEvent
+    public Subscription Subscribe<T>(Action<T> handler) where T : IEvent
     {
         Type eventType = typeof(T);
         if (!_eventSubscriptions.ContainsKey(eventType))
@@ -389,7 +389,7 @@ public class Mediator : MonoBehaviour
 
     #endregion
 
-    #region Scene Loading
+    #region Scene Loading //TODO переделать в отдельный класс
 
     public void LoadScene(string sceneName, Game.State targetState, bool useTransitionScreen = true)
     {

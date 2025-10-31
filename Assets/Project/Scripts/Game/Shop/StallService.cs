@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using JetBrains.Annotations;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,7 @@ public class StallService : MonoService
     [SerializeField] private Transform draggableItemHolder;
     [SerializeField] private AreaDetector itemPlaceZone;
     [SerializeField] private Transform itemPlacePosition;
-
+    [SerializeField] private Transform finalTeaEndPos;
 
     [Header("Item Preview Settings")]
     [SerializeField] private GameObject draggableItemPrefab;
@@ -24,6 +25,8 @@ public class StallService : MonoService
     [SerializeField] private StallBoxUI teaSelectionScreen;
 
     [Inject] private CustomerService _customerService;
+    [Inject] private ShopkeeperService _shopkeeperService;
+    // [Inject] private WordBook _wordBook;
 
     private ButtonExtended _lastSelectedStallBox;
     private ButtonExtended _lastSelectedStallBoxStatic;
@@ -34,6 +37,10 @@ public class StallService : MonoService
     private TeaBase _selectedCommodity;
     public TeaBase SelectedCommodity => _selectedCommodity;
 
+    private bool _canSelectStallBox = true;
+    private bool _canSpawnNewCustomer = true;
+
+    private List<TeaFlavorTag> _currentflavors = new();
 
     #region Init
 
@@ -78,6 +85,11 @@ public class StallService : MonoService
 
     private void StallBoxSelect(ButtonExtended stallBox)
     {
+        if (!_canSelectStallBox)
+        {
+            return;
+        }
+
         _lastSelectedStallBox = stallBox;
         _lastSelectedStallBoxStatic = stallBox;
 
@@ -141,13 +153,13 @@ public class StallService : MonoService
         _draggableItem.transform.DOMove(itemPlacePosition.transform.position, 0.5f).SetEase(Ease.OutBack);
     }
 
-    private void HideItem()
+    public void HideItem(bool bypassInput = false)
     {
-        if (InputManager.GetObjectUnderMouse() != _draggableItem)
+        if (InputManager.GetObjectUnderMouse() != _draggableItem && !bypassInput)
         {
             return;
         }
-        if (!_draggableItem.activeSelf)
+        if (!_draggableItem || !_draggableItem.activeSelf)
         {
             return;
         }
@@ -161,11 +173,52 @@ public class StallService : MonoService
             _mediator.GlobalEventBus.Publish<TeaRemovedFromSelectionEvent>(new());
         }
         _selectedCommodity = null;
+    }
 
+    public void SetTeaReady(List<TeaFlavorTag> teaFlavors, float quality)
+    {
+        _canSelectStallBox = false;
+        _draggableItem.transform.DOMove(finalTeaEndPos.position, 1f).SetEase(Ease.OutBack);
+        _currentflavors = teaFlavors;
     }
 
 
+    public void SellItem()
+    {
+        if (_currentflavors.Count != 0)
+        {
+            _customerService.CustomerAtStall.npc.BuyTea(_currentflavors, CustomerCompletedHandler);
+            HideItem(true);
+            _currentflavors.Clear();
+            _canSelectStallBox = true;
+            _shopkeeperService.TryReduceCommodity(_lastSelectedStallBoxStatic.GetComponent<StallBox>().commodity);
+            // _wordBook.ResetSelectedWords();
+        }
+    }
+
     #endregion
+
+
+    #region Customer 
+
+    public void RequestCustomer()
+    {
+        _customerService.RequestCustomer();
+    }
+
+    public void CustomerCompletedHandler(NPCBuyResult npcBuyResult)
+    {
+        _customerService.DespawnCustomer();
+        if (_canSpawnNewCustomer)
+        {
+            _customerService.RequestCustomer();
+        }
+    }
+
+    #endregion
+
+
+
 
     #region Tea Selection
 
@@ -196,21 +249,6 @@ public class StallService : MonoService
         {
             _lastSelectedStallBoxStatic.GetComponent<StallBox>().commodity = teaBase;
         }
-    }
-
-
-    #endregion
-
-    #region Customer 
-
-    public void RequestCustomer()
-    {
-        _customerService.RequestCustomer();
-    }
-
-    public void CustomerCompletedHandler()
-    {
-
     }
 
 

@@ -8,6 +8,7 @@ public class TeaBase : Commodity
     [SerializeField] public bool unlocked;
     public List<TeaFlavorTag> baseFlavorTags = new();
     public int maxWordOfPower;
+
 }
 
 

@@ -1,24 +1,34 @@
+using GameCore.Configs;
 using UnityEngine;
 using Zenject;
 
 public class ProjectInstaller : MonoInstaller
 {
+    [SerializeField] private ScreensConfig screensConfig;
     public override void InstallBindings()
     {
+
+        Container.BindInterfacesAndSelfTo<SaveManager>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<CurrencyPresenter>().AsSingle().NonLazy();
+
         CreateAndBindAllServices();
 
-        Container.BindInterfacesAndSelfTo<ServiceFactory>().AsSingle();
+
+        Container.BindInterfacesAndSelfTo<ServiceFactory>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<TeaMixerService>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<WordBookService>().AsSingle().NonLazy();
+
 
 
         Container.Bind<EventBus>().AsSingle();
 
+        BindMVVM();
+        BindInventory();
     }
 
     private void CreateAndBindAllServices()
     {
         BindPersistentService<Mediator>();
-        BindPersistentService<CurrencyPresenter>();
-        BindPersistentService<SaveManager>();
         BindPersistentService<AudioHub>();
         BindPersistentService<InputManager>();
         BindPersistentService<DragManager>();
@@ -30,6 +40,32 @@ public class ProjectInstaller : MonoInstaller
         BindPersistentService<PortfollioService>();
 
     }
+
+    private void BindInventory()
+    {
+        Container.BindInterfacesAndSelfTo<InventoryService>().AsSingle();
+        Container.Bind<InventoryViewModel>().AsSingle();
+    }
+
+    private void BindMVVM()
+    {
+        Container.BindInterfacesAndSelfTo<GameCore.Services.ScreensService>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<GameCore.Factories.ViewModelFactory>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<GameCore.Factories.ViewsFactory>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<GameCore.Factories.ScreensFactory>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<ScreensConfig>().FromScriptableObject(screensConfig).AsSingle().NonLazy();
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     private void BindPersistentService<T>() where T : Component
     {

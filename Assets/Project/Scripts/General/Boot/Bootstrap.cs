@@ -23,7 +23,7 @@ public class Bootstrap : MonoBehaviour
         _mediator.SubscribeToState(Game.State.Gameplay, (_) => _mediator.InitializeAll());
 
         InjectEvents();
-        _saveService.LoadSaveData();
+        _ = _saveService.LoadDataAsync();
     }
 
     private void InjectEvents()

@@ -40,7 +40,7 @@ MonoBehaviour:
   seasonality: 0
   region: 0
   unlocked: 0
-  baseFlavorTags: 1300000019000000
+  baseFlavorTags: 0000000019000000
   maxWordOfPower: 3
   references:
     version: 2

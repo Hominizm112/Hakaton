@@ -1,0 +1,214 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5534210408787034469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1300ed0bfb57b9f46b8901910c0ee7fc, type: 3}
+  m_Name: StartNode_80e60605
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 114
+    y: 171
+    width: 150
+    height: 60
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: c898aa1b-d95a-4b29-ae37-dc056842032f
+  inputs: []
+  outputs:
+  - {fileID: 2564565561691024934}
+  - {fileID: 1170239908185099190}
+--- !u!114 &-1908174368531803977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84bb0c923a990284584844d117b2367f, type: 3}
+  m_Name: EndNode_35769c68
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 755
+    y: 300
+    width: 150
+    height: 60
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: 7b3a8821-681e-428e-a6b1-9459f61d8546
+  inputs:
+  - {fileID: 1170239908185099190}
+  outputs: []
+--- !u!114 &-500042680313411312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e64499c3239bb6746974d3ae89faf8f5, type: 3}
+  m_Name: BranchNode_6ab1a6d7
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 674
+    y: 151
+    width: 35
+    height: 35
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: 31e7e52d-bedb-4031-9ae0-7c3cf705d8eb
+  inputs:
+  - {fileID: 2564565561691024934}
+  outputs: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1705576f393e49645815d97035884067, type: 3}
+  m_Name: test
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -5534210408787034469}
+  - {fileID: -1908174368531803977}
+  - {fileID: 2564565561691024934}
+  - {fileID: 1170239908185099190}
+  selectedNode: {fileID: 0}
+  saveData:
+    nodes:
+    - nodeType: StartNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: StartNode_80e60605
+      position: {x: 160, y: 220}
+      guid: c898aa1b-d95a-4b29-ae37-dc056842032f
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: EndNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: EndNode_35769c68
+      position: {x: 801, y: 349}
+      guid: 7b3a8821-681e-428e-a6b1-9459f61d8546
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: ScaleNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: ScaleNode_c570ebb2
+      position: {x: 374, y: 130}
+      guid: eee47ef8-ac77-4ec0-b702-5b7f38bc398f
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    - nodeType: RotateNode, Assembly-CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      nodeName: RotateNode_0b68f34a
+      position: {x: 518, y: 288}
+      guid: 7376942e-82f3-4893-819b-87f62664bce1
+      targetPosition: {x: 0, y: 0, z: 0}
+      targetScale: {x: 0, y: 0, z: 0}
+      duration: 0
+      waitTime: 0
+      easeType: 0
+      branchName: 
+      serializedData: 
+    connections:
+    - fromNodeGuid: c898aa1b-d95a-4b29-ae37-dc056842032f
+      toNodeGuid: eee47ef8-ac77-4ec0-b702-5b7f38bc398f
+    - fromNodeGuid: c898aa1b-d95a-4b29-ae37-dc056842032f
+      toNodeGuid: 7376942e-82f3-4893-819b-87f62664bce1
+    - fromNodeGuid: 7376942e-82f3-4893-819b-87f62664bce1
+      toNodeGuid: 7b3a8821-681e-428e-a6b1-9459f61d8546
+    canvasOffset: {x: 245, y: 53}
+--- !u!114 &1170239908185099190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e623bb8cf30ffb4d9d87712a3ee7325, type: 3}
+  m_Name: RotateNode_0b68f34a
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 472
+    y: 239
+    width: 200
+    height: 150
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: 7376942e-82f3-4893-819b-87f62664bce1
+  inputs:
+  - {fileID: -5534210408787034469}
+  outputs:
+  - {fileID: -1908174368531803977}
+  targetRotation: {x: 0, y: 0, z: 0}
+  duration: 1
+  easeType: 1
+  relative: 0
+--- !u!114 &2564565561691024934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859cad87c19f6104a8fae9dbc5da5c90, type: 3}
+  m_Name: ScaleNode_c570ebb2
+  m_EditorClassIdentifier: 
+  _isInitialized: 1
+  nodeRect:
+    serializedVersion: 2
+    x: 409
+    y: 70
+    width: 200
+    height: 150
+  nodeName: Node
+  isDragged: 0
+  isSelected: 0
+  guid: eee47ef8-ac77-4ec0-b702-5b7f38bc398f
+  inputs:
+  - {fileID: -5534210408787034469}
+  outputs: []
+  targetScale: {x: 1, y: 1, z: 1}
+  duration: 1
+  easeType: 1
+  relative: 0

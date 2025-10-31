@@ -5,15 +5,15 @@ using System.Collections;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
-
 
 
 /// <summary>
 /// A cross-platform save manager that handles both desktop and WebGL.
 /// Uses JSON serialization and async file operations for compatibility.
 /// </summary>
-public class SaveManager : MonoBehaviour
+public partial class SaveManager : EventListener
 {
     public static event Action OnSaveLoaded;
     public static event Action OnSaveCompleted;
@@ -36,19 +36,19 @@ public class SaveManager : MonoBehaviour
     /// Call this early (e.g., from Bootstrap) to load saved data.
     /// For WebGL, this must be asynchronous.
     /// </summary>
-    public void LoadSaveData()
+    public async Task LoadDataAsync()
     {
-        StartCoroutine(LoadSaveDataRoutine());
+        await LoadSaveDataRoutineAsync();
     }
 
-    private IEnumerator LoadSaveDataRoutine()
+    private async Task LoadSaveDataRoutineAsync()
     {
         if (!File.Exists(SaveFilePath))
         {
             Debug.Log("No save file found. Using default data");
             currentSaveData = new SaveData();
             OnSaveLoaded?.Invoke();
-            yield break;
+            return;
         }
 
         string filePath = SaveFilePath;
@@ -56,60 +56,100 @@ public class SaveManager : MonoBehaviour
         filePath = "file:///" + SaveFilePath;
 #endif
 
-        var loadOperation = UnityEngine.Networking.UnityWebRequest.Get(filePath);
-        yield return loadOperation.SendWebRequest();
 
-        if (loadOperation.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
+        string json;
+
+        try
         {
-            string json = loadOperation.downloadHandler.text.Trim('\uFEFF', '\u200B');
-
-            try
+            if (filePath.StartsWith("file:///"))
             {
-                // DEBUG: Log what's being loaded
-                // Debug.Log("=== LOAD DATA DEBUG ===");
-                // Debug.Log("Raw JSON: " + json);
+                var loadOperation = UnityEngine.Networking.UnityWebRequest.Get(filePath);
+                await loadOperation.SendWebRequest();
 
-                currentSaveData = JsonConvert.DeserializeObject<SaveData>(json, jsonSettings);
-
-                // Debug.Log($"Loaded PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
-                if (currentSaveData.PlayerCommodities != null)
+                if (loadOperation.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
                 {
-                    foreach (var entry in currentSaveData.PlayerCommodities)
-                    {
-                        // Debug.Log($"Loaded Commodity: {entry.id}, Amount: {entry.amount}");
-                    }
+                    json = loadOperation.downloadHandler.text.Trim('\uFEFF', '\u200B');
                 }
-                // Debug.Log("=====================");
+                else
+                {
+                    throw new Exception($"Failed to load save file: {loadOperation.error}");
+                }
 
-                Debug.Log("Save data loaded successfully.");
+                loadOperation.Dispose();
             }
-            catch (Exception e)
+            else
             {
-                Debug.LogError($"Failed to parse save data: {e.Message}");
-                currentSaveData = new SaveData();
+                json = await File.ReadAllTextAsync(filePath, Encoding.UTF8);
+                json = json.Trim('\uFEFF', '\u200B');
             }
+
+            currentSaveData = JsonConvert.DeserializeObject<SaveData>(json, jsonSettings);
+
         }
-        else
+        catch (Exception e)
         {
-            Debug.LogError($"Failed to load save file: {loadOperation.error}");
-            currentSaveData = new SaveData();
+            Debug.LogError($"Failed to load save data: {e.Message}");
+            currentSaveData = new();
         }
 
-        Mediator.Instance.GlobalEventBus.Publish<LoadDataEvent>(new());
-        loadOperation.Dispose();
+        _eventBus.Publish<LoadDataEvent>(new(this));
         OnSaveLoaded?.Invoke();
+
+
+
+
+
+        // if (loadOperation.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
+        // {
+        //     string json = loadOperation.downloadHandler.text.Trim('\uFEFF', '\u200B');
+
+        //     try
+        //     {
+        //         // DEBUG: Log what's being loaded
+        //         // Debug.Log("=== LOAD DATA DEBUG ===");
+        //         // Debug.Log("Raw JSON: " + json);
+
+        //         currentSaveData = JsonConvert.DeserializeObject<SaveData>(json, jsonSettings);
+
+        //         // Debug.Log($"Loaded PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
+        //         if (currentSaveData.PlayerCommodities != null)
+        //         {
+        //             foreach (var entry in currentSaveData.PlayerCommodities)
+        //             {
+        //                 // Debug.Log($"Loaded Commodity: {entry.id}, Amount: {entry.amount}");
+        //             }
+        //         }
+        //         // Debug.Log("=====================");
+
+        //         Debug.Log("Save data loaded successfully.");
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         Debug.LogError($"Failed to parse save data: {e.Message}");
+        //         currentSaveData = new SaveData();
+        //     }
+        // }
+        // else
+        // {
+        //     Debug.LogError($"Failed to load save file: {loadOperation.error}");
+        //     currentSaveData = new SaveData();
+        // }
+
+        // Mediator.Instance.GlobalEventBus.Publish<LoadDataEvent>(new(this));
+        // loadOperation.Dispose();
+        // OnSaveLoaded?.Invoke();
     }
 
     /// <summary>
     /// Saves the current in-memory data to disk.
     /// Uses the proper async method for cross-platform compatibility.
     /// </summary>
-    public void SaveData()
+    public async Task SaveDataAsync()
     {
-        StartCoroutine(SaveDataRoutine());
+        await SaveDataRoutineAsync();
     }
 
-    private IEnumerator SaveDataRoutine()
+    private async Task SaveDataRoutineAsync()
     {
         // DEBUG: Log what's actually being saved
         // Debug.Log("=== SAVE DATA DEBUG ===");
@@ -128,8 +168,8 @@ public class SaveManager : MonoBehaviour
 
         try
         {
-            // Use File.WriteAllText for simplicity
-            File.WriteAllText(SaveFilePath, plainJson, Encoding.UTF8);
+            // Use async file writing
+            await File.WriteAllTextAsync(SaveFilePath, plainJson, Encoding.UTF8);
             Debug.Log("Game saved successfully!");
             OnSaveCompleted?.Invoke();
         }
@@ -137,8 +177,6 @@ public class SaveManager : MonoBehaviour
         {
             Debug.LogError($"Failed to save game: {e.Message}");
         }
-
-        yield return null;
     }
 
     public void SetInt(string key, int value) => currentSaveData.IntValues[key] = value;
@@ -152,6 +190,154 @@ public class SaveManager : MonoBehaviour
 
     public void SetBool(string key, bool value) => currentSaveData.BoolValues[key] = value;
     public bool GetBool(string key, bool defaultValue = false) => currentSaveData.BoolValues.TryGetValue(key, out bool value) ? value : defaultValue;
+
+
+    /// <summary>
+    /// Generic load method that supports both encrypted and plain data
+    /// </summary>
+
+    public T Load<T>(string key, T defaultValue = default(T))
+    {
+        try
+        {
+            // First try to load from current save data dictionaries
+            if (typeof(T) == typeof(int))
+            {
+                if (currentSaveData.IntValues.TryGetValue(key, out int value))
+                    return (T)(object)value;
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                if (currentSaveData.FloatValues.TryGetValue(key, out float value))
+                    return (T)(object)value;
+            }
+            else if (typeof(T) == typeof(string))
+            {
+                if (currentSaveData.StringValues.TryGetValue(key, out string value))
+                    return (T)(object)value;
+            }
+            else if (typeof(T) == typeof(bool))
+            {
+                if (currentSaveData.BoolValues.TryGetValue(key, out bool value))
+                    return (T)(object)value;
+            }
+            else
+            {
+                // For complex types, try to load from JSON in string dictionary
+                if (currentSaveData.StringValues.TryGetValue(key, out string jsonValue))
+                {
+                    // Check if the value is encrypted
+                    if (IsEncrypted(jsonValue))
+                    {
+                        string decryptedJson = EncryptionUtility.Decrypt(jsonValue);
+                        if (!string.IsNullOrEmpty(decryptedJson))
+                        {
+                            return JsonConvert.DeserializeObject<T>(decryptedJson, jsonSettings);
+                        }
+                    }
+                    else
+                    {
+                        // Plain JSON
+                        return JsonConvert.DeserializeObject<T>(jsonValue, jsonSettings);
+                    }
+                }
+            }
+
+
+            return defaultValue;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to load data for key '{key}': {e.Message}");
+            return defaultValue;
+        }
+    }
+
+
+    /// <summary>
+    /// Generic save method that supports both simple types and complex objects
+    /// </summary>
+    public void Save<T>(string key, T value, bool encrypt = false)
+    {
+        try
+        {
+            if (typeof(T) == typeof(int))
+            {
+                currentSaveData.IntValues[key] = (int)(object)value;
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                currentSaveData.FloatValues[key] = (float)(object)value;
+            }
+            else if (typeof(T) == typeof(string))
+            {
+                currentSaveData.StringValues[key] = (string)(object)value;
+            }
+            else if (typeof(T) == typeof(bool))
+            {
+                currentSaveData.BoolValues[key] = (bool)(object)value;
+            }
+            else
+            {
+                // For complex types, serialize to JSON
+                string json = JsonConvert.SerializeObject(value, jsonSettings);
+
+                if (encrypt)
+                {
+                    json = EncryptionUtility.Encrypt(json);
+                }
+
+                currentSaveData.StringValues[key] = json;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to save data for key '{key}': {e.Message}");
+        }
+    }
+
+
+    /// <summary>
+    /// Check if a string value is encrypted
+    /// </summary>
+    private bool IsEncrypted(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return false;
+
+        try
+        {
+            if (value.Length % 4 == 0 && System.Text.RegularExpressions.Regex.IsMatch(value, @"^[a-zA-Z0-9\+/]*={0,3}$"))
+            {
+                string decrypted = EncryptionUtility.Decrypt(value);
+                return !string.IsNullOrEmpty(decrypted) && decrypted.Trim().StartsWith("{");
+            }
+        }
+        catch
+        {
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Loads a list of items with fallback to empty list
+    /// </summary>
+    public List<T> LoadList<T>(string key)
+    {
+        var result = Load<List<T>>(key);
+        return result ?? new List<T>();
+    }
+
+    /// <summary>
+    /// Loads a dictionary with fallback to empty dictionary
+    /// </summary>
+    public Dictionary<TKey, TValue> LoadDictionary<TKey, TValue>(string key)
+    {
+        var result = Load<Dictionary<TKey, TValue>>(key);
+        return result ?? new Dictionary<TKey, TValue>();
+    }
+
 
     /// <summary>
     /// Deletes the save file from disk and resets in-memory data.
@@ -167,28 +353,7 @@ public class SaveManager : MonoBehaviour
         Debug.Log("Save data reset to default.");
     }
 
-    [ContextMenu("Test Save Load")]
-    public void TestSaveLoad()
-    {
-        // Clear and add test data
-        currentSaveData = new SaveData();
-        currentSaveData.PlayerCommodities.Add(new CommoditySaveData(
-            "teabase",
-            42
-        ));
 
-        // Save
-        SaveData();
-
-        // Wait a frame then load
-        StartCoroutine(TestLoadCoroutine());
-    }
-
-    private IEnumerator TestLoadCoroutine()
-    {
-        yield return new WaitForSeconds(0.5f);
-        LoadSaveData();
-    }
 }
 
 

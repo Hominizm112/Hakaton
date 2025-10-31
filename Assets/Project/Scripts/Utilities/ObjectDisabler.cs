@@ -18,7 +18,6 @@ public class ObjectDisabler : MonoBehaviour
             if (item.Injected) continue;
             item.OnInjected += CollectInjection;
             injectionProgress++;
-            print($"added item: {item.name} to collect injection");
         }
 
     }

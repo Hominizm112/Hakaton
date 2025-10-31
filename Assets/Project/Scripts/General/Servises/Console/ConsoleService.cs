@@ -34,9 +34,9 @@ public partial class ConsoleService : MonoService
     private readonly Dictionary<string, ConsoleCommandAttribute> _commandAttributes = new();
     private readonly List<string> _outputLines = new();
 
-    public override void Initialize()
+    [Inject]
+    public void Construct()
     {
-        _mediator = Mediator.Instance;
         _inputManager.TryGetAction("SwitchDebugConsole", out _toggleAction);
 
         _toggleAction.performed += OnInputAction;

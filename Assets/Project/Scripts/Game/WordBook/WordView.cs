@@ -1,11 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using System;
-using Unity.VisualScripting;
 using UnityEngine.Localization.Components;
 
-public class WordView : MonoBehaviour
+public class WordView : MonoBehaviour, IDisposable
 {
     [SerializeField] private LocalizeStringEvent localizeStringEvent;
 
@@ -28,7 +26,6 @@ public class WordView : MonoBehaviour
     {
         if (wordOfPower == null)
         {
-            ColorfulDebug.LogError("Attempted to set null word to WordView");
             return;
         }
 
@@ -36,6 +33,12 @@ public class WordView : MonoBehaviour
         _selectCallback = selectCallback;
 
         UpdateDisplay();
+    }
+
+    public void ResetWord()
+    {
+        WordOfPower = null;
+        _selectCallback = null;
     }
 
     private void UpdateDisplay()
@@ -68,7 +71,7 @@ public class WordView : MonoBehaviour
         }
     }
 
-    public void Cleanup()
+    public void Dispose()
     {
         WordOfPower = null;
         _selectCallback = null;

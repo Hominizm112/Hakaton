@@ -140,8 +140,55 @@ public class CustomerAtStallEvent : IEvent { }
 
 #region Save/Load Events
 
-public class LoadDataEvent : IEvent { }
+public class LoadDataEvent : IEvent
+{
+    public SaveManager Sender { get; }
+
+    public LoadDataEvent(SaveManager sender)
+    {
+        Sender = sender;
+    }
+}
 
 public class TeaRemovedFromSelectionEvent : IEvent { }
+
+#endregion
+
+#region  Drag
+
+public interface IInputEvent : IEvent { }
+
+public class DragEndedEvent : IInputEvent
+{
+    public object sender;
+
+    public DragEndedEvent(object sender)
+    {
+        this.sender = sender;
+    }
+}
+
+
+public class DragStartedEvent : IInputEvent
+{
+    public object sender;
+
+    public DragStartedEvent(object sender)
+    {
+        this.sender = sender;
+    }
+}
+
+#endregion
+
+#region DayScene Events
+
+public class TeaReadyEvent : IEvent
+{
+    public TeaReadyEvent()
+    {
+
+    }
+}
 
 #endregion

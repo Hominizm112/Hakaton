@@ -1,61 +1,40 @@
+using System;
+using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider2D))]
-public class Draggable2D : MonoBehaviour, IDraggable
+public class Draggable2D : MonoBehaviour
 {
-    [SerializeField] private bool _isDraggable = true;
-    [SerializeField] private bool _snapToCursor = true;
-    [SerializeField] private float _dragSpeed = 1f;
+    [Header("Settings")]
+    [SerializeField] public DropZone[] dropZones;
+    [SerializeField] public string[] states;
 
-    public bool CanBeDragged => _isDraggable;
+    private string _currentState;
+    public string CurrentState => _currentState;
 
-    private Vector3 _offset;
-    private Rigidbody2D _rb;
-    private Collider2D _collider;
-
-    private void Awake()
+    public void SetState(string newState)
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _collider = GetComponent<Collider2D>();
+        _currentState = newState;
     }
 
-    public void OnDragStart()
+    public void PlaceInDropZone()
     {
-        var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        _offset = transform.position - mouseWorldPos;
-
-        if (_rb != null)
+        foreach (var item in dropZones)
         {
-            _rb.bodyType = RigidbodyType2D.Kinematic;
+            if (item.areaDetector.IsObjectInArea(gameObject))
+            {
+                transform.DOMove(item.placePosition.transform.position, 0.5f).SetEase(Ease.OutBack);
+            }
         }
-
-    }
-
-    public void OnDragContinue(Vector2 worldPosition, Vector2 delta)
-    {
-        if (_snapToCursor)
-        {
-            transform.position = worldPosition + (Vector2)_offset;
-        }
-        else
-        {
-            var targetPosition = worldPosition + (Vector2)_offset;
-            transform.position = Vector3.Lerp(transform.position, targetPosition, _dragSpeed * Time.deltaTime);
-        }
-    }
-
-    public void OnDragEnd()
-    {
-        if (_rb != null)
-        {
-            _rb.bodyType = RigidbodyType2D.Static;
-        }
-
-        _offset = Vector3.zero;
-    }
-
-    public void SetDraggable(bool draggable)
-    {
-        _isDraggable = draggable;
     }
 }
+
+
+[Serializable]
+public struct DropZone
+{
+    public AreaDetector areaDetector;
+    public Transform placePosition;
+    public string draggableState;
+}
+

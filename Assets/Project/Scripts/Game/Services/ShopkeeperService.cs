@@ -28,12 +28,12 @@ public class ShopkeeperService : MonoService
 
     public void LoadData()
     {
-        var commodities = _saveService.currentSaveData.PlayerCommodities;
+        // var commodities = _saveService.currentSaveData.PlayerCommodities;
 
-        foreach (var item in commodities)
-        {
-            _playerCommodities.Add(new(ResourceService.GetCommodity(item.id), item.amount));
-        }
+        // foreach (var item in commodities)
+        // {
+        // _playerCommodities.Add(new(ResourceService.GetCommodity(item.id), item.amount));
+        // }
     }
 
     public void SaveData(SceneUnloadEvent @event)

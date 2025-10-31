@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dcfc0a1efb04a999a1ef03bb72cc6bf, type: 3}
+  m_Name: ScreensConfig
+  m_EditorClassIdentifier: 
+  _screens:
+  - type: TeaMixView
+    asset:
+      m_AssetGUID: d6f7766af547f884185eba8ae2a945a6
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - type: GameUI.Views.WordBookView
+    asset:
+      m_AssetGUID: aafd410074e4f0445b60744160470416
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  rootCanvas: {fileID: 5999725721942602418, guid: dff49ac18601fa542978bab240d20f8c, type: 3}

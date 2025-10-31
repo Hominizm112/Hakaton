@@ -21,6 +21,8 @@ public class CustomerService : MonoService
     [SerializeField] private Ease customerHideEase;
 
     private Customer _customerAtStall;
+    private Customer _lastCustomerAtStall;
+    public Customer CustomerAtStall => _customerAtStall;
 
     /// <summary>
     /// Object pool for managing Customer instances with their activation states.
@@ -87,6 +89,7 @@ public class CustomerService : MonoService
         {
             _mediator.GlobalEventBus.Publish<CustomerAtStallEvent>(new());
             _customerAtStall = customer;
+            _lastCustomerAtStall = customer;
         });
 
     }
@@ -101,7 +104,7 @@ public class CustomerService : MonoService
 
         _customerAtStall.gameObject.transform.DOMove(customerEndPosition, customerHideDuration).SetEase(customerHideEase).OnComplete(() =>
         {
-            SetCustomerActive(_customerAtStall, false);
+            SetCustomerActive(_lastCustomerAtStall, false);
         });
 
         _customerAtStall = null;

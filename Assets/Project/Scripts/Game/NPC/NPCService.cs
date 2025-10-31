@@ -61,10 +61,7 @@ public class NPCService : MonoService
         AnimateNPCIn();
     }
 
-    public void BuyTea(TeaBaseMixed teaBaseMixed)
-    {
-        npc.BuyTea(teaBaseMixed, HandleItemBought);
-    }
+
 
     #region  Animation
 

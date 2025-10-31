@@ -106,7 +106,7 @@ public class WordBookApp : BaseApp
     {
         foreach (var wordView in _wordViews)
         {
-            wordView.Cleanup();
+            wordView.Dispose();
         }
 
         _wordViews.Clear();

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class CurrencyPresenter : MonoService
+public class CurrencyPresenter : EventListener
 {
     [SerializeField] private CurrencyView _view;
 
@@ -16,12 +16,17 @@ public class CurrencyPresenter : MonoService
     [Inject]
     public void Construct()
     {
-        int savedCurrency = _saveManager?.GetInt("currency", 0) ?? 0;
-        _model = new CurrencyModel(savedCurrency);
-
+        _model = new CurrencyModel(0);
         _model.OnCurrencyChanged += HandleCurrencyChanged;
 
-        _mediator.GlobalEventBus.Subscribe<CurrencyChangedEvent>((e) => _audioHub.PlayOneShot(SoundType.CoinToss, .1f));
+        SubscribeToEvent<CurrencyChangedEvent>((e) => _audioHub.PlayOneShot(SoundType.CoinToss, .1f));
+        SubscribeToEvent<LoadDataEvent>(_ => LoadData());
+    }
+
+    private void LoadData()
+    {
+        int savedCurrency = _saveManager?.GetInt("currency", 0) ?? 0;
+        _model.AddCurrency(savedCurrency);
     }
 
     public void InitializeView(CurrencyView currencyView)
@@ -37,7 +42,7 @@ public class CurrencyPresenter : MonoService
         UpdateView();
         SaveCurrency();
 
-        _mediator.GlobalEventBus.Publish(new CurrencyChangedEvent(newAmount));
+        _eventBus.Publish(new CurrencyChangedEvent(newAmount));
     }
 
     private void UpdateView()

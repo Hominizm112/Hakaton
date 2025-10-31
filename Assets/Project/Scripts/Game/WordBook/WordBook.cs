@@ -40,6 +40,7 @@ public class WordBook : MonoService
     private List<WordOfPower> _selectedWords = new();
 
     public WordOfPower GetCurrentSelectedWord() => _currentSelectedWord;
+    public List<WordOfPower> GetSelectedWords() => _selectedWords;
 
 
 
@@ -105,7 +106,7 @@ public class WordBook : MonoService
         wordDescriptionText.StringReference = word.description;
     }
 
-    private void ClearSelection()
+    public void ClearSelection()
     {
         _currentSelectedWord = null;
         wordSelectedText.StringReference = null;
@@ -169,7 +170,7 @@ public class WordBook : MonoService
         }
     }
 
-    private void ResetSelectedWords()
+    public void ResetSelectedWords()
     {
         _selectedWords.Clear();
         RefreshSelectedWordView();
@@ -179,12 +180,12 @@ public class WordBook : MonoService
     {
         foreach (var item in _wordViews)
         {
-            item.Cleanup();
+            item.Dispose();
         }
 
         foreach (var item in _selectedWordViews)
         {
-            item.Cleanup();
+            item.Dispose();
         }
     }
 

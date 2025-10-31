@@ -27,6 +27,10 @@ public interface IInjectable
     void MarkInjected();
 }
 
+public interface IItem { }
+
+public interface IEventListener { }
+
 public abstract class InjectableBehaviour : MonoBehaviour, IInjectable
 {
     public bool Injected { get; private set; }
@@ -92,4 +96,10 @@ public class BindAttribute : Attribute
 {
     public Type BindType { get; }
     public BindAttribute(Type bindType = null) => BindType = bindType;
+}
+
+
+public interface IViewOpener
+{
+    public abstract void OpenScreen();
 }
