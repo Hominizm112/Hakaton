@@ -120,7 +120,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8697444671797771317}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -3970792192383371620}
+        m_TargetAssemblyTypeName: GameCore.UI.View, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1191532454923696749
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,8 +202,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -59.02997}
-  m_SizeDelta: {x: 0, y: -118.07}
+  m_AnchoredPosition: {x: 0, y: 0.0025024}
+  m_SizeDelta: {x: 0, y: -0.0050659}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1358887497360313756
 CanvasRenderer:
@@ -1112,7 +1124,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1005.87, y: 1005.87}
+  m_SizeDelta: {x: 781.4695, y: 781.4695}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1231521235290227957
 CanvasRenderer:

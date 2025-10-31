@@ -30,6 +30,7 @@ namespace GameCore.Factories
             var prefab = handle.GetComponent<TView>();
             var screen = _viewsFactory.Create(prefab, _rootUI.transform);
             screen.gameObject.SetActive(false);
+            screen.transform.localScale = Vector3.one;
             return screen;
         }
 
@@ -42,6 +43,7 @@ namespace GameCore.Factories
             var prefab = obj.GetComponent<TView>();
             var screen = _viewsFactory.Create(prefab, _rootUI.transform);
             screen.gameObject.SetActive(false);
+            screen.transform.localScale = Vector3.one;
             return screen;
         }
 

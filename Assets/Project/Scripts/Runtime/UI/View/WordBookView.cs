@@ -10,6 +10,7 @@ using Debug = ColorfulDebug;
 using System;
 using TMPro;
 using System.Linq;
+using DG.Tweening;
 
 
 namespace GameUI.Views
@@ -33,6 +34,8 @@ namespace GameUI.Views
         private bool _wordViewsInitialized;
         private List<WordView> _selectedWordViews;
 
+        private Dictionary<WordView, Tween> _selectedWordViewAnimations = new();
+
 
         [Inject] private EventBus _eventBus;
 
@@ -50,8 +53,6 @@ namespace GameUI.Views
             ViewModel.WordOfPowers
                 .Subscribe(words => RefreshWordViews(words))
                 .AddTo(_disposables);
-
-            print(ViewModel.WordOfPowers);
 
             if (!_wordViewsInitialized)
             {
@@ -124,6 +125,7 @@ namespace GameUI.Views
                 var view = handle.Result.GetComponent<WordView>();
                 view.SetWord(wordOfPower, WordSelectionCallback);
                 view.transform.SetParent(wordViewHolder);
+                view.transform.localScale = Vector3.one;
 
                 _disposables.Add(view);
 
@@ -165,6 +167,13 @@ namespace GameUI.Views
         {
             WordView view = await CreateWordView();
             view.transform.SetParent(selectedWordsHolder);
+
+            if (_selectedWordViewAnimations.ContainsKey(view))
+            {
+                _selectedWordViewAnimations[view]?.Kill();
+                _selectedWordViewAnimations.Remove(view);
+            }
+
             view.gameObject.SetActive(false);
             _selectedWordViews.Add(view);
         }
@@ -175,6 +184,7 @@ namespace GameUI.Views
             var view = _selectedWordViews.Find(r => !r.gameObject.activeSelf);
             if (view)
             {
+                AnimateSelectedWordShow(view);
                 view.gameObject.SetActive(true);
                 view.SetWord(wordOfPower, WordSelectionCallback);
             }
@@ -182,7 +192,7 @@ namespace GameUI.Views
             {
                 if (ViewModel.CanCreateAnotherView())
                 {
-                    await CreateWordView();
+                    await CreateSelectedWordView();
                     HandleSelectedWordsCollectionAddedAsync(wordOfPower).Forget();
                 }
             }
@@ -199,7 +209,16 @@ namespace GameUI.Views
             }
         }
 
+        private void AnimateSelectedWordShow(WordView wordView)
+        {
+            wordView.transform.localScale = new Vector3(1.2f, 0.9f, 1f);
+            var tween = wordView.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack).OnComplete(() =>
+                {
+                    _selectedWordViewAnimations.Remove(wordView);
+                });
+            _selectedWordViewAnimations[wordView] = tween;
 
+        }
 
 
         public void OnEnable()

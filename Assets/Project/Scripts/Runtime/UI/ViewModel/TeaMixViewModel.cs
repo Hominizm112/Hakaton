@@ -9,7 +9,7 @@ public class TeaMixViewModel : ViewModel
     private RefTypeViewModelBinder<ReactiveCommand<float>> _completionSlider = new("completionSlider");
 
     private RangeFloat _perfectRange, _goodRange;
-    private CompositeDisposable _disposables;
+    private CompositeDisposable _disposables = new();
 
     [Inject] TeaMixerService _teaMixerService;
 

@@ -21,30 +21,33 @@ public class WordBookViewModel : ViewModel
 
     [Inject] WordBookService _wordBookService;
 
-    private CompositeDisposable _disposables;
+    private CompositeDisposable _disposables = new();
 
 
     public override void Initialize()
     {
         Bind(_addWordToSelectedButton, _removeWordFromSelectedButton);
 
-        // _addWordToSelectedButton.Value.Subscribe(AddToSelected)
-        //     .AddTo(_disposables);
+        _addWordToSelectedButton.Value.Subscribe(r =>
+            {
+                if (r == MouseButtonClick.Up)
+                    AddToSelected();
+            })
+            .AddTo(_disposables);
 
 
-        // _removeWordFromSelectedButton.Value.Subscribe(r =>
-        //     {
-        //         if (r == MouseButtonClick.Up)
-        //             RemoveFromSelected();
-        //     })
-        //     .AddTo(_disposables);
+        _removeWordFromSelectedButton.Value.Subscribe(r =>
+            {
+                if (r == MouseButtonClick.Up)
+                    RemoveFromSelected();
+            })
+            .AddTo(_disposables);
 
         RefreshWordOfPowers().Forget();
     }
 
     public async UniTask RefreshWordOfPowers()
     {
-        Debug.Log("refreshing words");
         var words = await _wordBookService.LoadWordsAsync();
         _wordOfPowers.Value = words;
 
@@ -55,15 +58,16 @@ public class WordBookViewModel : ViewModel
         _selectedWord.Value = wordOfPower;
     }
 
-    public void AddToSelected(MouseButtonClick mouseButtonClick)
+    public void AddToSelected()
     {
-        if (mouseButtonClick == MouseButtonClick.Down) return;
-        _selectedWords.Add(SelectedWord.Value);
+        if (!_selectedWords.Contains(SelectedWord.Value))
+            _selectedWords.Add(SelectedWord.Value);
     }
 
     public void RemoveFromSelected()
     {
-        _selectedWords.Remove(SelectedWord.Value);
+        if (_selectedWords.Contains(SelectedWord.Value))
+            _selectedWords.Remove(SelectedWord.Value);
     }
 
     public bool CanCreateAnotherView()
