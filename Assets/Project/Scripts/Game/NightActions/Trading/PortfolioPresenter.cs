@@ -6,12 +6,13 @@ using UnityEngine;
 using UnityEngine.Localization.Components;
 
 
-public class PortfolioPresenter: MonoService
+public class PortfolioPresenter: MonoBehaviour, IInitializable
 {
     [SerializeField] private LocalizeStringEvent localizeStringEvent;
     private PortfolioView _view;
     private MarketData _marketData;
     private PortfollioService _model;
+    private SaveManager _saveManager;
     private Mediator _mediator;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
     private TradingWindowView _tradingWindowView;
@@ -20,11 +21,12 @@ public class PortfolioPresenter: MonoService
     {
         Mediator.Instance.RegisterService(this);
     }
-    public override void Initialize(Mediator mediator)
+    public  void Initialize(Mediator mediator)
     {
-        _mediator = mediator; 
-        base.Initialize();
+        _mediator = mediator;
         _model = _mediator.GetService<PortfollioService>();
+        //_model = new PortfollioService(savedCurrency);
+        _saveManager = mediator.GetService<SaveManager>();
         //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
         //var allAssets = _model.Assets;
         var allAssets = _portfolioSummary.MyActives;
@@ -33,28 +35,28 @@ public class PortfolioPresenter: MonoService
         kvp => kvp.Key.ToString() // Используем Ticker как отображаемое имя
     );
 
-        _tradingWindowView = _mediator.GetService<TradingWindowView>();
+        _tradingWindowView = _mediator.GetService<TradingWindowView>();// через new?
         if (_tradingWindowView != null)
         {              //Mediator.Instance.GlobalEventBus.Subscribe<OpenTradeWindowEvent>(HandleOpenEvent);
             _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
         }
         //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
-        PortfolioInitialize();
-        InitializeView(_view);
-
     }
     public void InitializeView(PortfolioView portfolioView)
     {
-         _view = GetComponent<PortfolioView>(); 
+        _view = portfolioView;
         _view.OnAddCashClicked += HandleAddCash;
         _view.OnCheckOtherStocksClicked += HandleCheckOtherStock;
         _view.OnCheckOtherBondsClicked += HandleCheckOtherBond;
         _view.OnGetAnalyticsClicked += HandleGetPortfolioReport;
-        ///_tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
+        _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
+        //_portfolioSummary.QuantityMyActivChanged += HandleTradeActiv;
+        _portfolioSummary.QuantityMyActivChanged += _view.UpdateQuantityActiv;
+        _portfolioSummary.OnCashBalanceChanged += _view.UpdateCashDisplay;
+        PortfolioInitialize();
 
     }
 
-    
     private void PortfolioInitialize()//инициализация портфолио,создание кнопок
     {
         //инициализация модели
@@ -293,6 +295,23 @@ public class PortfolioPresenter: MonoService
 
     private void OnDestroy()
     {
+        if (_view != null)
+        {
+            _view.OnAddCashClicked -= HandleAddCash;
+            _view.OnCheckOtherStocksClicked -= HandleCheckOtherStock;
+            _view.OnCheckOtherBondsClicked -= HandleCheckOtherBond;
+            _view.OnGetAnalyticsClicked -= HandleGetPortfolioReport;
+            _tradingWindowView.OnTradeConfirmed -= HandleConfirmTrade;
+
+        }
+        
+        if (_portfolioSummary!=null && _view != null)
+        {
+            _portfolioSummary.QuantityMyActivChanged -= _view.UpdateQuantityActiv;
+            _portfolioSummary.OnCashBalanceChanged -= _view.UpdateCashDisplay;
+        }
+        
+        
 
     }
 

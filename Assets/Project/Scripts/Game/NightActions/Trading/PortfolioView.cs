@@ -7,52 +7,54 @@ using System.Collections.Generic;
 using UnityEngine.Localization.Components;
 
 
-public class PortfolioView : MonoBehaviour
+public class PortfolioView : BaseApp
 {
-    [SerializeField] private LocalizeStringEvent localizeStringEvent;
-     private TMP_Text cashBalanceText;
-     private TMP_Text totalValueText;
-     private TMP_Text stocksValueText;
-     private TMP_Text bondsValueText;
+    //[SerializeField] private LocalizeStringEvent localizeStringEvent;
+    [SerializeField] private TMP_Text cashBalanceText;
+    [SerializeField] private TMP_Text totalValueText;
+    [SerializeField] private TMP_Text stocksValueText;
+    [SerializeField] private TMP_Text bondsValueText;
    //[SerializeField] private TMP_Text _totalGainText;
     //[SerializeField] private TMP_Text _dayGainText;
     //[SerializeField] private TMP_Text _totalGainTextPercent;
     //[SerializeField] private TMP_Text _dayGainTextPercent;
-    private TMP_Text countStocks;
-    private TMP_Text countBonds;
-
-    private Button _addCashButton;
-    private Button _checkOtherStocksButton;
-    private Button _checkOtherBondsButton;
-    private Button _analyticsButton;
+    [SerializeField] private TMP_Text countStocks;
+    [SerializeField] private TMP_Text countBonds;
+    [SerializeField] private  Button _addCashButton;
+    [SerializeField] private Button _checkOtherStocksButton;
+    [SerializeField] private Button _checkOtherBondsButton;
+    [SerializeField] private Button _analyticsButton;
 
     //ссылки на кнопки
     private readonly Dictionary<Ticker, AssetItemView> _activeAssetViews = new Dictionary<Ticker, AssetItemView>();
-    [SerializeField] private RectTransform _listContentParent; //Контейнер для строк
+    private RectTransform _listContentParent; //Контейнер для строк
     [SerializeField] private AssetItemView _assetItemViewPrefab;
-
     //public event Action OnActiveInfoClicked;
     public event Action<Ticker, TradeType> OnTradeActiveClicked;
     public event Action<int> OnAddCashClicked;
     public event Action OnCheckOtherStocksClicked;// посмотреть списки других активов
     public event Action OnCheckOtherBondsClicked;
     public event Action OnGetAnalyticsClicked;
+    private const string CASH_BALANCE_SAVE_KEY = "CASH_BALANCE";
     
 
-    private void Awake()
+   protected override void Awake()
     {
-       // Mediator.Instance.RegisterService(this);
-        //_mediator.OnInitializationCompleted += () => _mediator.GetService<PortfolioPresenter>().InitializeView(this);
+        base.Awake();
         // _activeInfoButton.onClick.AddListener(() => OnActiveInfoClicked.Invoke());
+        _mediator.OnInitializationCompleted += () => _mediator.GetService<PortfolioPresenter>().InitializeView(this);
         _checkOtherStocksButton.onClick.AddListener(() => OnCheckOtherStocksClicked.Invoke());
         _checkOtherBondsButton.onClick.AddListener(() => OnCheckOtherBondsClicked.Invoke());
         _analyticsButton.onClick.AddListener(() => OnGetAnalyticsClicked.Invoke());
 
         _addCashButton.onClick.AddListener(() =>
-        {//заменить парсинг
-
-            //int amount;
-            //OnAddCashClicked.Invoke(amount);
+        {
+            int keypadInput = _appController.GetApp<KeypadApp>().KeypadInput;
+            if (keypadInput == 0)
+            {
+                return;
+            }
+            OnAddCashClicked.Invoke(keypadInput);
             
         });
     }
@@ -98,22 +100,31 @@ public class PortfolioView : MonoBehaviour
     public void UpdatePortfolioView(IPortfolioDisplayData data)
     {
         //UpdateCashDisplay(summary.CashBalance);
-       totalValueText.text =data.TotalValue.ToString();
-       bondsValueText.text = data.BondsValue.ToString();
-       stocksValueText.text = data.StocksValue.ToString();
-       countStocks.text = data.CountStocks.ToString();
-       countBonds.text = data.CountBonds.ToString();
+        totalValueText.text = data.TotalValue.ToString();
+        bondsValueText.text = data.BondsValue.ToString();
+        stocksValueText.text = data.StocksValue.ToString();
+        countStocks.text = data.CountStocks.ToString();
+        countBonds.text = data.CountBonds.ToString();
     }
     //обновление одной кнопки актива
+    public void UpdateQuantityActiv(Ticker ticker, int newQuantity)
+    {
+        if (_activeAssetViews.TryGetValue(ticker, out AssetItemView viewToUpdate))
+        {
+            viewToUpdate.quantityLabel.text = newQuantity.ToString();
+                
+        }
+    
+    }
     public void UpdateAssetButton(Ticker newTicker,int newPrice, int newQuantity)
     {
         if (_activeAssetViews.TryGetValue(newTicker, out AssetItemView viewToUpdate))
             {
-                viewToUpdate.UpdateDisplay(
-                    price: newPrice,
-                    quantity: newQuantity,
-                    true
-                );
+                //viewToUpdate.UpdateDisplay(
+                   // price: newPrice,
+                    
+                   // true
+                //);
             }
     }
 

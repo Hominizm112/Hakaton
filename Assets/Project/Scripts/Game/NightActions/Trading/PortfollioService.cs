@@ -32,7 +32,6 @@ public abstract class SampleActiv<TConfig> : IActiv<TConfig> where TConfig : IAs
 
 public class PortfollioService: MonoService,IInitializable
 {
-
     private MarketData _marketData;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
     private Mediator _mediator;
@@ -50,7 +49,6 @@ public class PortfollioService: MonoService,IInitializable
     public void Initialize()
     {
         PortfolioInitialize();
-
     }
 
     public void PortfolioInitialize()
