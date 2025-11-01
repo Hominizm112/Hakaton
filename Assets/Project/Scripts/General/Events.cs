@@ -150,6 +150,17 @@ public class LoadDataEvent : IEvent
     }
 }
 
+public class StartSaveDataEvent : IEvent
+{
+    public SaveManager Sender { get; }
+
+    public StartSaveDataEvent(SaveManager sender)
+    {
+        Sender = sender;
+    }
+}
+
+
 public class TeaRemovedFromSelectionEvent : IEvent { }
 
 #endregion

@@ -22,7 +22,7 @@ public class StallService : MonoService
     [SerializeField] private ParticleSystem itemDeselectedParticleEmitter;
 
     [Header("Tea Selection For Stall Box")]
-    [SerializeField] private StallBoxUI teaSelectionScreen;
+    // [SerializeField] private StallBoxUI teaSelectionScreen;
 
     [Inject] private CustomerService _customerService;
     [Inject] private ShopkeeperService _shopkeeperService;
@@ -95,7 +95,7 @@ public class StallService : MonoService
 
         if (_teaSelectionScreenOpen)
         {
-            ShowTeaSelectionForStallBox();
+            // ShowTeaSelectionForStallBox();
             return;
         }
 
@@ -222,34 +222,34 @@ public class StallService : MonoService
 
     #region Tea Selection
 
-    public void SwitchTeaSelectionScreen()
-    {
-        teaSelectionScreen.gameObject.SetActive(!teaSelectionScreen.gameObject.activeSelf);
-        _teaSelectionScreenOpen = teaSelectionScreen.gameObject.activeSelf;
+    // public void SwitchTeaSelectionScreen()
+    // {
+    //     teaSelectionScreen.gameObject.SetActive(!teaSelectionScreen.gameObject.activeSelf);
+    //     _teaSelectionScreenOpen = teaSelectionScreen.gameObject.activeSelf;
 
-    }
+    // }
 
-    public void ShowTeaSelectionForStallBox()
-    {
-        Commodity commodity = _lastSelectedStallBox.GetComponent<StallBox>().commodity;
-        if (commodity != null)
-        {
-            teaSelectionScreen.SetCommodity(commodity);
-        }
-        else
-        {
-            teaSelectionScreen.UnsetCommodity();
-        }
-    }
+    // public void ShowTeaSelectionForStallBox()
+    // {
+    //     Commodity commodity = _lastSelectedStallBox.GetComponent<StallBox>().commodity;
+    //     if (commodity != null)
+    //     {
+    //         teaSelectionScreen.SetCommodity(commodity);
+    //     }
+    //     else
+    //     {
+    //         teaSelectionScreen.UnsetCommodity();
+    //     }
+    // }
 
-    public void SetSelectedCommodityToStallBox()
-    {
-        print(teaSelectionScreen.selectedCommodity is TeaBase);
-        if (teaSelectionScreen.selectedCommodity is TeaBase teaBase)
-        {
-            _lastSelectedStallBoxStatic.GetComponent<StallBox>().commodity = teaBase;
-        }
-    }
+    // public void SetSelectedCommodityToStallBox()
+    // {
+    //     print(teaSelectionScreen.selectedCommodity is TeaBase);
+    //     if (teaSelectionScreen.selectedCommodity is TeaBase teaBase)
+    //     {
+    //         _lastSelectedStallBoxStatic.GetComponent<StallBox>().commodity = teaBase;
+    //     }
+    // }
 
 
     #endregion

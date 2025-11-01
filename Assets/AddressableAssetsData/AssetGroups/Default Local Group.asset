@@ -15,11 +15,28 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: dc852234243c9684cb3e7208fabcac56
   m_SerializeEntries:
+  - m_GUID: 014405f8d20de054aaedadc9d6faeccc
+    m_Address: Assets/Resources_moved/Configs/Items
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Item
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1698871dd8aab3d41a1c5a99525e8c41
     m_Address: Configs/Words/Root
     m_ReadOnly: 0
     m_SerializedLabels:
     - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e9aa3f673cf162409ff6fe129dbf6e0
+    m_Address: Assets/Resources_moved/Configs/Items/TeaBase.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2af3d329efdf5c74e90d54e290086745
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/Stall.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 42ce134ffb0a3af4daa60f522c91f77b
     m_Address: Configs/Words/Dusk
@@ -63,6 +80,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - WordOfPower
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d8fca4874d1c3d4388616ef662088ec
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/ItemParticeEmitter.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a0d986b26fed13f459da3f5f9f525805
     m_Address: Configs/Words/Ember
     m_ReadOnly: 0
@@ -80,8 +102,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7d7d0f34c1d79144bce2e8d557c7544
+    m_Address: Assets/Resources_moved/Prefabs/UI/General Views/ItemView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1975e8a65e98b941bacb8346ebf6e42
     m_Address: Prefabs/UI/Apps/WordView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8e8fb4bea6f4d7428aaf0c8f52aa3ae
+    m_Address: Assets/Resources_moved/Prefabs/UI/General Views/Inventory View.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8fc784c1b400804e98c2c7a9fe74194
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/DragItem.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -90,6 +127,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d05073557fe399449a2097246c91f918
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/ChangeItemsInBoxes View.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d6f7766af547f884185eba8ae2a945a6
     m_Address: Prefabs/UI/DayScene/TeaMix Panel

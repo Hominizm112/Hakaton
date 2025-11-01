@@ -17,8 +17,6 @@ namespace GameCore.Services
         private readonly Dictionary<Type, View> _screensByType = new();
         private readonly Stack<View> _screensStack = new();
 
-        private View _loadingScreen;
-
         public async UniTask<TScreen> OpenAsync<TScreen>() where TScreen : View
         {
             if (_screensByType.TryGetValue(typeof(TScreen), out var screen))

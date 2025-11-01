@@ -6,6 +6,7 @@ public partial class ConsoleService
     [Inject] private CurrencyPresenter _currencyPresenter;
     [Inject] private LazyInject<AppController> _appController;
     [Inject] private SaveManager _saveService;
+    [Inject] private InventoryService _inventoryService;
 
     #region Game-specific Commands
 
@@ -72,6 +73,32 @@ public partial class ConsoleService
     {
         _ = _saveService.LoadDataAsync();
         return CommandResult.Ok("Game data saved.");
+    }
+
+    [ConsoleCommand("additem", "Adds an item to player's inventory", "additem <itemId> <quantity>")]
+    private CommandResult AddItemCommand(CommandContext context)
+    {
+        if (_inventoryService.AddItem(context.GetString(0, ""), context.GetInt(1, 1)))
+        {
+            return CommandResult.Ok("Item Added.");
+        }
+        else
+        {
+            return CommandResult.Error("Item with provided itemId not found.");
+        }
+    }
+
+    [ConsoleCommand("removeitem", "Removes an item from player's inventory", "removeitem <itemId> <quantity>")]
+    private CommandResult RemoveItemCommand(CommandContext context)
+    {
+        if (_inventoryService.RemoveItem(context.GetString(0, ""), context.GetInt(1, 1)))
+        {
+            return CommandResult.Ok("Item Remove.");
+        }
+        else
+        {
+            return CommandResult.Error("Item with provided itemId not found, or you are trying to remove more than you have.");
+        }
     }
 
 

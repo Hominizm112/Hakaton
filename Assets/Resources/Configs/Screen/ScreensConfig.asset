@@ -13,16 +13,37 @@ MonoBehaviour:
   m_Name: ScreensConfig
   m_EditorClassIdentifier: 
   _screens:
-  - type: TeaMixView
+  - type: TeaGame.Views.TeaMixView
     asset:
       m_AssetGUID: d6f7766af547f884185eba8ae2a945a6
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
-  - type: GameUI.Views.WordBookView
+  - type: TeaGame.Views.WordBookView
     asset:
       m_AssetGUID: aafd410074e4f0445b60744160470416
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - type: TeaGame.Views.StallView
+    asset:
+      m_AssetGUID: 2af3d329efdf5c74e90d54e290086745
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - type: TeaGame.Views.StallChangeItemsView
+    asset:
+      m_AssetGUID: d05073557fe399449a2097246c91f918
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - type: TeaGame.Views.InventoryView
+    asset:
+      m_AssetGUID: c8e8fb4bea6f4d7428aaf0c8f52aa3ae
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 

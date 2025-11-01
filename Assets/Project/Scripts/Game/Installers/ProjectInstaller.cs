@@ -43,8 +43,9 @@ public class ProjectInstaller : MonoInstaller
 
     private void BindInventory()
     {
-        Container.BindInterfacesAndSelfTo<InventoryService>().AsSingle();
-        Container.Bind<InventoryViewModel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<TeaGame.States.InventoryState>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<InventoryService>().AsSingle().NonLazy();
+        // Container.Bind<InventoryViewModel>().AsSingle();
     }
 
     private void BindMVVM()

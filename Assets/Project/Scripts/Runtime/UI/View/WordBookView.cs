@@ -13,7 +13,7 @@ using System.Linq;
 using DG.Tweening;
 
 
-namespace GameUI.Views
+namespace TeaGame.Views
 {
     public class WordBookView : View<WordBookViewModel>, Window
     {
@@ -244,6 +244,11 @@ namespace GameUI.Views
         {
             base.Dispose();
             _disposables.Dispose();
+
+            foreach (var view in _wordViews)
+            {
+                Addressables.ReleaseInstance(view.gameObject);
+            }
 
         }
 

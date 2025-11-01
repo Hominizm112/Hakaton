@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using Zenject;
 
 public class Placer : MonoComponent
 {
@@ -14,6 +15,9 @@ public class Placer : MonoComponent
     [SerializeField] private float placeDuration;
     [SerializeField] private Ease placeEase;
 
+
+    private ItemData _containingItem;
+    public ItemData ContainingItem => _containingItem;
     private Collider2D _detectionCollider;
     private HashSet<GameObject> _objectsInArea = new HashSet<GameObject>();
     public System.Action<GameObject> OnObjectEntered;
@@ -24,7 +28,17 @@ public class Placer : MonoComponent
     private bool _placed;
     public bool Placed => _placed;
 
-    private void Awake()
+    public bool Placing
+    {
+        get
+        {
+            return _placeTween != null && _placeTween.active;
+
+        }
+    }
+
+    [Inject]
+    public override void OnConstruct()
     {
         _detectionCollider = GetComponent<Collider2D>();
         SubscribeToEvent<DragEndedEvent>(HandleDragEnded);
@@ -37,6 +51,11 @@ public class Placer : MonoComponent
         }
 
         _detectionCollider.isTrigger = true;
+    }
+
+    public void SetContainingItem(ItemData itemData)
+    {
+        _containingItem = itemData;
     }
 
 

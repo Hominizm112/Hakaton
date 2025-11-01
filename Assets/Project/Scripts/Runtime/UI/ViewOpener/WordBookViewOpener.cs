@@ -1,8 +1,6 @@
 using System;
 using GameCore.Services;
-using GameUI.Views;
-using TMPro;
-using Unity.VisualScripting;
+using TeaGame.Views;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;

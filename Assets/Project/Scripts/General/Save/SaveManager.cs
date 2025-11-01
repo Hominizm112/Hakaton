@@ -7,6 +7,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Zenject;
 
 
 /// <summary>
@@ -15,8 +16,9 @@ using Newtonsoft.Json;
 /// </summary>
 public partial class SaveManager : EventListener
 {
-    public static event Action OnSaveLoaded;
-    public static event Action OnSaveCompleted;
+    public event Action OnSaveLoaded;
+    public event Action OnSaveStarted;
+    public event Action OnSaveCompleted;
 
     private const string SAVE_FILE_NAME = "savegame.json";
     private string SaveFilePath => Path.Combine(Application.persistentDataPath, SAVE_FILE_NAME);
@@ -31,6 +33,12 @@ public partial class SaveManager : EventListener
     };
 
     public SaveData currentSaveData;
+
+    [Inject]
+    public void Construct()
+    {
+        currentSaveData = new();
+    }
 
     /// <summary>
     /// Call this early (e.g., from Bootstrap) to load saved data.
@@ -151,6 +159,8 @@ public partial class SaveManager : EventListener
 
     private async Task SaveDataRoutineAsync()
     {
+        OnSaveStarted?.Invoke();
+        _eventBus.Publish<StartSaveDataEvent>(new(this));
         // DEBUG: Log what's actually being saved
         // Debug.Log("=== SAVE DATA DEBUG ===");
         // Debug.Log($"PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");

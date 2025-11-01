@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class MonoComponent : MonoBehaviour, IDisposable
+public class MonoComponent : InjectableBehaviour, IDisposable
 {
     [Inject] protected EventBus _eventBus;
     [Inject] protected Mediator _mediator;
@@ -13,6 +13,11 @@ public class MonoComponent : MonoBehaviour, IDisposable
     {
         _events.Add(_eventBus.Subscribe(handler));
 
+    }
+
+    public override void OnConstruct()
+    {
+        base.OnConstruct();
     }
 
     private void OnDestroy()

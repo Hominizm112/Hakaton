@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using Zenject;
@@ -25,8 +26,11 @@ public class Dragger : MonoComponent
     private VelocityBasedRotator _velocityBasedRotator;
     private DragVelocityCalculator _velocityCalculator;
 
-    private void Awake()
+    public Action onDragEnd;
+
+    public override void OnConstruct()
     {
+        base.OnConstruct();
         SubscribeToEvent<InputActionEvent>(HandleInput);
         if (dragMode == DragMode.WithRotation)
         {
@@ -53,18 +57,19 @@ public class Dragger : MonoComponent
         }
     }
 
-    private void StartDrag()
+    public void StartDrag(bool bypassCheck = false)
     {
-        if (CheckDrag())
+        if (!CheckDrag() && !bypassCheck)
         {
-            _dragging = true;
-            _moveRoutine = StartCoroutine(Move());
-            _eventBus.Publish<DragStartedEvent>(new(this));
-            if (dragMode == DragMode.WithRotation)
-            {
-                _velocityBasedRotator.OnDragStart();
-                _velocityCalculator.StartRecording(_inputService.GetVector2("Point"));
-            }
+            return;
+        }
+        _dragging = true;
+        _moveRoutine = StartCoroutine(Move());
+        _eventBus.Publish<DragStartedEvent>(new(this));
+        if (dragMode == DragMode.WithRotation)
+        {
+            _velocityBasedRotator.OnDragStart();
+            _velocityCalculator.StartRecording(_inputService.GetVector2("Point"));
         }
     }
 
@@ -84,9 +89,10 @@ public class Dragger : MonoComponent
         }
     }
 
-    private void EndDrag()
+    public void EndDrag()
     {
         _eventBus?.Publish<DragEndedEvent>(new(this));
+        onDragEnd?.Invoke();
         _dragging = false;
 
         if (_moveRoutine != null)
