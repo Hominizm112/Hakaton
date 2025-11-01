@@ -23,6 +23,7 @@ public class TimeService : MonoService
             get => _year;
             private set => _year = value;
         }
+
         public int month
         {
             get => _month;
@@ -36,6 +37,7 @@ public class TimeService : MonoService
                 }
             }
         }
+
         public int day
         {
             get => _day;
@@ -146,6 +148,7 @@ public class TimeService : MonoService
 
     [SerializeField] public GameDateTime currentTime = new();
     [SerializeField] private int timeScale = 60; // 1 секунда в жизни = n игровых секунд
+    [SerializeField] private bool enableConsoleUpdate = false;
 
     public Action OnTrackComplete;
     public Action<GameDateTime> OnTrackUpdate;
@@ -153,9 +156,32 @@ public class TimeService : MonoService
     private Coroutine _timeTrackingCoroutine;
     private bool _stopCoroutine;
 
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        _mediator.GlobalEventBus.Subscribe<TimeTrackStartEvent>(StartTrackEventHandler);
+        _mediator.GlobalEventBus.Subscribe<TimeTrackStopEvent>(StopTrackEventHandler);
+    }
+
+
+
+    #region Event Handlers
+    private void StartTrackEventHandler(TimeTrackStartEvent @event)
+    {
+        StartTrack(@event.Seconds, @event.Minutes);
+    }
+
+    private void StopTrackEventHandler(TimeTrackStopEvent @event)
+    {
+        StopTracking();
+    }
+
+    #endregion
+
     private void Start()
     {
-        OnTrackComplete += () => print("completed");
+        OnTrackComplete += () => ColorfulDebug.LogBlue("Time track completed");
     }
 
     public void StartTrackMinutes(int minutes = 0)
@@ -196,6 +222,8 @@ public class TimeService : MonoService
 
     private IEnumerator TimeTrackingCoroutine(GameDateTime desiredDateTime)
     {
+        ColorfulDebug.LogBlue($"Time track started for {desiredDateTime}");
+
         while (!_stopCoroutine)
         {
             yield return new WaitForSecondsRealtime(1);
@@ -207,6 +235,9 @@ public class TimeService : MonoService
 
         }
 
+        ColorfulDebug.LogBlue("Time track stopped");
+
+
         _stopCoroutine = false;
         yield return null;
     }
@@ -214,21 +245,24 @@ public class TimeService : MonoService
     public void TimeTrackCompleteHandler()
     {
         OnTrackComplete?.Invoke();
+        _mediator?.GlobalEventBus.Publish<TimeTrackCompletedEvent>(new());
     }
 
     public void TimeTrackUpdateHandler()
     {
         currentTime.Update(seconds: timeScale);
         OnTrackUpdate?.Invoke(currentTime);
-        print(currentTime.ToString("hms"));
+        if (enableConsoleUpdate)
+        {
+            print(currentTime.ToString("hms"));
+        }
     }
 
-    public void OnDestroy()
+    public override void Dispose()
     {
         StopTracking();
         OnTrackComplete = null;
         OnTrackUpdate = null;
-        Mediator.Instance?.UnregisterService(this);
     }
 
 

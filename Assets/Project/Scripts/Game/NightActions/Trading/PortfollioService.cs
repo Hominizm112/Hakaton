@@ -9,8 +9,8 @@ public abstract class SampleActiv<TConfig> : IActiv<TConfig> where TConfig : IAs
     private int _quantity;
     public int Quantity => _quantity;
     public abstract Ticker Ticker { get; }
-    public abstract TConfig Config { get; }  
-    public int CurrentValue { get; protected set; } 
+    public abstract TConfig Config { get; }
+    public int CurrentValue { get; protected set; }
 
     public void AddQuantity(int amount)
     {
@@ -30,35 +30,33 @@ public abstract class SampleActiv<TConfig> : IActiv<TConfig> where TConfig : IAs
 
 }
 
-public class PortfollioService: MonoService,IInitializable
+public class PortfollioService : MonoService
 {
     private MarketData _marketData;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
-    private Mediator _mediator;
-    //public override List<Type> requiredServices { get; protected set; } = new List<Type>();
-    //public Dictionary<Ticker, Stock> AvailableStocks { get; private set; }
-    //public Dictionary<Ticker, Bond> AvailableBonds { get; private set; }
+    public Dictionary<Ticker, Stock> AvailableStocks { get; private set; }
+    public Dictionary<Ticker, Bond> AvailableBonds { get; private set; }
+    //public IReadOnlyDictionary<Ticker, Stock> Stocks => AvailableStocks;
+    ///public IReadOnlyDictionary<Ticker, Bond> Bondds => AvailableBonds;
+
     private Dictionary<Ticker, IActiv> AvailableAssets { get; set; } = new();
     public IReadOnlyDictionary<Ticker, IActiv> Assets => AvailableAssets;
     public Action<PortfolioSummary> OnPortfolioUpdated { get; internal set; }
 
-    private void Awake()
-    {
-        Mediator.Instance.RegisterService(this);
-    }
-    public void Initialize()
+
+    public override void Initialize()
     {
         PortfolioInitialize();
     }
 
     public void PortfolioInitialize()
     {
-        _portfolioSummary.PortfolioInitialState();  
+        _portfolioSummary.PortfolioInitialState();
     }
 
     public PortfolioSummary GetSummary()
     {
-        return _portfolioSummary;  
+        return _portfolioSummary;
     }
     #region FindByTicker
 
@@ -96,8 +94,8 @@ public class PortfollioService: MonoService,IInitializable
             return 0;
         }
     }
-    
-#endregion
+
+    #endregion
     public void UpdatePortfolioValue(Type assetType, int totalCost, int quantity, TradeType TypeOperation)
     {
         _portfolioSummary.RecalculateValueCount(assetType, TypeOperation, totalCost, quantity);
@@ -109,12 +107,12 @@ public class PortfollioService: MonoService,IInitializable
 
     public BuyTransactionState BuyAsset(Type assetType, Ticker ticker, int price, int quantity)
     {
-        if (!_marketData.AllMarketBonds.ContainsKey(ticker) || !HasEnoughCash(price*quantity))
+        if (!_marketData.AllMarketBonds.ContainsKey(ticker) || !HasEnoughCash(price * quantity))
         {
             return BuyTransactionState.NotEnough;
         }
 
-        _portfolioSummary.AddQuantity(ticker,quantity);//обновление количества
+        _portfolioSummary.AddQuantity(ticker, quantity);//обновление количества
 
         if (_portfolioSummary.MyActives.TryGetValue(ticker, out IActiv asset))
         {
@@ -129,7 +127,7 @@ public class PortfollioService: MonoService,IInitializable
         }
 
     }
-    
+
     #region SellActiv
     public SellTransactionState SellAsset(Type assetType, Ticker ticker, int quantity, int totalCost)
     {
@@ -139,7 +137,7 @@ public class PortfollioService: MonoService,IInitializable
         }
 
         IActiv asset = GetAssetByTicker(ticker);
-        _portfolioSummary.RemoveQuantity(ticker,quantity);
+        _portfolioSummary.RemoveQuantity(ticker, quantity);
 
         if (asset.Quantity <= 0)
         {
@@ -182,18 +180,18 @@ public class PortfollioService: MonoService,IInitializable
 
     public bool HasEnoughQuantityActive(Ticker ticker, int quantity)
     {
-       return !(!_portfolioSummary.MyActives.ContainsKey(ticker) || 
-             _portfolioSummary.MyActives[ticker].Quantity < quantity);
+        return !(!_portfolioSummary.MyActives.ContainsKey(ticker) ||
+              _portfolioSummary.MyActives[ticker].Quantity < quantity);
     }
     public bool HasEnoughCash(int totalCost)
     {
         return _portfolioSummary.CashBalance >= totalCost;
     }
- 
+
     //покупка иных
     public void CheckOtherStocks()
     {
-        
+
 
     }
     public void CheckOtherBonds()

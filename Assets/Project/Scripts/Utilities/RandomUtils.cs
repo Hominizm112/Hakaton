@@ -104,6 +104,7 @@ public static class RandomUtils
 
 }
 
+[Serializable]
 public struct RangeInt
 {
     public int min;
@@ -112,5 +113,27 @@ public struct RangeInt
     {
         this.min = min;
         this.max = max;
+    }
+
+    public bool InRange(int value)
+    {
+        return min <= value && value <= max;
+    }
+}
+
+[Serializable]
+public struct RangeFloat
+{
+    public float min;
+    public float max;
+    public RangeFloat(float min, float max)
+    {
+        this.min = min;
+        this.max = max;
+    }
+
+    public bool InRange(float value)
+    {
+        return min <= value && value <= max;
     }
 }

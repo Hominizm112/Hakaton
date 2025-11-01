@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using Zenject;
 
 public class CurrencyView : MonoBehaviour
 {
@@ -11,15 +12,17 @@ public class CurrencyView : MonoBehaviour
     [SerializeField] private int _testAddAmount = 100;
     [SerializeField] private int _testSpendAmount = 100;
 
+    [Inject] private CurrencyPresenter _currencyPresenter;
+
     public event Action OnAddCurrencyClicked;
     public event Action OnSpendCurrencyClicked;
 
-    private Mediator _mediator;
+    [Inject] private Mediator _mediator;
+
 
     private void Awake()
     {
-        _mediator = Mediator.Instance;
-        _mediator.OnInitializationCompleted += () => _mediator.GetService<CurrencyPresenter>().InitializeView(this);
+        _mediator.OnInitializationCompleted += () => _currencyPresenter.InitializeView(this);
         _addCurrencyButton.onClick.AddListener(() => OnAddCurrencyClicked.Invoke());
         _spendCurrencyButton.onClick.AddListener(() => OnSpendCurrencyClicked.Invoke());
     }

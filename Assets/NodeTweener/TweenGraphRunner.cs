@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using Zenject;
 
 public class TweenGraphRunner : MonoBehaviour
 {
@@ -23,7 +24,8 @@ public class TweenGraphRunner : MonoBehaviour
     private Sequence _currentSequence;
     private bool _isPlaying = false;
 
-    private void Awake()
+    [Inject]
+    public void Construct()
     {
         if (registerAsService && graphRunnerService != null)
         {

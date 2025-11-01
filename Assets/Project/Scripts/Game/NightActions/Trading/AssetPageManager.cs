@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using MyGame.Enums;
+using Zenject;
 public class AssetPageManager : MonoBehaviour
 {
     [SerializeField] private GameObject _stockPageUI;
@@ -39,11 +40,10 @@ public class AssetPageManager : MonoBehaviour
     // [SerializeField] private QuickTradeButton _sellButton;
 
 
-    private PortfollioService _portfolioService;
+    [Inject] private PortfollioService _portfolioService;
 
     private void Awake()
     {
-        _portfolioService = Mediator.Instance.GetService<PortfollioService>();
         Mediator.Instance.GlobalEventBus.Subscribe<OpenAssetPageEvent>(HandleOpenAssetPage);
     }
 

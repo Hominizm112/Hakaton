@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
+using Zenject;
 
 public static class EventFactory
 {
-    public static T CreateEvent<T>(params object[] parameters) where T : IEvent
+    public static T CreateEvent<T>(EventBus eventBus, params object[] parameters) where T : IEvent
     {
         Type eventType = typeof(T);
         if (eventType == typeof(LoadSceneEvent))
@@ -14,7 +15,7 @@ public static class EventFactory
             }
             else
             {
-                Mediator.Instance.GlobalEventBus.Publish(new DebugLogErrorEvent("Invalid parameters for LoadSceneEvent"));
+                eventBus.Publish(new DebugLogErrorEvent("Invalid parameters for LoadSceneEvent"));
                 return default(T);
             }
         }
@@ -26,7 +27,7 @@ public static class EventFactory
             }
         }
 
-        Mediator.Instance.GlobalEventBus.Publish(new DebugLogErrorEvent($"Unknown event type: {eventType}"));
+        eventBus.Publish(new DebugLogErrorEvent($"Unknown event type: {eventType}"));
         return default(T);
 
 
@@ -36,12 +37,7 @@ public static class EventFactory
     {
         Debug.Log($"Creating event: {typeof(T).Name}");
 
-        T @event = CreateEvent<T>(parameters);
-
-        if (mediator == null)
-        {
-            mediator = Mediator.Instance;
-        }
+        T @event = CreateEvent<T>(mediator.GlobalEventBus, parameters);
 
         if (mediator == null)
         {

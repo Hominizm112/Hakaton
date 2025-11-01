@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 public interface IDraggable
 {
@@ -8,11 +9,10 @@ public interface IDraggable
     void OnDragEnd();
 }
 
-public class DragManager : MonoBehaviour, IInitializable, IStateListener
+public class DragManager : MonoService, IStateListener
 {
 
-    private Mediator _mediator;
-    private InputManager _inputManager;
+    [Inject] private InputManager _inputManager;
     private DragVelocityCalculator _velocityCalculator;
 
     private Vector2 _previousDragPosition;
@@ -20,16 +20,14 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
     private bool _isDragging = false;
     private bool _hasValidDrag = false;
 
-    public void Initialize(Mediator mediator)
+    [Inject]
+    public void Construct()
     {
-        _mediator = mediator;
-        _inputManager = mediator.GetService<InputManager>();
         _velocityCalculator = new();
 
-        mediator.RegisterService<DragManager>(this);
-        mediator.SubscribeToState(this, Game.State.Gameplay);
+        _mediator.SubscribeToState(this, Game.State.Gameplay);
 
-        mediator.GlobalEventBus.Subscribe<InputActionEvent>(OnInputAction);
+        SubscribeToEvent<InputActionEvent>(OnInputAction);
     }
 
     public void OnStateChanged(Game.State state)
@@ -83,7 +81,6 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
 
         _velocityCalculator.UpdatePosition(currentPosition);
 
-
         if (!_hasValidDrag)
         {
             var dragDistance = Vector2.Distance(currentPosition, _dragStartPosition);
@@ -121,8 +118,4 @@ public class DragManager : MonoBehaviour, IInitializable, IStateListener
     public Vector2 GetDragDelta() => _inputManager.GetVector2("Point") - _previousDragPosition;
     public Vector2 GetCurrentVelocity => _velocityCalculator.GetSmoothedVelocity();
 
-    private void OnDestroy()
-    {
-        _mediator?.GlobalEventBus?.Unsubscribe<InputActionEvent>(OnInputAction);
-    }
 }

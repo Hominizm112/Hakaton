@@ -1,29 +1,32 @@
 using System;
 using UnityEngine;
+using Zenject;
 
-public class CurrencyPresenter : MonoBehaviour, IInitializable
+public class CurrencyPresenter : EventListener
 {
     [SerializeField] private CurrencyView _view;
+
+    [Inject] private SaveManager _saveManager;
+    [Inject] private AudioHub _audioHub;
 
     public Action<int> OnValueChanged;
 
     private CurrencyModel _model;
-    private SaveManager _saveManager;
-    private Mediator _mediator;
 
-    public void Initialize(Mediator mediator)
+    [Inject]
+    public void Construct()
     {
-        _mediator = mediator;
-
-
-        _saveManager = mediator.GetService<SaveManager>();
-
-        int savedCurrency = _saveManager?.GetInt("currency", 0) ?? 0;
-        _model = new CurrencyModel(savedCurrency);
-
+        _model = new CurrencyModel(0);
         _model.OnCurrencyChanged += HandleCurrencyChanged;
 
-        _mediator.GlobalEventBus.Subscribe<CurrencyChangedEvent>((e) => _mediator.GetService<AudioHub>().PlayOneShot(SoundType.CoinToss, .1f));
+        SubscribeToEvent<CurrencyChangedEvent>((e) => _audioHub.PlayOneShot(SoundType.CoinToss, .1f));
+        SubscribeToEvent<LoadDataEvent>(_ => LoadData());
+    }
+
+    private void LoadData()
+    {
+        int savedCurrency = _saveManager?.GetInt("currency", 0) ?? 0;
+        _model.AddCurrency(savedCurrency);
     }
 
     public void InitializeView(CurrencyView currencyView)
@@ -39,7 +42,7 @@ public class CurrencyPresenter : MonoBehaviour, IInitializable
         UpdateView();
         SaveCurrency();
 
-        _mediator.GlobalEventBus.Publish(new CurrencyChangedEvent(newAmount));
+        _eventBus.Publish(new CurrencyChangedEvent(newAmount));
     }
 
     private void UpdateView()
@@ -77,7 +80,7 @@ public class CurrencyPresenter : MonoBehaviour, IInitializable
     public void AddCurrency(int amount) => _model.AddCurrency(amount);
     public int GetCurrency() => _model.CurrencyAmount;
 
-    private void OnDestroy()
+    public override void Dispose()
     {
         if (_model != null)
         {

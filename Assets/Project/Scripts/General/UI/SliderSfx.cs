@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class SliderSfx : MonoBehaviour
 {
     [SerializeField, Tooltip("Sound to play when button is pressed")]
     private SoundType _soundType;
     private Slider _slider;
-    private AudioHub _audioHub;
+    [Inject] private AudioHub _audioHub;
 
     private void Awake()
     {
@@ -19,7 +20,6 @@ public class SliderSfx : MonoBehaviour
 
         _slider.onValueChanged.AddListener((float f) => OnValueChanged());
 
-        _audioHub = Mediator.Instance.GetService<AudioHub>();
         if (_audioHub == null)
         {
             Debug.LogError("AudioHub service not found!", this);

@@ -14,18 +14,13 @@ public class EmotionIndicator : MonoService
 
     public Action OnComplete;
 
-    protected void Awake()
-    {
-        Mediator.Instance.RegisterService(this);
-    }
-
-    private void OnDestroy()
+    public override void Dispose()
     {
         OnComplete = null;
         timer.Dispose();
     }
 
-    public override void Initialize(Mediator mediator)
+    public override void Initialize()
     {
         base.Initialize();
         spriteRenderer = emotionObject.GetComponent<SpriteRenderer>();

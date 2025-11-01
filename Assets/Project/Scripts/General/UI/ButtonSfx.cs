@@ -1,14 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class ButtonSfx : MonoBehaviour
 {
     [SerializeField, Tooltip("Sound to play when button is pressed")]
     private SoundType _soundType;
     private Button _button;
-    private AudioHub _audioHub;
+    [Inject] private AudioHub _audioHub;
 
-    private void Awake()
+    [Inject]
+    public void Construct()
     {
         _button = GetComponent<Button>();
         if (_button == null)
@@ -19,7 +21,6 @@ public class ButtonSfx : MonoBehaviour
 
         _button.onClick.AddListener(OnButtonClicked);
 
-        _audioHub = Mediator.Instance.GetService<AudioHub>();
         if (_audioHub == null)
         {
             Debug.LogError("AudioHub service not found!", this);

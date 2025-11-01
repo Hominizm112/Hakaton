@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
+using Zenject;
 
 public class AppLoader : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class AppLoader : MonoBehaviour
     [SerializeField] private List<LoadProgressKey> loadProgressKeys;
     [SerializeField] private GameObject loadingScreen;
 
+    [Inject] private AudioHub _audioHub;
 
     public Action<int> OnLoadingProgressUpdate;
     public Action OnLoadingComplete;
@@ -63,7 +65,7 @@ public class AppLoader : MonoBehaviour
 
         yield return new WaitForSeconds(loadProgressKeys[step].stepTime);
 
-        Mediator.Instance.GetService<AudioHub>().PlayOneShot(SoundType.PC_LoadAppSound, 0.2f);
+        _audioHub.PlayOneShot(SoundType.PC_LoadAppSound, 0.2f);
         UpdateView(loadProgressKeys[step].targetPrecentage, step == loadProgressKeys.Count - 1);
         OnLoadingProgressUpdate?.Invoke(step);
 

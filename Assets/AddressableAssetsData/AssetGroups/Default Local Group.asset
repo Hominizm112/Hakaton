@@ -14,7 +14,171 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
   m_GUID: dc852234243c9684cb3e7208fabcac56
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 014405f8d20de054aaedadc9d6faeccc
+    m_Address: Assets/Resources_moved/Configs/Items
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1698871dd8aab3d41a1c5a99525e8c41
+    m_Address: Configs/Words/Root
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e9aa3f673cf162409ff6fe129dbf6e0
+    m_Address: Assets/Resources_moved/Configs/Items/TeaBase.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2af3d329efdf5c74e90d54e290086745
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/Stall.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42ce134ffb0a3af4daa60f522c91f77b
+    m_Address: Configs/Words/Dusk
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43b0412be1335b04983afdba2cc2345b
+    m_Address: Configs/Words/Stone
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 488c63b25894b8045845f47d080d3aa7
+    m_Address: Configs/Words/Honey
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4dd998d017158e94c953e39d9450c52c
+    m_Address: Configs/Words/Berry
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c97bcb6cd46b9b40b3ab383111378a1
+    m_Address: Configs/Words/Spice
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e84a8804e11d4e4788f785369375407
+    m_Address: Configs/Words/Dawn
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e6cf8057dfd82b40be5f891f338b6a9
+    m_Address: Configs/Words/Frost
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d8fca4874d1c3d4388616ef662088ec
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/ItemParticeEmitter.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0d986b26fed13f459da3f5f9f525805
+    m_Address: Configs/Words/Ember
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6645f33e3345df48aa79f5b762f0a04
+    m_Address: Configs/Words/Bloom
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aafd410074e4f0445b60744160470416
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/WordBook.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7d7d0f34c1d79144bce2e8d557c7544
+    m_Address: Assets/Resources_moved/Prefabs/UI/General Views/ItemView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1975e8a65e98b941bacb8346ebf6e42
+    m_Address: Prefabs/UI/Apps/WordView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8e8fb4bea6f4d7428aaf0c8f52aa3ae
+    m_Address: Assets/Resources_moved/Prefabs/UI/General Views/Inventory View.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8fc784c1b400804e98c2c7a9fe74194
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/DragItem.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd0e962b2048701418bc943990420ea5
+    m_Address: Configs/Words/Zest
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d05073557fe399449a2097246c91f918
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/ChangeItemsInBoxes View.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6f7766af547f884185eba8ae2a945a6
+    m_Address: Prefabs/UI/DayScene/TeaMix Panel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d94bfd4d547bf0742b6107bff0bfd756
+    m_Address: Configs/Words/Roast
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da8f4b8ec5fff4841a81ce0433e20973
+    m_Address: Configs/Words/Wood
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dff49ac18601fa542978bab240d20f8c
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/UI-Canvas.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2145990d3aab864083901238121bde2
+    m_Address: Configs/Words/Herb
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6fe7ad90bcb6424bbd3b048681d1c1d
+    m_Address: Configs/Words/Petal
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee5f2e6e12c9c904689d6ed318d7ab89
+    m_Address: Configs/Words/Nut
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc82a1fcadedd7e49913482fa190cec8
+    m_Address: Configs/Words/Cream
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 709653ba982b7484daadcd5187da6526, type: 2}
   m_SchemaSet:

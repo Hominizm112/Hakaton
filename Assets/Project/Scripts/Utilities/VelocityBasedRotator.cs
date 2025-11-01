@@ -23,7 +23,7 @@ public class VelocityBasedRotator : MonoBehaviour
     public void OnDragStart()
     {
         _isDragging = true;
-        _originalZRotation = transform.eulerAngles.z;
+        // _originalZRotation = transform.eulerAngles.z;
     }
 
     public void OnDragContinue(Vector2 dragVelocity)

@@ -1,15 +1,221 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Localization.Components;
+using UnityEngine.UI;
+using Zenject;
 
-public class WordBook : MonoBehaviour
+public class WordBook : MonoService
 {
+
+    [Header("Scene References")]
+    [SerializeField] private GameObject window;
+    [SerializeField] private Transform wordViewHolder;
+    [SerializeField] private Transform selectedWordViewHolder;
+    [SerializeField] private GameObject wordDescriptionView;
+    [SerializeField] private LocalizeStringEvent wordSelectedText;
+    [SerializeField] private LocalizeStringEvent wordDescriptionText;
+    [SerializeField] private TMP_Text selectedWordCountText;
+    [SerializeField] private Button addButton;
+    [SerializeField] private Button removeButton;
+
+
+    [Header("Static References")]
+    [SerializeField] private GameObject wordViewPrefab;
+
+    [Header("Settings")]
+    [SerializeField] private int maxWordCount = 3;
+
+    [Inject] private StallService _stall;
+
+    private bool isOpen => window.activeSelf;
+    private List<WordOfPower> _wordOfPowers;
+    private List<WordView> _wordViews = new();
+    private List<WordView> _selectedWordViews = new();
+    private WordOfPower _currentSelectedWord;
+
+    private List<WordOfPower> _selectedWords = new();
+
+    public WordOfPower GetCurrentSelectedWord() => _currentSelectedWord;
+    public List<WordOfPower> GetSelectedWords() => _selectedWords;
+
+
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeToEvent<TeaRemovedFromSelectionEvent>(_ => ResetSelectedWords());
+    }
+    public void SwitchWindow()
+    {
+        window.SetActive(!window.activeSelf);
+        if (isOpen)
+        {
+            HandleWindowOpen();
+        }
+        else
+        {
+            HandleWindowClose();
+        }
+    }
+
+    private void HandleWindowOpen()
+    {
+        _wordOfPowers = LoadUnlockedWords();
+        RefreshWordViews();
+        RefreshSelectedWordView();
+    }
+
+    private void HandleWindowClose()
+    {
+        ClearSelection();
+    }
+
+    private void RefreshWordViews()
+    {
+        if (_wordOfPowers == null) return;
+
+        UpdateWordViews(
+            _wordOfPowers,
+            wordViewPrefab,
+            wordViewHolder,
+            HandleWordSelection,
+            _wordViews
+        );
+    }
+
+    private void HandleWordSelection(WordOfPower wordOfPower)
+    {
+        if (wordOfPower == null)
+        {
+            return;
+        }
+
+        _currentSelectedWord = wordOfPower;
+        UpdateWordDescription(_currentSelectedWord);
+    }
+
+    private void UpdateWordDescription(WordOfPower word)
+    {
+        wordDescriptionView.SetActive(true);
+        wordSelectedText.StringReference = word.word;
+        wordDescriptionText.StringReference = word.description;
+    }
+
+    public void ClearSelection()
+    {
+        _currentSelectedWord = null;
+        wordSelectedText.StringReference = null;
+        wordDescriptionText.StringReference = null;
+        wordDescriptionView.SetActive(false);
+    }
+
+
+    public void AddWordToSelected()
+    {
+        if (_selectedWords.Count < maxWordCount && _currentSelectedWord != null)
+        {
+            if (!_selectedWords.Contains(_currentSelectedWord))
+            {
+                _selectedWords.Add(_currentSelectedWord);
+            }
+        }
+
+        RefreshSelectedWordView();
+    }
+
+    public void RemoveWordFromSelected()
+    {
+        if (_currentSelectedWord != null && _selectedWords.Contains(_currentSelectedWord))
+        {
+            _selectedWords.Remove(_currentSelectedWord);
+        }
+
+        RefreshSelectedWordView();
+    }
+
+    private void RefreshSelectedWordView()
+    {
+        UpdateWordViews(
+            _selectedWords,
+            wordViewPrefab,
+            selectedWordViewHolder,
+            HandleWordSelection,
+            _selectedWordViews
+        );
+
+        SetWordsCount();
+    }
+
+    private void SetWordsCount()
+    {
+        if (_stall.SelectedCommodity != null)
+        {
+            selectedWordCountText.gameObject.SetActive(true);
+            addButton.interactable = true;
+            removeButton.interactable = true;
+
+            selectedWordCountText.text = $"{_selectedWords.Count}/{_stall.SelectedCommodity.maxWordOfPower}";
+
+        }
+        else
+        {
+            selectedWordCountText.gameObject.SetActive(false);
+            addButton.interactable = false;
+            removeButton.interactable = false;
+        }
+    }
+
+    public void ResetSelectedWords()
+    {
+        _selectedWords.Clear();
+        RefreshSelectedWordView();
+    }
+
+    public override void Dispose()
+    {
+        foreach (var item in _wordViews)
+        {
+            item.Dispose();
+        }
+
+        foreach (var item in _selectedWordViews)
+        {
+            item.Dispose();
+        }
+    }
+
+
+    #region  Static
 
     private const string WORDS_RESOURCE_PATH = "Configs/Words";
     public static List<WordOfPower> LoadWords()
     {
         return Resources.LoadAll<WordOfPower>(WORDS_RESOURCE_PATH).ToList();
+    }
+
+    public static List<WordOfPower> LoadUnlockedWords()
+    {
+        var words = LoadWords();
+
+        for (int i = words.Count - 1; i >= 0; i--)
+        {
+            if (!words[i].isUnlocked)
+            {
+                words.RemoveAt(i);
+            }
+        }
+
+        if (words.Count == 0)
+        {
+            ColorfulDebug.LogError("No words loaded from resources");
+        }
+
+        return words;
     }
 
     public static void UpdateWordViews(
@@ -97,5 +303,7 @@ public class WordBook : MonoBehaviour
             }
         }
     }
+
+    #endregion
 
 }

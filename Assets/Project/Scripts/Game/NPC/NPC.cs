@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 [CreateAssetMenu(fileName = "new NPC", menuName = "NPC/NPC")]
 public class NPC : ScriptableObject
@@ -15,47 +16,52 @@ public class NPC : ScriptableObject
     public List<BuyReaction> buyReactions;
     public RangeUtils.Bounds<int> friendLevelCap;
     public List<FriendLevel> friendLevelPoints = new();
-    public TeaComposite favoriteTea;
-    public TeaComposite normalTea;
-    public TeaComposite unlovedTea;
+    public List<TeaFlavorTag> favoriteFlavors;
+    public List<TeaFlavorTag> normalFlavors;
+    public List<TeaFlavorTag> unlovedFlavors;
 
 
-    public void BuyTea(TeaCommodity tea, Action<NPCBuyResult> OnComplete)
+    public void BuyTea(List<TeaFlavorTag> flavors, Action<NPCBuyResult> OnComplete)
     {
-        NPCBuyResult npcBuyResult = new();
+        // NPCBuyResult npcBuyResult = new();
 
-        if (tea == null || buyReactions == null || buyReactions.Count == 0)
+        foreach (var item in flavors)
+        {
+            Debug.Log(item);
+        }
+
+        if (buyReactions == null || buyReactions.Count == 0)
         {
             return;
         }
 
-        TeaRating teaRating = EvaluateTea(tea);
-        Debug.Log($"Evaluated tea| rating: {teaRating.rating}, buy satisfaction: {teaRating.buySatisfaction}");
+        // TeaRating teaRating = EvaluateTea(flavors);
+        // Debug.Log($"Evaluated tea| rating: {teaRating.rating}, buy satisfaction: {teaRating.buySatisfaction}");
 
-        NPCBuySatisfaction satisfaction = GetNPCBuySatisfaction(teaRating);
-        npcBuyResult.satisfaction = satisfaction;
-        Debug.Log($"final satisfaction: {satisfaction}");
+        // NPCBuySatisfaction satisfaction = GetNPCBuySatisfaction(teaRating);
+        // npcBuyResult.satisfaction = satisfaction;
+        // Debug.Log($"final satisfaction: {satisfaction}");
 
-        var buyReaction = GetBuyReaction(satisfaction);
+        // var buyReaction = GetBuyReaction(satisfaction);
 
-        if (buyReaction.HasValue && buyReaction.Value.IsValid())
-        {
-            npcBuyResult.friendPoints = buyReaction.Value.friendPointsAdded;
+        // if (buyReaction.HasValue && buyReaction.Value.IsValid())
+        // {
+        // npcBuyResult.friendPoints = buyReaction.Value.friendPointsAdded;
+        // 
+        // if (buyReaction.Value.dialogueLine.GetRandomItem() is string dialogue)
+        // {
+        // npcBuyResult.dialogueLine = dialogue;
+        // }
+        // }
 
-            if (buyReaction.Value.dialogueLine.GetRandomItem() is string dialogue)
-            {
-                npcBuyResult.dialogueLine = dialogue;
-            }
-        }
-
-        OnComplete?.Invoke(npcBuyResult);
+        // OnComplete?.Invoke(npcBuyResult);
 
 
     }
 
     private NPCBuySatisfaction GetNPCBuySatisfaction(TeaRating teaRating)
     {
-        bool isPerfectMatch = teaRating.rating >= 95;
+        bool isPerfectMatch = teaRating.rating >= .7f;
 
         if (teaRating.buySatisfaction == NPCBuySatisfaction.Satisfied)
         {
@@ -68,18 +74,18 @@ public class NPC : ScriptableObject
         return NPCBuySatisfaction.Neutral;
     }
 
-    private TeaRating EvaluateTea(TeaCommodity tea)
-    {
-        int favoriteScore = favoriteTea.GetRating(tea);
-        int normalScore = normalTea.GetRating(tea);
-        int unlovedScore = unlovedTea.GetRating(tea);
+    // private TeaRating EvaluateTea(List<TeaFlavorTag> flavors)
+    // {
+    //     // float favoriteScore = TeaMixer.GetRating(flavors, favoriteFlavors);
+    //     // float normalScore = TeaMixer.GetRating(flavors, normalFlavors);
+    //     // float unlovedScore = TeaMixer.GetRating(flavors, unlovedFlavors);
 
-        int result = Mathf.Abs(favoriteScore - unlovedScore) < 50 ? normalScore : Mathf.Max(favoriteScore, unlovedScore);
+    //     // float result = Mathf.Abs(favoriteScore - unlovedScore) < .5f ? normalScore : Mathf.Max(favoriteScore, unlovedScore);
 
-        if (favoriteScore == result) return new TeaRating(favoriteScore, NPCBuySatisfaction.Satisfied);
-        if (normalScore == result) return new TeaRating(normalScore, NPCBuySatisfaction.Neutral);
-        return new TeaRating(unlovedScore, NPCBuySatisfaction.Dissatisfied);
-    }
+    //     // if (favoriteScore == result) return new TeaRating(favoriteScore, NPCBuySatisfaction.Satisfied);
+    //     // if (normalScore == result) return new TeaRating(normalScore, NPCBuySatisfaction.Neutral);
+    //     // return new TeaRating(unlovedScore, NPCBuySatisfaction.Dissatisfied);
+    // }
 
     private BuyReaction? GetBuyReaction(NPCBuySatisfaction nPCBuySatisfaction)
     {
@@ -88,10 +94,10 @@ public class NPC : ScriptableObject
 
     private struct TeaRating
     {
-        public int rating;
+        public float rating;
         public NPCBuySatisfaction buySatisfaction;
 
-        public TeaRating(int rating, NPCBuySatisfaction buySatisfaction)
+        public TeaRating(float rating, NPCBuySatisfaction buySatisfaction)
         {
             this.rating = rating;
             this.buySatisfaction = buySatisfaction;
@@ -107,53 +113,6 @@ public struct NPCBuyResult
     public string dialogueLine;
     public NPCBuySatisfaction satisfaction;
 
-}
-
-[Serializable]
-public struct TeaComposite
-{
-    public List<TeaType> teaTypes;
-    public List<TeaFlavorTag> teaFlavorTags;
-    public List<ProcessingLevel> processingLevels;
-    public List<TeaGrade> teaGrades;
-
-    [Range(0, 100)]
-    public int teaRatingThreshold;
-
-    public int GetRating(TeaCommodity tea)
-    {
-        float rating = 0f;
-
-        // 20% weight
-        if (teaTypes.Contains(tea.teaType))
-            rating += 20f;
-
-        // 40% weight
-        if (teaFlavorTags.Count > 0)
-        {
-            int flavorMatches = teaFlavorTags.Count(flavor => tea.flavorTags.Contains(flavor));
-            float flavorMatchPercent = (float)flavorMatches / teaFlavorTags.Count;
-            rating += flavorMatchPercent * 40f;
-        }
-        else
-        {
-            rating += 40f;
-        }
-
-        // 15% weight
-        if (processingLevels.Contains(tea.processingLevel))
-            rating += 15f;
-
-        // 25% weight
-        if (teaGrades.Contains(tea.teaGrade))
-            rating += 25f;
-
-        Debug.Log($"calculated rating: {rating}");
-
-        return rating > teaRatingThreshold ? Mathf.RoundToInt(rating) : 0;
-
-
-    }
 }
 
 [Serializable]

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 using UnityEngine.Events;
+using Zenject;
 
 public abstract class BaseApp : MonoBehaviour, IApp
 {
@@ -13,26 +14,17 @@ public abstract class BaseApp : MonoBehaviour, IApp
 
     public bool IsOpen { get; private set; }
 
-    protected Mediator _mediator;
-    protected AppController _appController;
+    [Inject] protected Mediator _mediator;
+    [Inject] protected AppController _appController;
 
     protected bool oppenable = true;
 
-    protected virtual void Awake()
+    [Inject]
+    public void Construct()
     {
-        _mediator = Mediator.Instance;
-        _mediator.GlobalEventBus.Subscribe<ServiceRegisterEvent>(Initialize);
+        _appController.RegisterApp(this);
     }
 
-    protected virtual void Initialize(ServiceRegisterEvent @event)
-    {
-        if (@event.Service is AppController)
-        {
-            _appController = _mediator.GetService<AppController>();
-            _appController.RegisterApp(this);
-        }
-
-    }
     public void Open()
     {
         OnOpen?.Invoke();

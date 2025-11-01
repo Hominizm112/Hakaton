@@ -29,7 +29,6 @@ public class CommodityRequest
 {
     public string commodityId;
     public TeaFlavorTag preferredFlavor;
-    public TeaType preferredType;
     public int desiredQuantity = 1;
     public int maxPrice = 100;
     public int urgency = 50;

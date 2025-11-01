@@ -6,10 +6,10 @@ using UnityEngine.InputSystem;
 using TMPro;
 using System.Reflection;
 using System.Linq;
+using Zenject;
 
 public partial class ConsoleService : MonoService
 {
-    public override List<Type> requiredServices { get; protected set; } = new() { typeof(InputManager) };
 
     [Header("UI References")]
     [SerializeField] private GameObject consoleObject;
@@ -22,8 +22,9 @@ public partial class ConsoleService : MonoService
     [SerializeField] private bool enableCheats = true;
     [SerializeField] private bool logToDebug = true;
 
+    [Inject] private InputManager _inputManager;
+
     private bool _consoleOppened;
-    private Mediator _mediator;
     private InputAction _toggleAction;
     private readonly List<string> _commandHistory = new();
     private int _historyIndex = -1;
@@ -33,10 +34,10 @@ public partial class ConsoleService : MonoService
     private readonly Dictionary<string, ConsoleCommandAttribute> _commandAttributes = new();
     private readonly List<string> _outputLines = new();
 
-    protected override void OnAllServicesReady()
+    [Inject]
+    public void Construct()
     {
-        _mediator = Mediator.Instance;
-        _mediator.GetService<InputManager>().TryGetAction("SwitchDebugConsole", out _toggleAction);
+        _inputManager.TryGetAction("SwitchDebugConsole", out _toggleAction);
 
         _toggleAction.performed += OnInputAction;
 
@@ -330,7 +331,7 @@ public partial class ConsoleService : MonoService
     }
     #endregion
 
-    private void OnDestroy()
+    public override void Dispose()
     {
         if (_toggleAction != null)
         {

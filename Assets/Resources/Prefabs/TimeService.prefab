@@ -52,3 +52,4 @@ MonoBehaviour:
     _minute: 0
     _second: 0
   timeScale: 60
+  enableConsoleUpdate: 0

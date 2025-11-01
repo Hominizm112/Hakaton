@@ -1,26 +1,26 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.Localization.Components;
+using Zenject;
 
 public class ShopItem : MonoBehaviour
 {
     [SerializeField] private Commodity commodity;
-    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private LocalizeStringEvent nameLocalizeEvent;
     [SerializeField] private TMP_Text priceText;
+
+    [Inject] private AppController _appController;
 
     protected void Awake()
     {
-        nameText.text = commodity.commodityName;
+        nameLocalizeEvent.StringReference = commodity.commodityName;
         priceText.text = commodity.basePrice.ToString();
     }
 
 
     public void Select()
     {
-        print("Selected");
-        print(Mediator.Instance.name);
-        print(Mediator.Instance.GetService<AppController>());
-        print(Mediator.Instance.GetService<AppController>().GetApp<ShopApp>());
-        Mediator.Instance.GetService<AppController>().GetApp<ShopApp>().AddToCart(commodity);
+        _appController.GetApp<ShopApp>().AddToCart(commodity);
     }
 
 

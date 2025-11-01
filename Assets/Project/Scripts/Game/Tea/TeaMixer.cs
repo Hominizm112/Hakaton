@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class TeaMixer : MonoBehaviour
+public class TeaMixerService
 {
-    public static TeaBaseMixed MixTea(TeaBase teaBase, List<WordOfPower> wordsOfPower)
+    public List<TeaFlavorTag> MixTea(TeaBase teaBase, List<WordOfPower> wordsOfPower)
     {
-        List<TeaFlavorTag> teaFlavorTags = teaBase.baseFlavorTags;
+        List<TeaFlavorTag> teaFlavorTags = new(teaBase.baseFlavorTags);
         List<TeaFlavorTag> teaFlavorsToRemove = new();
         foreach (var wordOfPower in wordsOfPower)
         {
@@ -39,20 +40,23 @@ public class TeaMixer : MonoBehaviour
                 teaFlavorTags.Remove(teaFlavorsToRemove[i]);
         }
 
-        return new(teaBase, teaFlavorTags);
+        return teaFlavorTags;
     }
 
-
-}
-
-public struct TeaBaseMixed
-{
-    public TeaBase teaBase;
-    public List<TeaFlavorTag> additionalTeaFlavorTags;
-
-    public TeaBaseMixed(TeaBase teaBase, List<TeaFlavorTag> additionalTeaFlavorTags)
+    public float GetRating(List<TeaFlavorTag> flavors, List<TeaFlavorTag> desiredFlavors)
     {
-        this.teaBase = teaBase;
-        this.additionalTeaFlavorTags = additionalTeaFlavorTags;
+        float rating = 0f;
+
+        if (flavors.Count > 0)
+        {
+            int flavorMatches = flavors.Count(flavor => desiredFlavors.Contains(flavor));
+            rating += (float)flavorMatches / (float)flavors.Count;
+        }
+
+        Debug.Log($"calculated rating: {rating}");
+
+        return rating;
     }
+
+
 }

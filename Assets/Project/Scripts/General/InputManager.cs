@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using Zenject;
 
 #region Events
-public interface IInputEvent : IEvent { }
 
 public class InputActionEvent : IInputEvent
 {
@@ -20,15 +20,6 @@ public class InputActionEvent : IInputEvent
 
 }
 
-public class DragStartedEvent : IInputEvent
-{
-    public Vector2 ScreenPosition { get; }
-
-    public DragStartedEvent(Vector2 screenPosition)
-    {
-        ScreenPosition = screenPosition;
-    }
-}
 
 public class DragContinuedEvent : IInputEvent
 {
@@ -46,15 +37,6 @@ public class DragContinuedEvent : IInputEvent
     }
 }
 
-public class DragEndedEvent : IInputEvent
-{
-    public Vector2 ScreenPosition { get; }
-
-    public DragEndedEvent(Vector2 screenPosition)
-    {
-        ScreenPosition = screenPosition;
-    }
-}
 
 public class InputEnabledEvent : IInputEvent
 {
@@ -75,21 +57,16 @@ public class InputEnabledEvent : IInputEvent
 public class InputManager : MonoService, IStateListener
 {
     [SerializeField] private InputActionAsset _inputActions;
-    private Mediator _mediator;
     private Dictionary<string, InputAction> _actionMap = new();
     private List<InputAction> _allActions = new();
     private bool _isInputEnabled = true;
 
-    public override void Initialize(Mediator mediator)
+    [Inject]
+    public void Construct()
     {
-        base.Initialize();
-        _mediator = mediator;
-
-        mediator.SubscribeToState(this, Game.State.Gameplay);
-        mediator.SubscribeToState(this, Game.State.Paused);
-        mediator.SubscribeToState(this, Game.State.Menu);
-        mediator.SubscribeToState(this, Game.State.NightScene);
-        mediator.SubscribeToState(this, Game.State.Trading);
+        _mediator.SubscribeToState(this, Game.State.Gameplay);
+        _mediator.SubscribeToState(this, Game.State.Paused);
+        _mediator.SubscribeToState(this, Game.State.Menu);
 
         InitializeInputActions();
     }
@@ -156,11 +133,11 @@ public class InputManager : MonoService, IStateListener
                 break;
             case Game.State.Trading:
                 SetInputEnabled(true);
-                break;   
+                break;
             case Game.State.NightScene:
                 SetInputEnabled(false);
                 break;
-            
+
         }
     }
 
@@ -275,7 +252,7 @@ public class InputManager : MonoService, IStateListener
         }
     }
 
-    private void OnDestroy()
+    public override void Dispose()
     {
         foreach (var action in _allActions)
         {

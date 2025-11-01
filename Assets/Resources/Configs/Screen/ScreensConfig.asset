@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dcfc0a1efb04a999a1ef03bb72cc6bf, type: 3}
+  m_Name: ScreensConfig
+  m_EditorClassIdentifier: 
+  _screens:
+  - type: TeaGame.Views.TeaMixView
+    asset:
+      m_AssetGUID: d6f7766af547f884185eba8ae2a945a6
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - type: TeaGame.Views.WordBookView
+    asset:
+      m_AssetGUID: aafd410074e4f0445b60744160470416
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - type: TeaGame.Views.StallView
+    asset:
+      m_AssetGUID: 2af3d329efdf5c74e90d54e290086745
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - type: TeaGame.Views.StallChangeItemsView
+    asset:
+      m_AssetGUID: d05073557fe399449a2097246c91f918
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - type: TeaGame.Views.InventoryView
+    asset:
+      m_AssetGUID: c8e8fb4bea6f4d7428aaf0c8f52aa3ae
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  rootCanvas: {fileID: 5999725721942602418, guid: dff49ac18601fa542978bab240d20f8c, type: 3}

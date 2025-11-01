@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using Zenject;
 
 [Serializable]
 public struct HoldSettings
@@ -13,7 +14,9 @@ public struct HoldSettings
     public float time;
     public UnityEvent unityEvent;
 }
-public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+
+[Bind(typeof(ButtonExtended))]
+public abstract class ButtonExtended : InjectableBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField, Tooltip("Берет компонент объекта, можно указать явно, какая кнопка нужна, тогда будет использовать её.")]
     protected Button _button;
@@ -36,9 +39,15 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     private string mouseUpAnimatorName;
 
 
-    [SerializeField] private UnityEvent OnMouseDown;
-    [SerializeField] private UnityEvent OnMouseUp;
+    [SerializeField] public UnityEvent OnMouseDown;
+    [SerializeField] public UnityEvent OnMouseUp;
     [SerializeField] private List<HoldSettings> holdSettings;
+
+
+    [Inject] private AudioHub _audioHub;
+    [Inject] private EventBus _eventBus;
+    [Inject(Optional = true)] private BaseGraphRunnerService _graphRunnerService;
+
 
     public Action OnButtonClick;
     public Action<ButtonExtended> OnMouseDownWithReference;
@@ -48,7 +57,6 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     private Sprite _initialSprite;
     private TMP_Text _tMP_Text;
     private Color _initialTextColor;
-    private AudioHub _audioHub;
 
     private bool _isPointerDown = false;
     private bool _isHolding = false;
@@ -64,7 +72,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
     private bool UseTextColorSwap => textColorSwapOverride || (settings != null && settings.textColorSwap);
     private Color TargetTextColor => textColorSwapOverride ? textColorOverride : (settings != null ? settings.textColorToSwap : Color.white);
 
-    protected virtual void Start()
+    public override void OnConstruct()
     {
         if (_button == null)
         {
@@ -92,7 +100,7 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
             }
         }
 
-        if (!spriteSwapOverride && (settings.spriteSwap || spriteOverride))
+        if (!spriteSwapOverride && settings != null && (settings.spriteSwap || spriteOverride))
         {
             _image = GetComponent<Image>();
             _initialSprite = _image.sprite;
@@ -101,43 +109,37 @@ public abstract class ButtonExtended : MonoBehaviour, IPointerDownHandler, IPoin
 
         if (settings != null && settings.soundType != SoundType.None)
         {
-            _audioHub = Mediator.Instance?.GetService<AudioHub>();
             if (_audioHub == null)
             {
-                Mediator.Instance?.GlobalEventBus?.Publish(new DebugLogErrorEvent(("AudioHub service not found!", this).ToString()));
+                _eventBus.Publish(new DebugLogErrorEvent(("AudioHub service not found!", this).ToString()));
             }
         }
 
-
-    }
-
-    private void HandleButtonClick()
-    {
-        print("click");
-        OnClick();
-        OnButtonClick?.Invoke();
-    }
-
-    private void OnEnable()
-    {
         if (mouseDownAnimation && mouseDownAnimator == null && !string.IsNullOrEmpty(mouseDownAnimatorName))
         {
-            if (Mediator.Instance?.TryGetService(out BaseGraphRunnerService service) == true)
+            if (_graphRunnerService != null)
             {
-                mouseDownAnimator = service.GetRunner(mouseDownAnimatorName);
+                mouseDownAnimator = _graphRunnerService.GetRunner(mouseDownAnimatorName);
             }
         }
 
         if (mouseUpAnimation && mouseUpAnimator == null && !string.IsNullOrEmpty(mouseUpAnimatorName))
         {
-            if (Mediator.Instance?.TryGetService(out BaseGraphRunnerService service) == true)
+            if (_graphRunnerService != null)
             {
-                mouseUpAnimator = service.GetRunner(mouseUpAnimatorName);
+                mouseUpAnimator = _graphRunnerService.GetRunner(mouseUpAnimatorName);
             }
         }
+
+        MarkInjected();
+
     }
 
-
+    private void HandleButtonClick()
+    {
+        OnClick();
+        OnButtonClick?.Invoke();
+    }
 
     protected virtual void OnClick()
     {

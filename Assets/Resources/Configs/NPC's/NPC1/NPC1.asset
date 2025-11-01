@@ -63,21 +63,6 @@ MonoBehaviour:
     pointsToReach: 100
   - level: 5
     pointsToReach: 200
-  favoriteTea:
-    teaTypes: 00000000
-    teaFlavorTags: 00000000
-    processingLevels: 00000000
-    teaGrades: 00000000
-    teaRatingThreshold: 0
-  normalTea:
-    teaTypes: 00000000
-    teaFlavorTags: 01000000
-    processingLevels: 01000000
-    teaGrades: 01000000
-    teaRatingThreshold: 0
-  unlovedTea:
-    teaTypes: 02000000
-    teaFlavorTags: 02000000
-    processingLevels: 02000000
-    teaGrades: 02000000
-    teaRatingThreshold: 0
+  favoriteFlavors: 19000000
+  normalFlavors: 11000000
+  unlovedFlavors: 2a000000

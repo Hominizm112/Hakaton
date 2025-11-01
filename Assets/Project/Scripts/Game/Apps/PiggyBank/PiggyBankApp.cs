@@ -1,11 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class PiggyBankApp : BaseApp
 {
     [SerializeField] List<Sprite> piggySprites;
     [SerializeField] Image piggyImage;
+
+    [Inject] private SaveManager _saveService;
+    [Inject] private CurrencyPresenter _currencyPresenter;
+
     private int _piggyIntegrity = 0;
     private bool _isBroken;
     private const string PIGGY_BANK_SAVE_KEY = "PIGGY_BANK";
@@ -31,13 +36,12 @@ public class PiggyBankApp : BaseApp
     {
         _isBroken = true;
 
-        SaveManager saveManager = _mediator.GetService<SaveManager>();
-        int amountCollected = saveManager.GetInt(PIGGY_BANK_SAVE_KEY);
-        saveManager.SetInt(PIGGY_BANK_SAVE_KEY, 0);
+        int amountCollected = _saveService.GetInt(PIGGY_BANK_SAVE_KEY);
+        _saveService.SetInt(PIGGY_BANK_SAVE_KEY, 0);
 
         if (amountCollected == 0) return;
 
-        _mediator.GetService<CurrencyPresenter>().AddCurrency(amountCollected);
+        _currencyPresenter.AddCurrency(amountCollected);
     }
 
     public void AddToPiggyBank()
@@ -53,11 +57,10 @@ public class PiggyBankApp : BaseApp
             return;
         }
 
-        if (_mediator.GetService<CurrencyPresenter>().TrySpendCurrency(keypadInput))
+        if (_currencyPresenter.TrySpendCurrency(keypadInput))
         {
-            SaveManager saveManager = _mediator.GetService<SaveManager>();
-            int oldValue = saveManager.GetInt(PIGGY_BANK_SAVE_KEY);
-            saveManager.SetInt(PIGGY_BANK_SAVE_KEY, oldValue + keypadInput);
+            int oldValue = _saveService.GetInt(PIGGY_BANK_SAVE_KEY);
+            _saveService.SetInt(PIGGY_BANK_SAVE_KEY, oldValue + keypadInput);
         }
 
     }
