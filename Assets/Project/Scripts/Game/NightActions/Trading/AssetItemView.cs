@@ -11,12 +11,15 @@ public class AssetItemView : MonoBehaviour//отображение одной к
     [SerializeField] private Button _infoActiveButton; 
     [SerializeField] private TMP_Text _tickerLabel; 
     [SerializeField] private TMP_Text _priceLabel; // Добавлено для цены
-    [SerializeField] private TMP_Text _quantityLabel;
     private Ticker _assetTicker;
+    private Mediator _mediator;
+    private TradingWindowView _tradingwindow;
     public event Action<Ticker, TradeType> OnOpenTradeRequested;
     public event Action<Ticker> OnAssetDetailsClicked;//событие клика на кнопку актива(получение инфо)
+    public TMP_Text quantityLabel;
     private void Awake()
     {
+        _mediator = Mediator.Instance;
         //Mediator.Instance.RegisterService(this);
     }
 
@@ -28,9 +31,9 @@ public class AssetItemView : MonoBehaviour//отображение одной к
        {
            //if (ticker == Ticker.None)
            //{
-           //_mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Не существует актива с данным тикером"));//убрать из view в presenter
+          //_mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Не существует актива с данным тикером"));//убрать из view в presenter
            //}
-
+           _tradingwindow.Show(TradeType.Buy, ticker, price);
            OnOpenTradeRequested?.Invoke(ticker, TradeType.Buy);
 
        });
@@ -41,13 +44,12 @@ public class AssetItemView : MonoBehaviour//отображение одной к
            //{
            //_mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Не существует актива с данным тикером"));//убрать из view в presenter
            //}
-
+           _tradingwindow.Show(TradeType.Sell, ticker, price);
            OnOpenTradeRequested?.Invoke(ticker, TradeType.Sell);
 
        });
 
-       _infoActiveButton.onClick.AddListener(() => OnAssetDetailsClicked?.Invoke(ticker));
-
+        _infoActiveButton.onClick.AddListener(() => OnAssetDetailsClicked?.Invoke(ticker));
         _buyActiveButton.gameObject.SetActive(true); 
         
     }
@@ -56,8 +58,8 @@ public class AssetItemView : MonoBehaviour//отображение одной к
     {
         _priceLabel.text = $"Цена:{price}";
         bool canSell = isPortfolioView && quantity > 0;
-        _quantityLabel.gameObject.SetActive(canSell);
-        _quantityLabel.text = $"Кол-во: {quantity}";
+        quantityLabel.gameObject.SetActive(canSell);
+        quantityLabel.text = $"Кол-во: {quantity}";
         _sellActiveButton.gameObject.SetActive(canSell);//управление видимостью кнопки продать: видно только в портфолио
     
     }

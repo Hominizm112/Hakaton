@@ -32,7 +32,6 @@ public abstract class SampleActiv<TConfig> : IActiv<TConfig> where TConfig : IAs
 
 public class PortfollioService : MonoService
 {
-
     private MarketData _marketData;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();
     public Dictionary<Ticker, Stock> AvailableStocks { get; private set; }
@@ -48,7 +47,6 @@ public class PortfollioService : MonoService
     public override void Initialize()
     {
         PortfolioInitialize();
-
     }
 
     public void PortfolioInitialize()

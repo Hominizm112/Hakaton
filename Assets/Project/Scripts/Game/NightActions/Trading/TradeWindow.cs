@@ -9,11 +9,11 @@ public class TradingWindowView : MonoBehaviour
 {
     [SerializeField] private Button _confirmButton;// кнопка подтвердить в окне торговли
     [SerializeField] private LocalizeStringEvent localizeStringEvent;
-    private TMP_Text _tickerText;
-    private TMP_Text _activeNameText;
+    [SerializeField] private TMP_Text _tickerText;
+    //private TMP_Text _activeNameText;
     private Ticker _currentTicker;
-    private TMP_Text _currentPrice;
-    private TradeType _currentTradeType;
+    [SerializeField] private TMP_Text _currentPrice;
+    [SerializeField] private TradeType _currentTradeType;
     public  event Action<TradeType,Ticker ,int > OnTradeConfirmed;
 
     public void Awake()

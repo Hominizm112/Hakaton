@@ -32,9 +32,6 @@ public class PortfolioPresenter : MonoService
             _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
         }
         //_mediator.GlobalEventBus.Subscribe<AssetListChangedEvent>(HandleAssetListChanged);
-        PortfolioInitialize();
-        InitializeView(_view);
-
     }
     public void InitializeView(PortfolioView portfolioView)
     {
@@ -43,7 +40,11 @@ public class PortfolioPresenter : MonoService
         _view.OnCheckOtherStocksClicked += HandleCheckOtherStock;
         _view.OnCheckOtherBondsClicked += HandleCheckOtherBond;
         _view.OnGetAnalyticsClicked += HandleGetPortfolioReport;
-        ///_tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
+        _tradingWindowView.OnTradeConfirmed += HandleConfirmTrade;
+        //_portfolioSummary.QuantityMyActivChanged += HandleTradeActiv;
+        _portfolioSummary.QuantityMyActivChanged += _view.UpdateQuantityActiv;
+        _portfolioSummary.OnCashBalanceChanged += _view.UpdateCashDisplay;
+        PortfolioInitialize();
 
     }
 

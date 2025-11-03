@@ -40,6 +40,10 @@ public class PortfolioSummary: IPortfolioService, IPortfolioDisplayData
     public int StocksValue => _stocksValue;
     public int BondsValue => _bondsValue;
     public int TotalValue => _totalValue;
+
+    public event Action<int> TotalValueChanged;
+    public event Action<Ticker, int> QuantityMyActivChanged;
+    public event Action<int> OnCashBalanceChanged;//int уже со знаком
     
     //public float TotalGainLoss;
     //public float TotalGainLossPercent;
@@ -53,8 +57,9 @@ public class PortfolioSummary: IPortfolioService, IPortfolioDisplayData
             if (existingAsset is SampleActiv<IAssetConfig> activModel)
             {
                 activModel.AddQuantity(quantity);
-                //уведомить Presenter об изменении
-                // NotifyPortfolioChanged();
+                IActiv asset = _model.GetAssetByTicker(ticker);
+                int newQuantity = _model.GetQuantityByTicker(ticker) + quantity;
+                QuantityMyActivChanged?.Invoke(ticker, newQuantity);
                 return;
             }
 
@@ -69,9 +74,10 @@ public class PortfolioSummary: IPortfolioService, IPortfolioDisplayData
         {
             if (existingAsset is SampleActiv<IAssetConfig> activModel)
             {
+                int newQuantity = _model.GetQuantityByTicker(ticker) + quantity;
                 activModel.RemoveQuantity(quantity);
-                //уведомить Presenter об изменении
-                // NotifyPortfolioChanged();
+                QuantityMyActivChanged?.Invoke(ticker,newQuantity);
+
                 return;
             }
 
@@ -88,18 +94,29 @@ public class PortfolioSummary: IPortfolioService, IPortfolioDisplayData
             return;
         }
 
-        _MyActives.Add(newAsset.Ticker, newAsset);
+        if (!MyActives.ContainsKey(ticker))
+        {
+            _MyActives.Add(newAsset.Ticker, newAsset);
+            QuantityMyActivChanged?.Invoke(ticker,newAsset.Quantity);
+        }
+        else
+        {
+            AddQuantity(ticker, newAsset.Quantity);
+            QuantityMyActivChanged?.Invoke(ticker,newAsset.Quantity);
+    
+        }
     }
 
     public void RemoveMyActive(Ticker ticker)
     {
-
-        if (!_MyActives.TryGetValue(ticker, out IActiv asset))
+        IActiv asset=_model.GetAssetByTicker(ticker);
+        if (!_MyActives.ContainsKey(ticker))
         {
             return;
         }
 
         _MyActives.Remove(ticker);
+         QuantityMyActivChanged?.Invoke(ticker,1);
 
     }
     #endregion
@@ -157,6 +174,7 @@ public class PortfolioSummary: IPortfolioService, IPortfolioDisplayData
     #region UpdateCashBalance
     public void AddCashBalance(int amount)
     {
+        //SaveManager saveManager = _mediator.GetService<SaveManager>();
         _cashBalance += amount;
 
     }
@@ -176,7 +194,8 @@ public class PortfolioSummary: IPortfolioService, IPortfolioDisplayData
 
         };
         int cashAdjustment = totalCost * (-factor);
-        _cashBalance += cashAdjustment;
+        AddCashBalance(cashAdjustment);
+        OnCashBalanceChanged?.Invoke(totalCost);
     }
 
 }
