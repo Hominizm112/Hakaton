@@ -1,4 +1,7 @@
+using GameCore.Behaviours;
 using GameCore.UI;
+using GameCore.Utils;
+using TeaGame.Services;
 using UniRx;
 using Zenject;
 
@@ -12,6 +15,7 @@ public class TeaMixViewModel : ViewModel
     private CompositeDisposable _disposables = new();
 
     [Inject] TeaMixerService _teaMixerService;
+    [Inject] ObjectRegistry _objectRegistry;
 
     public override void Initialize()
     {
@@ -58,17 +62,22 @@ public class TeaMixViewModel : ViewModel
 
     public void Mix(float value)
     {
-        float quality = 0.25f;
-        if (_perfectRange.InRange(value))
-        {
-            quality = 1f;
-        }
-        else if (_goodRange.InRange(value))
-        {
-            quality = 0.5f;
-        }
 
-        // var mixedTea = _teaMixerService.MixTea();
+        // float quality = 0.25f;
+        // if (_perfectRange.InRange(value))
+        // {
+        //     quality = 1f;
+        // }
+        // else if (_goodRange.InRange(value))
+        // {
+        //     quality = 0.5f;
+        // }
+
+        var mixedTea = _teaMixerService.MixTea();
+        var placer = _objectRegistry.Get<Placer>();
+        placer.SetContainingItem(mixedTea);
+
+
     }
 
     public override void Dispose()

@@ -15,7 +15,7 @@ using DG.Tweening;
 
 namespace TeaGame.Views
 {
-    public class WordBookView : View<WordBookViewModel>, Window
+    public class WordBookView : View<WordBookViewModel>
     {
         [SerializeField] private Transform wordViewHolder;
         [SerializeField] private GameObject wordDescriptionView;
@@ -36,8 +36,8 @@ namespace TeaGame.Views
 
         private Dictionary<WordView, Tween> _selectedWordViewAnimations = new();
 
+        private ReactiveProperty<int> _wordCap = new();
 
-        [Inject] private EventBus _eventBus;
 
 
         protected Action<WordOfPower> onWordSelected;
@@ -80,6 +80,27 @@ namespace TeaGame.Views
                     .AddTo(_disposables);
                 CreateSelectedWordsViewPool().Forget();
             }
+
+            ViewModel.WordCap
+               .Subscribe(cap => _wordCap.Value = cap)
+               .AddTo(_disposables);
+
+            _wordCap
+                .Subscribe(_ => UpdateWordCapText())
+                .AddTo(_disposables);
+
+            ViewModel.SelectedWords
+                .ObserveCountChanged()
+                .Subscribe(_ => UpdateWordCapText())
+                .AddTo(_disposables);
+
+            _wordCap.Value = ViewModel.WordCap.Value;
+
+        }
+
+        private void UpdateWordCapText()
+        {
+            selectedWordsCupText.text = ViewModel.SelectedWords.Count + "/" + _wordCap;
         }
 
         private void RefreshWordViews(List<WordOfPower> words)

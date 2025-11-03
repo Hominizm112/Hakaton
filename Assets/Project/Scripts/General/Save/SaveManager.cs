@@ -53,10 +53,9 @@ public partial class SaveManager : EventListener
     {
         if (!File.Exists(SaveFilePath))
         {
-            Debug.Log("No save file found. Using default data");
             currentSaveData = new SaveData();
             OnSaveLoaded?.Invoke();
-            return;
+            throw new Exception("No save file found. Using default data");
         }
 
         string filePath = SaveFilePath;
@@ -96,56 +95,15 @@ public partial class SaveManager : EventListener
         }
         catch (Exception e)
         {
-            Debug.LogError($"Failed to load save data: {e.Message}");
             currentSaveData = new();
+            throw new Exception($"Failed to load save data: {e.Message}");
         }
 
-        _eventBus.Publish<LoadDataEvent>(new(this));
+        // _eventBus.Publish<LoadDataEvent>(new(this));
         OnSaveLoaded?.Invoke();
 
 
 
-
-
-        // if (loadOperation.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
-        // {
-        //     string json = loadOperation.downloadHandler.text.Trim('\uFEFF', '\u200B');
-
-        //     try
-        //     {
-        //         // DEBUG: Log what's being loaded
-        //         // Debug.Log("=== LOAD DATA DEBUG ===");
-        //         // Debug.Log("Raw JSON: " + json);
-
-        //         currentSaveData = JsonConvert.DeserializeObject<SaveData>(json, jsonSettings);
-
-        //         // Debug.Log($"Loaded PlayerCommodities count: {currentSaveData.PlayerCommodities?.Count}");
-        //         if (currentSaveData.PlayerCommodities != null)
-        //         {
-        //             foreach (var entry in currentSaveData.PlayerCommodities)
-        //             {
-        //                 // Debug.Log($"Loaded Commodity: {entry.id}, Amount: {entry.amount}");
-        //             }
-        //         }
-        //         // Debug.Log("=====================");
-
-        //         Debug.Log("Save data loaded successfully.");
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Debug.LogError($"Failed to parse save data: {e.Message}");
-        //         currentSaveData = new SaveData();
-        //     }
-        // }
-        // else
-        // {
-        //     Debug.LogError($"Failed to load save file: {loadOperation.error}");
-        //     currentSaveData = new SaveData();
-        // }
-
-        // Mediator.Instance.GlobalEventBus.Publish<LoadDataEvent>(new(this));
-        // loadOperation.Dispose();
-        // OnSaveLoaded?.Invoke();
     }
 
     /// <summary>

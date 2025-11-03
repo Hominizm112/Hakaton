@@ -167,6 +167,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - WordOfPower
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e705fc3d04ba78d4cbff2bac2ec23fe6
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/SellBell View.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee5f2e6e12c9c904689d6ed318d7ab89
     m_Address: Configs/Words/Nut
     m_ReadOnly: 0

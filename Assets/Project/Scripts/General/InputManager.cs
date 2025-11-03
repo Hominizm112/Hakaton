@@ -110,7 +110,7 @@ public class InputManager : MonoService, IStateListener
                 _actionMap[action.name] = action;
                 _allActions.Add(action);
 
-                action.performed += ctx => OnInputActionPerformed(ctx);
+                // action.performed += ctx => OnInputActionPerformed(ctx);
                 action.canceled += ctx => OnInputActionCanceled(ctx);
                 action.started += ctx => OnInputActionStarted(ctx);
             }
@@ -210,12 +210,12 @@ public class InputManager : MonoService, IStateListener
         return action?.WasReleasedThisFrame() ?? false;
     }
 
-    private void OnInputActionPerformed(InputAction.CallbackContext context)
-    {
-        if (!_isInputEnabled) return;
+    // private void OnInputActionPerformed(InputAction.CallbackContext context)
+    // {
+    //     if (!_isInputEnabled) return;
 
-        _mediator.GlobalEventBus.Publish(new InputActionEvent(context, context.action.name));
-    }
+    //     _mediator.GlobalEventBus.Publish(new InputActionEvent(context, context.action.name));
+    // }
 
     private void OnInputActionStarted(InputAction.CallbackContext context)
     {
@@ -256,7 +256,7 @@ public class InputManager : MonoService, IStateListener
     {
         foreach (var action in _allActions)
         {
-            action.performed -= OnInputActionPerformed;
+            // action.performed -= OnInputActionPerformed;
             action.canceled -= OnInputActionCanceled;
             action.started -= OnInputActionStarted;
         }

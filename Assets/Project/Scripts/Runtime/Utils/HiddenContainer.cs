@@ -1,26 +1,34 @@
+using System;
 using UnityEngine;
 
-public class HiddenContainer
+public class HiddenContainer : IDisposable
 {
     private GameObject _container;
     public Transform Container => _container.transform;
 
+    private Transform _desiredParent = null;
 
-    public HiddenContainer()
+    public HiddenContainer(Transform desiredParent = null)
     {
         GameObject newContainer = new GameObject("HiddenContainer");
         newContainer.SetActive(false);
 
         _container = newContainer;
+        _desiredParent = desiredParent;
     }
 
     public void Release(params Transform[] transforms)
     {
         foreach (var transform in transforms)
         {
-            transform.localScale = Vector3.one;
+            transform.SetParent(_desiredParent);
+            transform.gameObject.SetActive(false);
         }
-        Object.Destroy(_container);
+
     }
 
+    public void Dispose()
+    {
+        UnityEngine.Object.Destroy(_container);
+    }
 }

@@ -1,8 +1,5 @@
 using System;
 using System.Collections;
-using System.ComponentModel;
-using Unity.VisualScripting;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using Zenject;
 

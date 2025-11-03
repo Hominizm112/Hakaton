@@ -1,4 +1,5 @@
 using System;
+using GameCore.UI;
 using MyGame.Enums;
 using UnityEngine;
 
@@ -192,6 +193,22 @@ public class DragStartedEvent : IInputEvent
 
 #endregion
 
+#region Items
+
+public class ItemPlaceEvent : IEvent
+{
+    public ItemData ItemData;
+    public AreaDetector AreaDetector;
+
+    public ItemPlaceEvent(ItemData itemData, AreaDetector areaDetector)
+    {
+        ItemData = itemData;
+        AreaDetector = areaDetector;
+    }
+}
+
+#endregion
+
 #region DayScene Events
 
 public class TeaReadyEvent : IEvent
@@ -201,5 +218,32 @@ public class TeaReadyEvent : IEvent
 
     }
 }
+
+#endregion
+
+#region Screens Events
+
+public interface IScreenEvent : IEvent { }
+
+public class ScreenOpenEvent : IScreenEvent
+{
+    public View ScreenView;
+
+    public ScreenOpenEvent(View screenView)
+    {
+        ScreenView = screenView;
+    }
+}
+
+public class ScreenCloseEvent : IScreenEvent
+{
+    public View ScreenView;
+
+    public ScreenCloseEvent(View screenView)
+    {
+        ScreenView = screenView;
+    }
+}
+
 
 #endregion

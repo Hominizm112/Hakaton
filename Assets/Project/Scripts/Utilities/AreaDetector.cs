@@ -1,17 +1,24 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UniRx;
 
 public class AreaDetector : MonoBehaviour
 {
     [Header("Detection Settings")]
     [SerializeField] private string[] _targetTags = { "Draggable", "Player", "Item" };
     [SerializeField] private LayerMask _targetLayers = ~0;
+    [SerializeField] public List<ItemTag> AllowedItemTags;
+
+    private ReactiveProperty<ItemData> _placedItem = new(null);
+    public IReadOnlyReactiveProperty<ItemData> PlacedItem => _placedItem;
+
 
     private HashSet<GameObject> _objectsInArea = new HashSet<GameObject>();
     private Collider2D _detectionCollider;
 
     public System.Action<GameObject> OnObjectEntered;
     public System.Action<GameObject> OnObjectExited;
+
 
     private void Awake()
     {
@@ -24,6 +31,16 @@ public class AreaDetector : MonoBehaviour
         }
 
         _detectionCollider.isTrigger = true;
+    }
+
+    public void PlaceItem(ItemData item)
+    {
+        _placedItem.Value = item;
+    }
+
+    public void TakeItem()
+    {
+        _placedItem.Value = null;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

@@ -8,10 +8,13 @@ public class InventoryViewModel : ViewModel
     public IReadOnlyReactiveCollection<ItemData> Items => _items;
 
     public ReactiveCommand<CollectionActionData> OnRefreshItems = new();
+    private ReactiveProperty<ItemData> _selectedItem = new();
+    public IReadOnlyReactiveProperty<ItemData> SelectedItem => _selectedItem;
+
+    private CompositeDisposable _disposables = new();
 
     [Inject] private InventoryService _inventoryService;
 
-    private CompositeDisposable _disposables = new();
     public override void Initialize()
     {
         SubscribeForItemsChanged();

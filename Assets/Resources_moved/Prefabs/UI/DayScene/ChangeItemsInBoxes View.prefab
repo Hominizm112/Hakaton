@@ -110,7 +110,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 22.450928, y: 45.010986}
+  m_AnchoredPosition: {x: 26, y: 123}
   m_SizeDelta: {x: -506.382, y: -377.192}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9007580904223804814
@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 5861656739663540819}
   - component: {fileID: 8622618336241229449}
   - component: {fileID: 2481409361992166238}
+  - component: {fileID: 6221556576774130233}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -284,6 +285,37 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6221556576774130233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3183502261611192726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4603b55feb60504f8884495d17151ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _button: {fileID: 0}
+  settings: {fileID: 11400000, guid: b1c41fd2f66d11a4bb780081d1d72e35, type: 2}
+  spriteSwapOverride: 0
+  spriteOverride: {fileID: 0}
+  textColorSwapOverride: 0
+  textColorOverride: {r: 0, g: 0, b: 0, a: 0}
+  mouseDownAnimation: 0
+  mouseDownAnimatorName: 
+  mouseDownAnimator: {fileID: 0}
+  mouseUpAnimation: 0
+  mouseUpAnimator: {fileID: 0}
+  mouseUpAnimatorName: 
+  OnMouseDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMouseUp:
+    m_PersistentCalls:
+      m_Calls: []
+  holdSettings: []
 --- !u!1 &4513184909111959024
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,6 +406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47a979aa72593584dabbeab82ff5ebd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectItemButton: {fileID: 6221556576774130233}
 --- !u!1 &4795277108015624786
 GameObject:
   m_ObjectHideFlags: 0

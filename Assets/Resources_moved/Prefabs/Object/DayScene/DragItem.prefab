@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 3698248623176521058}
   - component: {fileID: 3885372949968713719}
   - component: {fileID: 7183479175797766609}
-  m_Layer: 0
+  - component: {fileID: 6169995466606714511}
+  m_Layer: 6
   m_Name: DragItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31,8 +32,8 @@ Transform:
   m_GameObject: {fileID: 7824059018702558295}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.66, y: -7, z: 3}
-  m_LocalScale: {x: 6, y: 6, z: 6}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -213,4 +214,33 @@ MonoBehaviour:
     m_Bits: 4294967295
   smoothPlace: 1
   placeDuration: 0.5
-  placeEase: 27
+  placeEase: 28
+  placerConfig:
+    placerBehaviours:
+    - placeBehaviourType: 0
+      placerAction: 2
+      itemTag: 0
+    - placeBehaviourType: 1
+      placerAction: 2
+      itemTag: 3
+    - placeBehaviourType: 2
+      placerAction: 1
+      itemTag: 0
+--- !u!114 &6169995466606714511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7824059018702558295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3037da173bb9fb4478ecf02761528216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emitterRef:
+    m_AssetGUID: 9d8fca4874d1c3d4388616ef662088ec
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

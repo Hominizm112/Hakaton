@@ -1,8 +1,6 @@
 using System;
-using GameCore.Utils;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 namespace GameCore.UI

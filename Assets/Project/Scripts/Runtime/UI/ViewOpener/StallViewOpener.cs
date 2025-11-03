@@ -9,7 +9,8 @@ public class StallViewOpener : MonoBehaviour, IViewOpener
 
     public void OpenScreen()
     {
-        _ = _screensService.OpenAsync<StallView>();
+        _ = _screensService.OpenAsync(typeof(StallView));
+
 
     }
 

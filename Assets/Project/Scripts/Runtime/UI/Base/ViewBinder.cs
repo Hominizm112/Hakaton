@@ -1,11 +1,13 @@
 using System;
+using UniRx;
+using UnityEngine;
 
 namespace GameCore.UI
 {
     public abstract class ViewBinder<TViewModelValue> : ViewBinder
     {
         private ViewModelBinder<TViewModelValue> _viewModelBinder;
-        
+
         public ViewBinder(string id) : base(id)
         {
         }
@@ -20,7 +22,7 @@ namespace GameCore.UI
         }
 
         public abstract void Parse(TViewModelValue value);
-        
+
         public override void Dispose()
         {
             _viewModelBinder.DisposeParse();
@@ -31,6 +33,7 @@ namespace GameCore.UI
     {
         public ViewModelBinder ViewModelBinder;
         public string Id { get; private set; }
+        protected CompositeDisposable disposables = new();
 
         public ViewBinder(string id)
         {
@@ -40,7 +43,7 @@ namespace GameCore.UI
         public abstract void Initialize();
         public virtual void Dispose()
         {
-            
+            disposables.Dispose();
         }
     }
 }

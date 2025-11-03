@@ -9,7 +9,8 @@ namespace GameCore.UI
     {
         private Dictionary<string, ViewModelBinder> _viewModelBinders = new();
         public IReadOnlyDictionary<string, ViewModelBinder> ViewModelBinders => _viewModelBinders;
-        protected CompositeDisposable Disposable = new();
+        protected CompositeDisposable disposables = new();
+        protected List<Action> onDisposeActions = new();
 
         protected void Bind(params ViewModelBinder[] binders)
         {
@@ -20,7 +21,11 @@ namespace GameCore.UI
 
         public virtual void Dispose()
         {
-            Disposable.Dispose();
+            disposables.Dispose();
+            foreach (var disposeEvent in onDisposeActions)
+            {
+                disposeEvent?.Invoke();
+            }
         }
     }
 }

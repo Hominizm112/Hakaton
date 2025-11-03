@@ -23,7 +23,7 @@ public class StallChangeItemsViewOpener : MonoBehaviour, IViewOpener, IDisposabl
     {
         if (!_oppened)
         {
-            _stallChangeItemsView = await _screensService.OpenAsync<StallChangeItemsView>();
+            _stallChangeItemsView = (StallChangeItemsView)await _screensService.OpenAsync(typeof(StallChangeItemsView));
             _oppened = true;
         }
         else

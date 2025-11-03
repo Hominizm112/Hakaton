@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using GameCore.Runtime.Utils;
 using TeaGame.States;
 using UniRx;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.UIElements;
 using Zenject;
 
 [System.Serializable]
@@ -27,6 +25,7 @@ public interface IInventoryService
 public class InventoryService : EventListener, IInventoryService, IDisposable
 {
     [Inject] private readonly InventoryState _inventoryState;
+    [Inject] private SaveManager _saveManager;
 
 
     private InventoryData _inventoryData = new();
@@ -34,6 +33,7 @@ public class InventoryService : EventListener, IInventoryService, IDisposable
 
 
     private CompositeDisposable _disposables = new();
+    private List<Action> _onDispose = new();
 
     private List<ItemData> _itemDatas = new();
 
@@ -46,18 +46,26 @@ public class InventoryService : EventListener, IInventoryService, IDisposable
 
         _itemDatas = await LoadItemsAsync();
 
-        SubscribeToEvent<LoadDataEvent>(_ => LoadItems());
-        SubscribeToEvent<StartSaveDataEvent>(_ => SaveItems());
+        _saveManager.OnSaveLoaded += LoadItems;
+        _saveManager.OnSaveStarted += SaveItems;
+
+        // _onDispose.Add(() => _saveManager.OnSaveLoaded -= LoadItems);
+        // _onDispose.Add(() => _saveManager.OnSaveStarted -= SaveItems);
     }
 
     public override void Dispose()
     {
         _disposables.Dispose();
+        foreach (var @event in _onDispose)
+        {
+            @event?.Invoke();
+        }
     }
 
     public void LoadItems()
     {
         var rawInventory = _inventoryState.LoadRawInventory();
+        _inventoryData.Items.Clear();
         _inventoryData.Capacity = rawInventory.Capacity;
         foreach (var rawItem in rawInventory.Items)
         {
@@ -72,8 +80,6 @@ public class InventoryService : EventListener, IInventoryService, IDisposable
         foreach (var item in _inventoryData.Items)
         {
             itemIds.Add(new(item.Id, item.Quantity.Value));
-            Debug.Log($"Saving item id: {item.Id}");
-
         }
 
         _inventoryState.SaveRawInventory(itemIds, _inventoryData.Capacity);
@@ -102,10 +108,14 @@ public class InventoryService : EventListener, IInventoryService, IDisposable
 
     }
 
+    public ItemData GetItemDataFromId(string itemId)
+    {
+        return _itemDatas.Find(r => r.Id == itemId);
+    }
+
     public bool AddItem(string itemId, int quantity = 1)
     {
-        var item = _itemDatas.Find(r => r.Id == itemId);
-
+        ItemData item = Copium.CreateDeepCopy(_itemDatas.Find(r => r.Id == itemId));
 
         if (item != null)
         {
@@ -130,9 +140,6 @@ public class InventoryService : EventListener, IInventoryService, IDisposable
             item.Quantity.Value = quantity;
             _inventoryData.Items.Add(item);
         }
-
-        Debug.Log($"Added item: {item.Id}, with quantity: {quantity}");
-        Debug.Log(_inventoryData.Items);
 
         SaveItems();
         return true;

@@ -13,9 +13,10 @@ namespace GameCore.Utils
         [Group("Type")][HideLabel][SerializeField][Dropdown(nameof(GetTypes))] private string type;
 
         [Group("Asset")][HideLabel][SerializeField] private AssetReferenceGameObject asset;
-        
+
         public Type Type => TypeExtensions.GetType(type);
         public AssetReferenceGameObject Asset => asset;
+        public bool InitializeOnStart;
 
         [UsedImplicitly]
         private IEnumerable<string> GetTypes() => TypeExtensions.FilterTypes<TFilter>();

@@ -15,7 +15,17 @@ MonoBehaviour:
   itemData:
     _name: sd
     _id: sd
-    Quantity:
-      value: 0
     Rarity: 0
     SellPrice: 15
+    itemTag:
+      value: 2
+    itemConfig:
+      rid: 6598840035846127699
+  references:
+    version: 2
+    RefIds:
+    - rid: 6598840035846127699
+      type: {class: TeaConfig, ns: , asm: Assembly-CSharp}
+      data:
+        teaFlavorTags: 00000000
+        wordCap: 3

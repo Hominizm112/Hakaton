@@ -1,5 +1,5 @@
 using System;
-using System.ComponentModel;
+using TriInspector;
 using UniRx;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ public class ItemData : ISerializationCallbackReceiver
 {
 
     [SerializeField] private string _name;
-    [SerializeField, ReadOnly(true)] private string _id;
+    [SerializeField] private string _id;
 
     public string Name
     {
@@ -25,6 +25,9 @@ public class ItemData : ISerializationCallbackReceiver
     public ItemRarity Rarity;
     public int SellPrice;
 
+    [ShowInInspector] public ReactiveProperty<ItemTag> itemTag = new(ItemTag.Item);
+    [ShowInInspector, SerializeReference] public ItemConfig itemConfig;
+
     public void OnBeforeSerialize()
     {
         if (!string.IsNullOrEmpty(_name))
@@ -36,6 +39,11 @@ public class ItemData : ISerializationCallbackReceiver
     public void OnAfterDeserialize()
     {
     }
+
+    public T GetConfig<T>() where T : ItemConfig
+    {
+        return itemConfig as T;
+    }
 }
 
 public enum ItemRarity
@@ -44,4 +52,12 @@ public enum ItemRarity
     Rare,
     Epic,
     Legendary
+}
+
+public enum ItemTag
+{
+    Any,
+    Item,
+    TeaBase,
+    TeaReady
 }

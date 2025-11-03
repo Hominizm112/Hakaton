@@ -1,4 +1,5 @@
 using GameCore.Configs;
+using GameCore.Utils;
 using UnityEngine;
 using Zenject;
 
@@ -7,6 +8,7 @@ public class ProjectInstaller : MonoInstaller
     [SerializeField] private ScreensConfig screensConfig;
     public override void InstallBindings()
     {
+        Container.Bind<ObjectRegistry>().AsSingle().NonLazy();
 
         Container.BindInterfacesAndSelfTo<SaveManager>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<CurrencyPresenter>().AsSingle().NonLazy();
@@ -15,8 +17,6 @@ public class ProjectInstaller : MonoInstaller
 
 
         Container.BindInterfacesAndSelfTo<ServiceFactory>().AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<TeaMixerService>().AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<WordBookService>().AsSingle().NonLazy();
 
 
 
@@ -24,6 +24,8 @@ public class ProjectInstaller : MonoInstaller
 
         BindMVVM();
         BindInventory();
+        BindStates();
+        BindServices();
     }
 
     private void CreateAndBindAllServices()
@@ -31,10 +33,10 @@ public class ProjectInstaller : MonoInstaller
         BindPersistentService<Mediator>();
         BindPersistentService<AudioHub>();
         BindPersistentService<InputManager>();
-        BindPersistentService<DragManager>();
+        // BindPersistentService<DragManager>();
         BindPersistentService<TransitionScreen>();
         BindPersistentService<PlayerController>();
-        BindPersistentService<ShopkeeperService>();
+        // BindPersistentService<ShopkeeperService>();
         BindPersistentService<ConsoleService>();
         BindPersistentService<TimeService>();
         BindPersistentService<PortfollioService>();
@@ -46,6 +48,17 @@ public class ProjectInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<TeaGame.States.InventoryState>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<InventoryService>().AsSingle().NonLazy();
         // Container.Bind<InventoryViewModel>().AsSingle();
+    }
+
+    private void BindStates()
+    {
+        Container.BindInterfacesAndSelfTo<TeaGame.States.StallState>().AsSingle().NonLazy();
+    }
+
+    private void BindServices()
+    {
+        Container.BindInterfacesAndSelfTo<TeaGame.Services.TeaMixerService>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<WordBookService>().AsSingle().NonLazy();
     }
 
     private void BindMVVM()

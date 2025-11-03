@@ -9,6 +9,7 @@ public class ItemView : MonoBehaviour, IDisposable
     [SerializeField] private Image _icon;
     [SerializeField] private TMP_Text _quantityText;
     [SerializeField] private TMP_Text _nameText;
+    [SerializeField] public ButtonExtended SelectButton;
 
     private ItemData _itemData;
     public ItemData ItemData => _itemData;

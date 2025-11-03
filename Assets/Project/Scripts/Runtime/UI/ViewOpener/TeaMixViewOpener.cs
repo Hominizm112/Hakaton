@@ -8,6 +8,6 @@ public class TeaMixViewOpener : MonoBehaviour, IViewOpener
     [Inject] private ScreensService _screensService;
     public void OpenScreen()
     {
-        _ = _screensService.OpenAsync<TeaMixView>();
+        _ = _screensService.OpenAsync(typeof(TeaMixView));
     }
 }

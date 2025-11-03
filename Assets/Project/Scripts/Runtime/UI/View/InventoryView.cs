@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GameCore.UI;
@@ -13,26 +14,29 @@ namespace TeaGame.Views
         [SerializeField] private Transform itemViewsHolder;
         [SerializeField] private AssetReference itemViewRef;
 
+        public ReactiveCommand<ItemData> ItemSelected = new();
+
         private CompositeDisposable _disposables = new();
         private List<ItemView> _itemViews = new();
 
+        private List<Action> _onDispose = new();
 
         public override void Initialize()
         {
             Bind();
-            InitializeStartingItems().Forget();
+            InitializeStartingItems();
 
             ViewModel.OnRefreshItems
-                .Subscribe(collectionActionData => FetchCommodityViewsAsync(collectionActionData).Forget())
+                .Subscribe(collectionActionData => FetchCommodityViewsAsync(collectionActionData))
                 .AddTo(_disposables);
         }
 
 
-        private async UniTask InitializeStartingItems()
+        private void InitializeStartingItems()
         {
             foreach (var item in ViewModel.Items)
             {
-                await HandleItemAdded(item);
+                HandleItemAdded(item);
             }
         }
 
@@ -49,13 +53,13 @@ namespace TeaGame.Views
 
 
 
-        public async UniTask FetchCommodityViewsAsync(InventoryService.CollectionActionData collectionActionData)
+        public void FetchCommodityViewsAsync(InventoryService.CollectionActionData collectionActionData)
         {
 
             switch (collectionActionData.CollectionAction)
             {
                 case InventoryService.CollectionAction.Add:
-                    HandleItemAdded(collectionActionData.ItemData).Forget();
+                    HandleItemAdded(collectionActionData.ItemData);
                     break;
 
                 case InventoryService.CollectionAction.Remove:
@@ -67,7 +71,7 @@ namespace TeaGame.Views
 
         }
 
-        private async UniTask HandleItemAdded(ItemData item)
+        private async void HandleItemAdded(ItemData item)
         {
             UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus asyncOperationStatus = UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.None;
 
@@ -76,9 +80,11 @@ namespace TeaGame.Views
                 if (TryFindFreeItemView(out ItemView freeView))
                 {
                     freeView.Initialize(item);
+                    freeView.SelectButton.OnButtonClick += () => SelectItemCallback(item);
+                    _onDispose.Add(() => freeView.SelectButton.OnButtonClick -= () => SelectItemCallback(item));
+
                     freeView.gameObject.SetActive(true);
-                    return;
-                    // asyncOperationStatus = UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded;
+                    asyncOperationStatus = UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded;
                 }
                 else
                 {
@@ -100,14 +106,13 @@ namespace TeaGame.Views
 
         private bool TryFindFreeItemView(out ItemView view)
         {
-            print(_itemViews.Count);
             view = _itemViews.Find(r => !r.gameObject.activeSelf);
             return view != null;
         }
 
         private async UniTask CreateCommodityView()
         {
-            HiddenContainer hiddenContainer = new();
+            HiddenContainer hiddenContainer = new(itemViewsHolder);
 
             var handle = Addressables.InstantiateAsync(itemViewRef, hiddenContainer.Container);
             await handle.Task;
@@ -118,12 +123,16 @@ namespace TeaGame.Views
                 _itemViews.Add(result);
                 _disposables.Add(result);
 
-                result.gameObject.SetActive(false);
-                result.transform.SetParent(itemViewsHolder);
-
                 hiddenContainer.Release(result.transform);
+                result.transform.localScale = Vector3.one;
+                hiddenContainer.Dispose();
 
             }
+        }
+
+        private void SelectItemCallback(ItemData item)
+        {
+            ItemSelected.Execute(item);
         }
 
 
@@ -131,6 +140,11 @@ namespace TeaGame.Views
         {
             base.Dispose();
             _disposables.Dispose();
+
+            foreach (var item in _onDispose)
+            {
+                item?.Invoke();
+            }
         }
 
     }

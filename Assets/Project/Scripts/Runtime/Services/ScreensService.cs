@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using GameCore.Factories;
 using GameCore.UI;
 using GameCore.UI.Loading;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Zenject;
 
@@ -17,32 +18,25 @@ namespace GameCore.Services
         private readonly Dictionary<Type, View> _screensByType = new();
         private readonly Stack<View> _screensStack = new();
 
-        public async UniTask<TScreen> OpenAsync<TScreen>() where TScreen : View
+        public async UniTask<View> OpenAsync(Type screenType)
         {
-            if (_screensByType.TryGetValue(typeof(TScreen), out var screen))
+            if (_screensByType.TryGetValue(screenType, out var screen))
             {
                 if (screen)
                 {
                     screen.Open();
                     _screensStack.Push(screen);
-                    return (TScreen)screen;
+                    return screen;
                 }
             }
 
-            var newScreen = await _screensFactory.CreateAsync<TScreen>();
+            var newScreen = await _screensFactory.CreateAsync(screenType);
 
             newScreen.Open();
-            _screensByType[typeof(TScreen)] = newScreen;
+            _screensByType[screenType] = newScreen;
             _screensStack.Push(newScreen);
 
             return newScreen;
-        }
-
-        public async UniTask OpenAsync(Type viewType)
-        {
-            MethodInfo method = typeof(ScreensService).GetMethod("OpenAsync");
-            MethodInfo genericMethod = method.MakeGenericMethod(viewType);
-            await (UniTask)genericMethod.Invoke(this, null);
         }
 
         public void Close()
@@ -82,5 +76,10 @@ namespace GameCore.Services
         {
             DestroyScreens();
         }
+    }
+
+    public enum ScreenOpenSettings
+    {
+
     }
 }

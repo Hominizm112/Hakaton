@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using UniRx;
 using Zenject;
 
 namespace TeaGame.States
 {
     public class InventoryState : IDisposable
     {
-        private States _currentState = States.Unloaded;
-        public States CurrentState => _currentState;
+        private DataStates _currentState = DataStates.Unloaded;
+        public DataStates CurrentState => _currentState;
 
         private InventorySaveData _inventorySaveData;
 
@@ -22,10 +21,10 @@ namespace TeaGame.States
         }
         public InventorySaveData LoadRawInventory()
         {
-            if (CurrentState == States.Unloaded)
+            if (CurrentState == DataStates.Unloaded)
             {
                 _inventorySaveData = _saveManager.Load<InventorySaveData>(INVENTORY_DATA_SAVE_KEY);
-                _currentState = States.Loaded;
+                _currentState = DataStates.Loaded;
             }
             return _inventorySaveData;
         }
@@ -55,11 +54,7 @@ namespace TeaGame.States
         }
 
 
-        public enum States
-        {
-            Unloaded,
-            Loaded
-        }
+
 
         public struct ItemSaveData
         {
@@ -84,5 +79,11 @@ namespace TeaGame.States
                 Capacity = capacity;
             }
         }
+    }
+
+    public enum DataStates
+    {
+        Unloaded,
+        Loaded
     }
 }
