@@ -33,7 +33,7 @@ public class PortfolioApp : MonoBehaviour, IApp
             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("PortfollioService  не найден"));
         }
         // Регистрируем этот экран в AppController
-        _appController?.RegisterApp(this);
+        // _appController?.RegisterApp(this);
     }
     public void Open()
     {

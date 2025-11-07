@@ -4,6 +4,7 @@ using UnityEngine.Localization.Components;
 
 public class WordBookApp : BaseApp
 {
+    /*
     [Header("References")]
     [SerializeField] private GameObject wordViewPrefab;
     [SerializeField] private Transform wordViewHolder;
@@ -112,7 +113,7 @@ public class WordBookApp : BaseApp
         _wordViews.Clear();
     }
 
-
+*/
 
 
 }

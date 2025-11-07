@@ -14,6 +14,7 @@ namespace TeaGame.States
         private const string INVENTORY_DATA_SAVE_KEY = "inventoryContents";
         [Inject] private SaveManager _saveManager;
 
+
         [Inject]
         public void Construct()
         {

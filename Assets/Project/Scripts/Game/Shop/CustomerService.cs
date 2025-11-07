@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using Zenject;
 
-public class CustomerService : MonoService
+public class CustomerService : Service
 {
     [Header("Customer settings")]
     [SerializeField] private GameObject customerPrefab;
@@ -42,7 +42,7 @@ public class CustomerService : MonoService
         if (_customersPool.Count != 0) return;
         for (int i = 0; i < 2; i++)
         {
-            _customersPool.Add(Instantiate(customerPrefab, customersHolder).GetComponent<Customer>(), false);
+            // _customersPool.Add(Instantiate(customerPrefab, customersHolder).GetComponent<Customer>(), false);
             _customersPool.Last().Key.gameObject.SetActive(false);
         }
     }
@@ -87,7 +87,7 @@ public class CustomerService : MonoService
         customer.gameObject.transform.position = customerStartPosition;
         customer.gameObject.transform.DOMove(customerAtStallPosition, customerShowDuration).SetEase(customerShowEase).OnComplete(() =>
         {
-            _mediator.GlobalEventBus.Publish<CustomerAtStallEvent>(new());
+            GlobalEventBus.Publish<CustomerAtStallEvent>(new());
             _customerAtStall = customer;
             _lastCustomerAtStall = customer;
         });

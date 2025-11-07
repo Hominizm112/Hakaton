@@ -50,9 +50,9 @@ public class EmailApp : BaseApp
         emailContentsView.SetEmail(emailConfig);
     }
 
-    protected override void HandleAppClose()
-    {
-        emailContentsView.gameObject.SetActive(false);
-    }
+    // protected override void HandleAppClose()
+    // {
+    // emailContentsView.gameObject.SetActive(false);
+    // }
 
 }

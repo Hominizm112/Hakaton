@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class NPCDialogueController : MonoBehaviour
 {
     [Header("NPC Details")]
@@ -127,3 +127,4 @@ public class NPCDialogueController : MonoBehaviour
         };
     }
 }
+*/

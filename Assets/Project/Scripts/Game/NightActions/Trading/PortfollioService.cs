@@ -30,7 +30,7 @@ public abstract class SampleActiv<TConfig> : IActiv<TConfig> where TConfig : IAs
 
 }
 
-public class PortfollioService : MonoService
+public class PortfollioService : Service
 {
     private MarketData _marketData;
     private PortfolioSummary _portfolioSummary = new PortfolioSummary();

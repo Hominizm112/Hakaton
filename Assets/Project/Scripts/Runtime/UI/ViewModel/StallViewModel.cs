@@ -50,6 +50,7 @@ public class StallViewModel : ViewModel
             }
         }));
 
+
         _stallState.onLoad += SetItemInBoxes;
         _stallState.onSaveStarted += SaveItemsInBoxes;
 

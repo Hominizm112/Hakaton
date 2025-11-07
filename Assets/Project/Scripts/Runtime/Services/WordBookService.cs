@@ -15,6 +15,7 @@ public class WordBookService : IDisposable
 
 
     private CompositeDisposable _disposables = new();
+    private const string WORDS_ADDRESSABLE_LABEL = "WordOfPower";
 
 
     [Inject]
@@ -28,7 +29,6 @@ public class WordBookService : IDisposable
             .AddTo(_disposables);
     }
 
-    private const string WORDS_ADDRESSABLE_LABEL = "WordOfPower";
 
     public async UniTask<List<WordOfPower>> LoadWordsAsync()
     {

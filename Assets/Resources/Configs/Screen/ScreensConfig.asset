@@ -20,6 +20,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    InitializeOnStart: 0
   - type: TeaGame.Views.WordBookView
     asset:
       m_AssetGUID: aafd410074e4f0445b60744160470416
@@ -27,6 +28,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    InitializeOnStart: 0
   - type: TeaGame.Views.StallView
     asset:
       m_AssetGUID: 2af3d329efdf5c74e90d54e290086745
@@ -34,6 +36,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    InitializeOnStart: 0
   - type: TeaGame.Views.StallChangeItemsView
     asset:
       m_AssetGUID: d05073557fe399449a2097246c91f918
@@ -41,6 +44,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    InitializeOnStart: 0
   - type: TeaGame.Views.InventoryView
     asset:
       m_AssetGUID: c8e8fb4bea6f4d7428aaf0c8f52aa3ae
@@ -48,4 +52,21 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    InitializeOnStart: 0
+  - type: TeaGame.Views.SellBellView
+    asset:
+      m_AssetGUID: e705fc3d04ba78d4cbff2bac2ec23fe6
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    InitializeOnStart: 1
+  - type: TeaGame.UI.View.ConsoleView
+    asset:
+      m_AssetGUID: 2fff37299f498aa49a65feb4ce79eb44
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    InitializeOnStart: 1
   rootCanvas: {fileID: 5999725721942602418, guid: dff49ac18601fa542978bab240d20f8c, type: 3}

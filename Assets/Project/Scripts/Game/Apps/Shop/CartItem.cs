@@ -6,12 +6,10 @@ using Zenject;
 
 public class CartItemData
 {
-    public Commodity commodity;
     public int quantity;
 
-    public CartItemData(Commodity commodity, int quantity)
+    public CartItemData(int quantity)
     {
-        this.commodity = commodity;
         this.quantity = quantity;
     }
 }
@@ -19,6 +17,7 @@ public class CartItemData
 [Bind(typeof(CartItem))]
 public class CartItem : InjectableBehaviour
 {
+    /*
     [SerializeField] private LocalizeStringEvent nameText;
     [SerializeField] private TMP_Text priceText;
     [SerializeField] private TMP_Text quantityText;
@@ -45,8 +44,8 @@ public class CartItem : InjectableBehaviour
         if (_itemData != null && cartItemData != _itemData) return;
 
         _itemData = cartItemData;
-        nameText.StringReference = cartItemData.commodity.commodityName;
-        priceText.text = (cartItemData.commodity.basePrice * cartItemData.quantity).ToString();
+        // nameText.StringReference = cartItemData.commodity.commodityName;
+        // priceText.text = (cartItemData.commodity.basePrice * cartItemData.quantity).ToString();
         quantityText.text = cartItemData.quantity.ToString();
     }
 
@@ -81,5 +80,5 @@ public class CartItem : InjectableBehaviour
         reduceButton.onClick.RemoveAllListeners();
     }
 
-
+*/
 }

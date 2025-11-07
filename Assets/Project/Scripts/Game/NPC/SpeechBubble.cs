@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 
-public class SpeechBubble : MonoBehaviour, IInteractionObject
+public class SpeechBubble : MonoBehaviour
 {
     [SerializeField] private TMP_Text text;
     [SerializeField, Tooltip("Duration per letter")] private float showDuration = 0.1f;

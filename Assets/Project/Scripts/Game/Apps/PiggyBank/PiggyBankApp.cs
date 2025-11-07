@@ -5,6 +5,7 @@ using Zenject;
 
 public class PiggyBankApp : BaseApp
 {
+    /*
     [SerializeField] List<Sprite> piggySprites;
     [SerializeField] Image piggyImage;
 
@@ -64,4 +65,5 @@ public class PiggyBankApp : BaseApp
         }
 
     }
+    */
 }

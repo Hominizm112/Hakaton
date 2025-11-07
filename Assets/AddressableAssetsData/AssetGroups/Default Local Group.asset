@@ -15,12 +15,6 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: dc852234243c9684cb3e7208fabcac56
   m_SerializeEntries:
-  - m_GUID: 014405f8d20de054aaedadc9d6faeccc
-    m_Address: Assets/Resources_moved/Configs/Items
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Item
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1698871dd8aab3d41a1c5a99525e8c41
     m_Address: Configs/Words/Root
     m_ReadOnly: 0
@@ -37,6 +31,17 @@ MonoBehaviour:
     m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/Stall.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2fff37299f498aa49a65feb4ce79eb44
+    m_Address: Assets/Resources_moved/Prefabs/UI/General Views/Console.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41f44503de501974aab7f0c1ae6c02e6
+    m_Address: Assets/Resources_moved/Configs/Sounds/PC App Icon Button Sound.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 42ce134ffb0a3af4daa60f522c91f77b
     m_Address: Configs/Words/Dusk
@@ -61,6 +66,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6caea48946af31a4f9d7e9b552f76d70
+    m_Address: Assets/Resources_moved/Configs/Sounds/ButtonPressSfx.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7c97bcb6cd46b9b40b3ab383111378a1
     m_Address: Configs/Words/Spice
@@ -102,10 +113,22 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4685272558f09641bd16ddc7cef2556
+    m_Address: Assets/Resources_moved/Configs/Sounds/PC Button Sound.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7d7d0f34c1d79144bce2e8d557c7544
     m_Address: Assets/Resources_moved/Prefabs/UI/General Views/ItemView.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c06108e5b6479d848b1c99891b9de900
+    m_Address: Assets/Resources_moved/Configs/Sounds/CoinTossSound.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1975e8a65e98b941bacb8346ebf6e42
     m_Address: Prefabs/UI/Apps/WordView
@@ -150,6 +173,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - WordOfPower
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df677ea7d4e62c245a6be2436d8f1c99
+    m_Address: Assets/Resources_moved/Configs/Sounds/PC Text Change Sound.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dff49ac18601fa542978bab240d20f8c
     m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/UI-Canvas.prefab
     m_ReadOnly: 0
@@ -171,6 +200,12 @@ MonoBehaviour:
     m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/SellBell View.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8ab4ac47b4ffc1488e6579eb58c9a79
+    m_Address: Assets/Resources_moved/Configs/Sounds/PC App Load Sound.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee5f2e6e12c9c904689d6ed318d7ab89
     m_Address: Configs/Words/Nut

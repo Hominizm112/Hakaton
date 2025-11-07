@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using Zenject;
 
-public abstract class BaseApp : MonoBehaviour, IApp
+public abstract class BaseApp : MonoBehaviour
 {
+    /*
     [SerializeField] private List<GameObject> appObjects;
     [SerializeField] protected UnityEvent OnOpen;
     [SerializeField] protected UnityEvent OnClose;
@@ -68,4 +69,5 @@ public abstract class BaseApp : MonoBehaviour, IApp
 
     protected virtual void HandleAppOpen() { }
     protected virtual void HandleAppClose() { }
+    */
 }

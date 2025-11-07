@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using GameCore.Factories;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -12,6 +14,9 @@ namespace GameCore.UI
 
         private ViewBinder[] _viewBinders;
         public TViewModel ViewModel { get; private set; }
+        protected CompositeDisposable disposables = new();
+        protected List<Action> onDisposeActions = new();
+
 
         protected void Bind(params ViewBinder[] viewBinders)
         {
@@ -27,6 +32,12 @@ namespace GameCore.UI
             foreach (var viewBinder in _viewBinders)
             {
                 viewBinder.Dispose();
+            }
+
+            disposables.Dispose();
+            foreach (var disposeEvent in onDisposeActions)
+            {
+                disposeEvent?.Invoke();
             }
         }
     }

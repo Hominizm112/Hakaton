@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: dc852234243c9684cb3e7208fabcac56
   m_currentHash:
     serializedVersion: 2
-    Hash: 0b9dcfd15f958ac5e56ad7d3e8948f72
+    Hash: 01438ea92043b0c0217ab7378af56812
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -109,6 +109,7 @@ MonoBehaviour:
     - Preload
     - WordOfPower
     - Item
+    - Sound
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 5057e6c2f143cd54f81ee8b06891f194, type: 2}

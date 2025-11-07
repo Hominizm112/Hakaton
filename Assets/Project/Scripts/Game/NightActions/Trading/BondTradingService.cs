@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BondTradingService:MonoService
+public class BondTradingService
 {
-    
+
 }

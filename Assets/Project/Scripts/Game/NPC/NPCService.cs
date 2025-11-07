@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using Zenject;
 
-public class NPCService : MonoService
+public class NPCService : Service
 {
     [SerializeField] private List<Emotion> emotions;
     [Header("Animation Settings")]
@@ -54,7 +54,7 @@ public class NPCService : MonoService
 
     public void CreateNPC()
     {
-        _activeNpc = Instantiate(npc.npcPrefab);
+        // _activeNpc = Instantiate(npc.npcPrefab);
         _activeSpeechBubble = _activeNpc.GetComponent<SpeechBubble>();
 
         SetupNPCPosition();
@@ -131,14 +131,14 @@ public class NPCService : MonoService
         {
             AnimateNPCOut(() =>
             {
-                Destroy(_activeNpc);
+                // Destroy(_activeNpc);
                 _activeNpc = null;
                 CreateNPC();
             });
         }
         else
         {
-            Destroy(_activeNpc);
+            // Destroy(_activeNpc);
             _activeNpc = null;
         }
     }
@@ -164,8 +164,8 @@ public class NPCService : MonoService
     {
         NpcReadyToBuy = false;
         _activeSpeechBubble.SetText(buyResult.dialogueLine);
-        _emotionIndicator.OnComplete += () => RemoveNPC();
-        _emotionIndicator.ShowEmotion(GetEmotionSprite(buyResult.satisfaction));
+        // _emotionIndicator.OnComplete += () => RemoveNPC();
+        // _emotionIndicator.ShowEmotion(GetEmotionSprite(buyResult.satisfaction));
     }
 
     #endregion

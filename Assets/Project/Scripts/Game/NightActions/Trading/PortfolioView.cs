@@ -14,13 +14,13 @@ public class PortfolioView : BaseApp
     [SerializeField] private TMP_Text totalValueText;
     [SerializeField] private TMP_Text stocksValueText;
     [SerializeField] private TMP_Text bondsValueText;
-   //[SerializeField] private TMP_Text _totalGainText;
+    //[SerializeField] private TMP_Text _totalGainText;
     //[SerializeField] private TMP_Text _dayGainText;
     //[SerializeField] private TMP_Text _totalGainTextPercent;
     //[SerializeField] private TMP_Text _dayGainTextPercent;
     [SerializeField] private TMP_Text countStocks;
     [SerializeField] private TMP_Text countBonds;
-    [SerializeField] private  Button _addCashButton;
+    [SerializeField] private Button _addCashButton;
     [SerializeField] private Button _checkOtherStocksButton;
     [SerializeField] private Button _checkOtherBondsButton;
     [SerializeField] private Button _analyticsButton;
@@ -36,26 +36,25 @@ public class PortfolioView : BaseApp
     public event Action OnCheckOtherBondsClicked;
     public event Action OnGetAnalyticsClicked;
     private const string CASH_BALANCE_SAVE_KEY = "CASH_BALANCE";
-    
 
-   protected override void Awake()
+
+    protected void Awake()
     {
-        base.Awake();
         // _activeInfoButton.onClick.AddListener(() => OnActiveInfoClicked.Invoke());
-        _mediator.OnInitializationCompleted += () => _mediator.GetService<PortfolioPresenter>().InitializeView(this);
+        // _mediator.OnInitializationCompleted += () => _mediator.GetService<PortfolioPresenter>().InitializeView(this);
         _checkOtherStocksButton.onClick.AddListener(() => OnCheckOtherStocksClicked.Invoke());
         _checkOtherBondsButton.onClick.AddListener(() => OnCheckOtherBondsClicked.Invoke());
         _analyticsButton.onClick.AddListener(() => OnGetAnalyticsClicked.Invoke());
 
         _addCashButton.onClick.AddListener(() =>
         {
-            int keypadInput = _appController.GetApp<KeypadApp>().KeypadInput;
-            if (keypadInput == 0)
-            {
-                return;
-            }
-            OnAddCashClicked.Invoke(keypadInput);
-            
+            // int keypadInput = _appController.GetApp<KeypadApp>().KeypadInput;
+            // if (keypadInput == 0)
+            // {
+            // return;
+            // }
+            // OnAddCashClicked.Invoke(keypadInput);
+
         });
     }
 
@@ -112,20 +111,20 @@ public class PortfolioView : BaseApp
         if (_activeAssetViews.TryGetValue(ticker, out AssetItemView viewToUpdate))
         {
             viewToUpdate.quantityLabel.text = newQuantity.ToString();
-                
+
         }
-    
+
     }
-    public void UpdateAssetButton(Ticker newTicker,int newPrice, int newQuantity)
+    public void UpdateAssetButton(Ticker newTicker, int newPrice, int newQuantity)
     {
         if (_activeAssetViews.TryGetValue(newTicker, out AssetItemView viewToUpdate))
-            {
-                //viewToUpdate.UpdateDisplay(
-                   // price: newPrice,
-                    
-                   // true
-                //);
-            }
+        {
+            //viewToUpdate.UpdateDisplay(
+            // price: newPrice,
+
+            // true
+            //);
+        }
     }
 
     public void UpdateCashDisplay(int cash)
@@ -140,7 +139,7 @@ public class PortfolioView : BaseApp
     //удаление со сцены
 
 
-#endregion
+    #endregion
     public void OpenAddCashWindow()
     {
 
@@ -183,4 +182,4 @@ public class PortfolioView : BaseApp
         _analyticsButton.onClick.RemoveAllListeners();
 
     }
-    }
+}

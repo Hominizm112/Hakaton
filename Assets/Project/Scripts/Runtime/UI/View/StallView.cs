@@ -7,7 +7,7 @@ using UnityEngine.AddressableAssets;
 
 namespace TeaGame.Views
 {
-    public class StallView : View<StallViewModel>, Window
+    public class StallView : View<StallViewModel>
     {
         [SerializeField] private StallItemBox[] stallItemBoxes;
         [SerializeField] private AssetReference particleEmitterRef;
@@ -20,7 +20,7 @@ namespace TeaGame.Views
         private CompositeDisposable _disposables = new();
 
 
-        public override async void Initialize()
+        public override void Initialize()
         {
             Bind();
             foreach (var box in stallItemBoxes)

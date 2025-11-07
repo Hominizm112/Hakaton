@@ -3,8 +3,10 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class EmotionIndicator : MonoService
+public class EmotionIndicator
 {
+
+    /*
     [SerializeField] private GameObject emotionObject;
     [SerializeField] private AnimationSettings animationSettings;
     [SerializeField] private float verticalOffset = -0.5f;
@@ -64,7 +66,7 @@ public class EmotionIndicator : MonoService
 
 
 
-
+*/
 }
 
 [Serializable]

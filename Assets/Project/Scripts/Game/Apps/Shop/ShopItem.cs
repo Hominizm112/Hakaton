@@ -5,6 +5,7 @@ using Zenject;
 
 public class ShopItem : MonoBehaviour
 {
+    /*
     [SerializeField] private Commodity commodity;
     [SerializeField] private LocalizeStringEvent nameLocalizeEvent;
     [SerializeField] private TMP_Text priceText;
@@ -22,6 +23,6 @@ public class ShopItem : MonoBehaviour
     {
         _appController.GetApp<ShopApp>().AddToCart(commodity);
     }
-
+*/
 
 }

@@ -7,7 +7,7 @@ using UnityEngine.Localization.Components;
 using Zenject;
 
 
-public class PortfolioPresenter : MonoService
+public class PortfolioPresenter : Service
 {
     [SerializeField] private LocalizeStringEvent localizeStringEvent;
     private PortfolioView _view;
@@ -35,7 +35,7 @@ public class PortfolioPresenter : MonoService
     }
     public void InitializeView(PortfolioView portfolioView)
     {
-        _view = GetComponent<PortfolioView>();
+        // _view = GetComponent<PortfolioView>();
         _view.OnAddCashClicked += HandleAddCash;
         _view.OnCheckOtherStocksClicked += HandleCheckOtherStock;
         _view.OnCheckOtherBondsClicked += HandleCheckOtherBond;
@@ -102,7 +102,7 @@ public class PortfolioPresenter : MonoService
 
         if (price <= 0.0)
         {
-            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Цена для актива {ticker} не найдена."));
+            GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Цена для актива {ticker} не найдена."));
             return;
         }
 
@@ -116,7 +116,7 @@ public class PortfolioPresenter : MonoService
         IActiv asset = _model.GetAssetByTicker(ticker);//поиск актива по тикеру
         if (asset == null)
         {
-            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Актив не найден"));
+            GlobalEventBus.Publish<DebugLogErrorEvent>(new("Актив не найден"));
             return;
         }
         int totalCost = asset.CurrentValue * quantity;
@@ -129,7 +129,7 @@ public class PortfolioPresenter : MonoService
     {
         if (asset == null || quantity <= 0)
         {
-            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Неверные параметры торговой операции"));
+            GlobalEventBus.Publish<DebugLogErrorEvent>(new("Неверные параметры торговой операции"));
             return;
         }
 
@@ -155,7 +155,7 @@ public class PortfolioPresenter : MonoService
                 }
                 break;
             default:
-                _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Неподдерживаемый тип операции"));
+                GlobalEventBus.Publish<DebugLogErrorEvent>(new("Неподдерживаемый тип операции"));
                 break;
         }
     }
@@ -193,7 +193,7 @@ public class PortfolioPresenter : MonoService
         {
             case BuyTransactionState.NotEnough:
                 {
-                    _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Недостаточно средств для покупки"));
+                    GlobalEventBus.Publish<DebugLogErrorEvent>(new("Недостаточно средств для покупки"));
                     return;
                 }
             case BuyTransactionState.NeedCreatedButton:
@@ -240,7 +240,7 @@ public class PortfolioPresenter : MonoService
                 }
             case SellTransactionState.NotEnough:
                 {
-                    _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно {ticker} для продажи."));
+                    GlobalEventBus.Publish<DebugLogErrorEvent>(new($"Недостаточно {ticker} для продажи."));
                     return;
                 }
 
@@ -255,7 +255,7 @@ public class PortfolioPresenter : MonoService
     {
         if (amount <= 0)
         {
-            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Некорректный ввод"));
+            GlobalEventBus.Publish<DebugLogErrorEvent>(new("Некорректный ввод"));
             return;
         }
         _portfolioSummary.AddCashBalance(amount);

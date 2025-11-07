@@ -9,8 +9,9 @@ public interface IApp
     public void Open();
     public void Close();
 }
-public class AppController : MonoService
+public class AppController
 {
+    /*
     [SerializeField] public UnityEvent OnAppOpen;
     [SerializeField] public UnityEvent OnAppClose;
     [SerializeField] private BaseApp KeypadApp;
@@ -88,5 +89,5 @@ public class AppController : MonoService
     public override void Dispose()
     {
     }
-
+*/
 }

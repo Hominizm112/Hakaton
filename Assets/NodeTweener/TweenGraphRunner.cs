@@ -19,7 +19,7 @@ public class TweenGraphRunner : MonoBehaviour
     [Header("Runner Settings")]
     public string runnerName;
     public bool registerAsService;
-    public BaseGraphRunnerService graphRunnerService;
+    public GraphRunnerService graphRunnerService;
 
     private Sequence _currentSequence;
     private bool _isPlaying = false;

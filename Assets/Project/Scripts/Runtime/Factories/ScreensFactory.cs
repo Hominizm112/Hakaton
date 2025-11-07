@@ -40,6 +40,7 @@ namespace GameCore.Factories
                     }
                 }
             }
+
         }
 
         public async UniTask<View> CreateAsync(System.Type viewType)

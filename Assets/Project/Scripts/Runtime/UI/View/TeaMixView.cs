@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace TeaGame.Views
 {
-    public class TeaMixView : View<TeaMixViewModel>, Window
+    public class TeaMixView : View<TeaMixViewModel>
     {
 
         [Header("Scene References")]

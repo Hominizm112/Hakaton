@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 3785455012774307321}
   - component: {fileID: 801623724727986047}
   - component: {fileID: 4182990689136001227}
-  - component: {fileID: 8707852896776504937}
   m_Layer: 5
   m_Name: Stall Box
   m_TagString: Untagged
@@ -153,19 +152,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   holdSettings: []
---- !u!114 &8707852896776504937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 943021578866179651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bb1ae104315542ba1688c852fce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodity: {fileID: 0}
 --- !u!1 &1285753672454947150
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +165,6 @@ GameObject:
   - component: {fileID: 2670870121886878605}
   - component: {fileID: 5323977262213923375}
   - component: {fileID: 7027345332022006534}
-  - component: {fileID: 620602634884070408}
   m_Layer: 5
   m_Name: Stall Box
   m_TagString: Untagged
@@ -319,19 +304,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   holdSettings: []
---- !u!114 &620602634884070408
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1285753672454947150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bb1ae104315542ba1688c852fce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodity: {fileID: 0}
 --- !u!1 &1368060752426941089
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,7 +317,6 @@ GameObject:
   - component: {fileID: 3829586108665298159}
   - component: {fileID: 2731209728497724035}
   - component: {fileID: 1507492972383109673}
-  - component: {fileID: 906998047000463432}
   m_Layer: 5
   m_Name: Stall Box
   m_TagString: Untagged
@@ -485,19 +456,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   holdSettings: []
---- !u!114 &906998047000463432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1368060752426941089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bb1ae104315542ba1688c852fce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodity: {fileID: 0}
 --- !u!1 &1496433606204636674
 GameObject:
   m_ObjectHideFlags: 0
@@ -511,7 +469,6 @@ GameObject:
   - component: {fileID: 1746478440689884058}
   - component: {fileID: 2946429619856253366}
   - component: {fileID: 2494647943192065236}
-  - component: {fileID: 8924900351483885129}
   m_Layer: 5
   m_Name: Stall Box
   m_TagString: Untagged
@@ -651,19 +608,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   holdSettings: []
---- !u!114 &8924900351483885129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1496433606204636674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bb1ae104315542ba1688c852fce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodity: {fileID: 0}
 --- !u!1 &2095791850647629918
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,7 +621,6 @@ GameObject:
   - component: {fileID: 8304792257918130395}
   - component: {fileID: 919894345471971626}
   - component: {fileID: 8929680179611688553}
-  - component: {fileID: 8865801840588595079}
   m_Layer: 5
   m_Name: Stall Box
   m_TagString: Untagged
@@ -817,19 +760,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   holdSettings: []
---- !u!114 &8865801840588595079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2095791850647629918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bb1ae104315542ba1688c852fce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodity: {fileID: 0}
 --- !u!1 &3825378062478594806
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,7 +773,6 @@ GameObject:
   - component: {fileID: 4896224771038144501}
   - component: {fileID: 373948453760609033}
   - component: {fileID: 8827281363233411275}
-  - component: {fileID: 145488506107359020}
   m_Layer: 5
   m_Name: Stall Box
   m_TagString: Untagged
@@ -983,19 +912,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   holdSettings: []
---- !u!114 &145488506107359020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3825378062478594806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bb1ae104315542ba1688c852fce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodity: {fileID: 0}
 --- !u!1 &4170222430533547055
 GameObject:
   m_ObjectHideFlags: 0
@@ -1291,7 +1207,6 @@ GameObject:
   - component: {fileID: 4998666073863949072}
   - component: {fileID: 5686867434600348251}
   - component: {fileID: 2258677509446883914}
-  - component: {fileID: 4916772697325424009}
   m_Layer: 5
   m_Name: Stall Box
   m_TagString: Untagged
@@ -1431,19 +1346,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   holdSettings: []
---- !u!114 &4916772697325424009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6542516065188553864}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bb1ae104315542ba1688c852fce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodity: {fileID: 0}
 --- !u!1 &8754812843203650121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1457,7 +1359,6 @@ GameObject:
   - component: {fileID: 7013181354645996057}
   - component: {fileID: 9222084475926365660}
   - component: {fileID: 2524853085182659442}
-  - component: {fileID: 5828965982022404296}
   m_Layer: 5
   m_Name: Stall Box
   m_TagString: Untagged
@@ -1597,16 +1498,3 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   holdSettings: []
---- !u!114 &5828965982022404296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8754812843203650121}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bb1ae104315542ba1688c852fce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodity: {fileID: 0}

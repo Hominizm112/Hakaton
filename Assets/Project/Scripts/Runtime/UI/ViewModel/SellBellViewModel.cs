@@ -26,6 +26,7 @@ public class SellBellViewModel : ViewModel
         _sellArea.Value
             .Subscribe(item => _itemInSellArea.Value = item)
             .AddTo(disposables);
+
     }
 
     private void TrySellItem()
