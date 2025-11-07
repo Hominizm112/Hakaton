@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using GameCore.Configs;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -10,6 +11,7 @@ public class Placer : MonoComponent
 {
     [Header("Detection Settings")]
     [SerializeField] private string[] _targetTags = { "" };
+    [SerializeField] private string trashcanTag = "";
     [SerializeField] private LayerMask _targetLayers = ~0;
 
     [Header("Place Settings")]
@@ -25,6 +27,8 @@ public class Placer : MonoComponent
     public Action<GameObject> OnObjectEntered;
     public Action<GameObject> OnObjectExited;
     public PlacerConfig placerConfig;
+    public bool IsActive => gameObject.activeSelf;
+
 
     public bool Placed => _placed;
 
@@ -54,8 +58,7 @@ public class Placer : MonoComponent
 
         if (_detectionCollider == null)
         {
-            Debug.LogError("Placer requires a Collider component!");
-            return;
+            throw new ArgumentNullException("Placer requires a Collider component!");
         }
 
         _detectionCollider.isTrigger = true;
@@ -85,10 +88,18 @@ public class Placer : MonoComponent
 
     private void HandleDragEnded(DragEndedEvent e)
     {
+        if (_containingItem == null) return;
+
         if (e.sender is MonoBehaviour sender)
         {
             if (sender.gameObject == gameObject)
             {
+                if (GetObjectsInArea().FirstOrDefault(r => r.tag == trashcanTag))
+                {
+                    Hide();
+                    return;
+                }
+
                 var obj = GetObjectsInArea().FirstOrDefault(r => _targetTags.Contains(r.tag));
 
                 PlacerAction placerAction = PlacerAction.PlaceInEmpty;
@@ -107,29 +118,11 @@ public class Placer : MonoComponent
 
 
                     case PlacerBehaviourType.Hide:
-                        if (gameObject.activeSelf)
-                        {
-                            if (_emitter == null)
-                            {
-                                _emitter = GetComponent<Emitter>();
-                            }
-                            _emitter?.Emit();
-                        }
-
-                        gameObject.SetActive(false);
-                        SetContainingItem(null);
-
+                        Hide();
                         break;
 
                     case PlacerBehaviourType.Return:
-                        if (_lastPlacedAreaDetector != null)
-                        {
-                            Place(_lastPlacedAreaDetector);
-                        }
-                        else
-                        {
-                            gameObject.SetActive(false);
-                        }
+                        Return();
                         break;
 
 
@@ -137,6 +130,35 @@ public class Placer : MonoComponent
                 }
 
             }
+        }
+    }
+
+    private void Hide()
+    {
+
+        if (gameObject.activeSelf)
+        {
+            if (_emitter == null)
+            {
+                _emitter = GetComponent<Emitter>();
+            }
+            _emitter?.Emit();
+        }
+
+        gameObject.SetActive(false);
+        SetContainingItem(null);
+        onPlace?.Invoke(null);
+    }
+
+    private void Return()
+    {
+        if (_lastPlacedAreaDetector != null)
+        {
+            Place(_lastPlacedAreaDetector);
+        }
+        else
+        {
+            gameObject.SetActive(false);
         }
     }
 

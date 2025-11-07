@@ -80,6 +80,13 @@ public class TeaMixViewModel : ViewModel
 
     }
 
+    public bool IsTeaToCookExists()
+    {
+        return _teaMixerService.TeaToCook.Value != null
+        && _teaMixerService.TeaToCook.HasValue
+        && _teaMixerService.TeaToCook.Value.itemTag.Value == ItemTag.TeaBase;
+    }
+
     public override void Dispose()
     {
         base.Dispose();

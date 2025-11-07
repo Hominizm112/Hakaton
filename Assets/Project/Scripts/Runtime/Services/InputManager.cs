@@ -56,14 +56,15 @@ public class InputEnabledEvent : IInputEvent
 
 public class InputManager : Service, IStateListener
 {
-    [SerializeField] private static InputActionAsset _inputActions;
+    private InputActionAsset _inputActions;
     private Dictionary<string, InputAction> _actionMap = new();
     private List<InputAction> _allActions = new();
     private bool _isInputEnabled = true;
 
     [Inject]
-    public void Construct()
+    public void Construct(InputActionAsset inputActions)
     {
+        _inputActions = inputActions;
         // _mediator.SubscribeToState(this, Game.State.Gameplay);
         // _mediator.SubscribeToState(this, Game.State.Paused);
         // _mediator.SubscribeToState(this, Game.State.Menu);

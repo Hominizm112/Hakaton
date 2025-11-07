@@ -31,6 +31,8 @@ public class StallViewModel : ViewModel
     private StallBoxSelectMode _stallBoxSelectMode = StallBoxSelectMode.TakeItemFromBox;
     private List<GameObject> _instances = new();
 
+    private Placer _placer;
+
     public override void Initialize()
     {
         _diContainer.BindInterfacesAndSelfTo(GetType()).FromInstance(this).AsSingle().NonLazy();
@@ -60,7 +62,6 @@ public class StallViewModel : ViewModel
     {
         HiddenContainer hiddenContainer = new();
         Dragger dragger;
-        Placer placer;
 
         var handle = Addressables.InstantiateAsync(dragObjectRef, hiddenContainer.Container);
         await handle.Task;
@@ -71,20 +72,18 @@ public class StallViewModel : ViewModel
             _instances.Add(createdObject);
 
             dragger = createdObject.GetComponent<Dragger>();
-            placer = createdObject.GetComponent<Placer>();
+            _placer = createdObject.GetComponent<Placer>();
 
-            _objectRegistry.Register(placer);
+            _objectRegistry.Register(_placer);
 
-            placer.onPlace += _teaMixService.SetItemTea;
-            _onDispose.Add(() => placer.onPlace -= _teaMixService.SetItemTea);
-
+            _teaMixService.SetPlacer(_placer);
 
             _disposables.Add(dragger);
-            _disposables.Add(placer);
+            _disposables.Add(_placer);
             hiddenContainer.Release(createdObject.transform);
             hiddenContainer.Dispose();
 
-            return (dragger, placer);
+            return (dragger, _placer);
         }
 
         throw new Exception($"Error while creating dragger for Stall");
@@ -121,7 +120,7 @@ public class StallViewModel : ViewModel
     public bool CanSpawnNewItem()
     {
         _itemsInBoxes.TryGetValue(_selectedBoxId.Value, out var value);
-        return value != null && _stallBoxSelectMode == StallBoxSelectMode.TakeItemFromBox;
+        return value != null && _stallBoxSelectMode == StallBoxSelectMode.TakeItemFromBox && !_placer.IsActive;
     }
 
     public ItemData GetItemInSelectedBox()
@@ -132,7 +131,6 @@ public class StallViewModel : ViewModel
     public void PlaceItem(ItemData itemData)
     {
         _itemsInBoxes[_selectedBoxId.Value] = itemData;
-
     }
 
     public bool TryPlaceItem(ItemData itemData)

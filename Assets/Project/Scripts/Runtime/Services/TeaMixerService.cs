@@ -18,6 +18,10 @@ namespace TeaGame.Services
 
         public ReactiveCollection<WordOfPower> wordsForTea = new();
 
+        private List<Action> _onDispose = new();
+
+        [Inject] private InventoryService _inventoryService;
+
 
         [Inject]
         public void Construct()
@@ -30,17 +34,25 @@ namespace TeaGame.Services
             _teaToCook.Value = itemData;
         }
 
-
+        public void SetPlacer(Placer placer)
+        {
+            placer.onPlace += SetItemTea;
+            _onDispose.Add(() => placer.onPlace -= SetItemTea);
+        }
 
         public void Dispose()
         {
             _disposables.Dispose();
+            foreach (var disposable in _onDispose)
+            {
+                disposable?.Invoke();
+            }
         }
 
 
         public ItemData MixTea()
         {
-            if (_teaToCook == null || wordsForTea.IsEmpty())
+            if (_teaToCook.Value == null)
             {
                 return null;
             }
@@ -85,6 +97,9 @@ namespace TeaGame.Services
 
             newTea.itemTag.Value = ItemTag.TeaReady;
 
+
+            _inventoryService.RemoveItem(_teaToCook.Value.Id);
+            _teaToCook.Value = null;
             return newTea;
         }
 

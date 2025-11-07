@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Draggable
   - PlaceZone
+  - ItemTrashcan
   layers:
   - Default
   - TransparentFX

@@ -1,4 +1,6 @@
 using System;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using GameCore.UI;
 using UnityEngine;
@@ -10,9 +12,10 @@ namespace TeaGame.Views
     {
 
         [Header("Scene References")]
-        [SerializeField] ButtonExtendedViewBinder holdButton = new("holdButton");
-        [SerializeField] SliderViewBinder completionSlider = new("completionSlider");
+        [SerializeField] private ButtonExtendedViewBinder holdButton = new("holdButton");
+        [SerializeField] private SliderViewBinder completionSlider = new("completionSlider");
         [SerializeField] private Braket[] brakets;
+        [SerializeField] private GameObject teaMissingScreen;
 
 
         [Header("Settings")]
@@ -20,7 +23,10 @@ namespace TeaGame.Views
         [SerializeField] private RangeFloat goodRange;
 
         private Tween _sliderTween;
+        private bool _initialized;
 
+
+        private bool _canMix;
 
         public override void Initialize()
         {
@@ -32,11 +38,13 @@ namespace TeaGame.Views
             completionSlider.onValueChange += OnSliderValueChange;
 
             ViewModel.Initialize(perfectRange, goodRange);
+
+            _initialized = true;
         }
 
         public void OnEnable()
         {
-            OnOpen();
+            OnOpenAsync();
         }
 
 
@@ -49,12 +57,21 @@ namespace TeaGame.Views
         {
         }
 
-        public void OnOpen()
+        public async void OnOpenAsync()
         {
+            await UniTask.WaitUntil(() => _initialized == true);
+
+            _canMix = ViewModel.IsTeaToCookExists();
+            teaMissingScreen.SetActive(!_canMix);
         }
 
         public void StartHold()
         {
+            if (!_canMix)
+            {
+                return;
+            }
+
             float value = 0f;
             foreach (var braket in brakets) braket.animating = false;
             _sliderTween = DOTween.To(() => value, x => value = x, 1, 2)
@@ -69,6 +86,8 @@ namespace TeaGame.Views
                 _sliderTween?.Kill();
                 _sliderTween = null;
             }
+
+            _canMix = false;
 
             float sliderValue = completionSlider.SliderValue;
 

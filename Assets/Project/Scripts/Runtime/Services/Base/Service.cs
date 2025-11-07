@@ -1,6 +1,28 @@
-namespace GameCore.Services
+using System;
+using Zenject;
+public interface IService { }
+
+public class Service : IService, IInitializable, IDisposable
 {
-    public abstract class Service
+    [Inject] protected EventBus GlobalEventBus;
+
+
+    public virtual void Initialize()
+    {
+    }
+
+
+    public virtual void SubscribeToEvent<TEvent>(Action<TEvent> handler) where TEvent : IEvent
+    {
+        GlobalEventBus.Subscribe(handler);
+    }
+
+    public void OnDestroy()
+    {
+        Dispose();
+    }
+
+    public virtual void Dispose()
     {
     }
 }

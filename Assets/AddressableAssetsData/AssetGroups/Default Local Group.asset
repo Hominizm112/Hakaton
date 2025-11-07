@@ -79,6 +79,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - WordOfPower
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cfb8f4516234d64793ece15ac9475fe
+    m_Address: Assets/Resources_moved/Prefabs/Object/DayScene/NPC1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7e84a8804e11d4e4788f785369375407
     m_Address: Configs/Words/Dawn
     m_ReadOnly: 0
@@ -121,6 +126,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7d7d0f34c1d79144bce2e8d557c7544
     m_Address: Assets/Resources_moved/Prefabs/UI/General Views/ItemView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb2cfd74d3ca96a4fb0a8aac0b8f0c23
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/Customers View.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
