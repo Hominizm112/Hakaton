@@ -1,52 +1,35 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using System;
 using Zenject;
+using UniRx;
+using GameCore.UI;
 
-public class CurrencyView : MonoBehaviour
+public class CurrencyView : View
 {
     [SerializeField] private TMP_Text _currencyText;
-    [SerializeField] private Button _addCurrencyButton;
-    [SerializeField] private Button _spendCurrencyButton;
-    [SerializeField] private int _testAddAmount = 100;
-    [SerializeField] private int _testSpendAmount = 100;
 
     [Inject] private CurrencyPresenter _currencyPresenter;
 
-    public event Action OnAddCurrencyClicked;
-    public event Action OnSpendCurrencyClicked;
+    private CompositeDisposable _disposables = new();
 
-    [Inject] private Mediator _mediator;
-
-
-    private void Awake()
+    public override void Initialize()
     {
-        _mediator.OnInitializationCompleted += () => _currencyPresenter.InitializeView(this);
-        _addCurrencyButton.onClick.AddListener(() => OnAddCurrencyClicked.Invoke());
-        _spendCurrencyButton.onClick.AddListener(() => OnSpendCurrencyClicked.Invoke());
+        _currencyPresenter.OnValueChanged
+            .Subscribe(UpdateCurrencyDisplay)
+            .AddTo(_disposables);
     }
 
     public void UpdateCurrencyDisplay(int amount)
     {
         if (_currencyText != null)
         {
-            _currencyText.text = $"Currency: {amount}";
+            _currencyText.text = amount.ToString();
         }
     }
 
-    public void ShowInsufficientFunds()
+    public override void Dispose()
     {
-        Debug.LogWarning("Insufficient funds!");
-    }
-
-    public int GetTestAddAmount() => _testAddAmount;
-    public int GetTestSpendAmount() => _testSpendAmount;
-
-    private void OnDestroy()
-    {
-        _addCurrencyButton.onClick.RemoveAllListeners();
-        _spendCurrencyButton.onClick.RemoveAllListeners();
+        _disposables.Dispose();
     }
 
 

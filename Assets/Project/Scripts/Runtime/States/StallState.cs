@@ -11,6 +11,7 @@ namespace TeaGame.States
     {
         [Inject] private SaveManager _saveManager;
         [Inject] private InventoryService _inventoryService;
+        [Inject] private CurrencyPresenter _currencyPresenter;
 
         private Dictionary<string, ItemData> boxesItemsDict = new();
 
@@ -21,6 +22,10 @@ namespace TeaGame.States
 
         private DataStates _currentState = DataStates.Unloaded;
         public DataStates CurrentState => _currentState;
+
+        public ReactiveProperty<bool> _isCustomerAtStall = new();
+        public IReadOnlyReactiveProperty<bool> IsCustomerAtStall => _isCustomerAtStall;
+        public ReactiveCommand ItemSoldCommand = new();
 
 
         [Inject]
@@ -72,6 +77,18 @@ namespace TeaGame.States
 
             _currentState = DataStates.Loaded;
             boxesItemsDict = cleanData;
+        }
+
+        public void SetCustomerAtStall(bool atStall)
+        {
+            _isCustomerAtStall.Value = atStall;
+        }
+
+        public void Sell(ItemData itemData)
+        {
+            ItemSoldCommand.Execute();
+            _currencyPresenter.AddCurrency(itemData.SellPrice);
+
         }
 
 

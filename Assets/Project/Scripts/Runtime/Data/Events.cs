@@ -133,11 +133,6 @@ public class TimeTrackCompletedEvent : TimeEvent { }
 #endregion
 
 
-#region Stall Related Events
-
-public class CustomerAtStallEvent : IEvent { }
-
-#endregion
 
 #region Save/Load Events
 
@@ -160,9 +155,6 @@ public class StartSaveDataEvent : IEvent
         Sender = sender;
     }
 }
-
-
-public class TeaRemovedFromSelectionEvent : IEvent { }
 
 #endregion
 
@@ -193,33 +185,8 @@ public class DragStartedEvent : IInputEvent
 
 #endregion
 
-#region Items
 
-public class ItemPlaceEvent : IEvent
-{
-    public ItemData ItemData;
-    public AreaDetector AreaDetector;
 
-    public ItemPlaceEvent(ItemData itemData, AreaDetector areaDetector)
-    {
-        ItemData = itemData;
-        AreaDetector = areaDetector;
-    }
-}
-
-#endregion
-
-#region DayScene Events
-
-public class TeaReadyEvent : IEvent
-{
-    public TeaReadyEvent()
-    {
-
-    }
-}
-
-#endregion
 
 #region Screens Events
 

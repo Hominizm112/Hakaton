@@ -50,7 +50,7 @@ namespace TeaGame.Services
         }
 
 
-        public ItemData MixTea()
+        public ItemData MixTea(float quality)
         {
             if (_teaToCook.Value == null)
             {
@@ -96,6 +96,8 @@ namespace TeaGame.Services
             newTea.GetConfig<TeaConfig>().teaFlavorTags = teaFlavorTags;
 
             newTea.itemTag.Value = ItemTag.TeaReady;
+
+            newTea.SellPrice = (int)(_teaToCook.Value.SellPrice * quality);
 
 
             _inventoryService.RemoveItem(_teaToCook.Value.Id);

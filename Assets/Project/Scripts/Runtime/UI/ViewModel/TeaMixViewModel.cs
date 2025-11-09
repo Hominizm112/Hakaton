@@ -63,17 +63,17 @@ public class TeaMixViewModel : ViewModel
     public void Mix(float value)
     {
 
-        // float quality = 0.25f;
-        // if (_perfectRange.InRange(value))
-        // {
-        //     quality = 1f;
-        // }
-        // else if (_goodRange.InRange(value))
-        // {
-        //     quality = 0.5f;
-        // }
+        float quality = 0.25f;
+        if (_perfectRange.InRange(value))
+        {
+            quality = 1f;
+        }
+        else if (_goodRange.InRange(value))
+        {
+            quality = 0.5f;
+        }
 
-        var mixedTea = _teaMixerService.MixTea();
+        var mixedTea = _teaMixerService.MixTea(quality);
         var placer = _objectRegistry.Get<Placer>();
         placer.SetContainingItem(mixedTea);
 

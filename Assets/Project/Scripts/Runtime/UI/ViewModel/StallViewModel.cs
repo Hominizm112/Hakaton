@@ -26,8 +26,6 @@ public class StallViewModel : ViewModel
     public ReactiveCommand SpawnItem = new();
 
     private ReactiveProperty<string> _selectedBoxId = new();
-    private CompositeDisposable _disposables = new();
-    private List<Action> _onDispose = new();
     private StallBoxSelectMode _stallBoxSelectMode = StallBoxSelectMode.TakeItemFromBox;
     private List<GameObject> _instances = new();
 
@@ -36,7 +34,7 @@ public class StallViewModel : ViewModel
     public override void Initialize()
     {
         _diContainer.BindInterfacesAndSelfTo(GetType()).FromInstance(this).AsSingle().NonLazy();
-        _disposables.Add(_eventBus.Subscribe<ScreenOpenEvent>(e =>
+        disposables.Add(_eventBus.Subscribe<ScreenOpenEvent>(e =>
         {
             if (e.ScreenView is StallChangeItemsView)
             {
@@ -44,13 +42,17 @@ public class StallViewModel : ViewModel
             }
         }));
 
-        _disposables.Add(_eventBus.Subscribe<ScreenCloseEvent>(e =>
+        disposables.Add(_eventBus.Subscribe<ScreenCloseEvent>(e =>
         {
             if (e.ScreenView is StallChangeItemsView)
             {
                 SwitchStallBoxSelectMode(StallBoxSelectMode.TakeItemFromBox);
             }
         }));
+
+        _stallState.ItemSoldCommand
+            .Subscribe(_ => _placer.Hide())
+            .AddTo(disposables);
 
 
         _stallState.onLoad += SetItemInBoxes;
@@ -78,8 +80,8 @@ public class StallViewModel : ViewModel
 
             _teaMixService.SetPlacer(_placer);
 
-            _disposables.Add(dragger);
-            _disposables.Add(_placer);
+            disposables.Add(dragger);
+            disposables.Add(_placer);
             hiddenContainer.Release(createdObject.transform);
             hiddenContainer.Dispose();
 
@@ -152,12 +154,6 @@ public class StallViewModel : ViewModel
     public override void Dispose()
     {
         base.Dispose();
-        _disposables.Dispose();
-
-        foreach (var @event in _onDispose)
-        {
-            @event?.Invoke();
-        }
 
         foreach (var instance in _instances)
         {

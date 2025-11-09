@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using UniRx;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 
 [CreateAssetMenu(fileName = "new NPC", menuName = "NPC/NPC")]
 public class NPC : ScriptableObject
@@ -13,137 +13,133 @@ public class NPC : ScriptableObject
     public string SmallTalkLine => smallTalkLines.GetRandomItem() as string;
     public TypedListContainer requestLines;
     public string RequestLine => requestLines.GetRandomItem() as string;
-    public List<BuyReaction> buyReactions;
     public RangeUtils.Bounds<int> friendLevelCap;
+    private int _friendPoints;
     public List<FriendLevel> friendLevelPoints = new();
     public List<TeaFlavorTag> favoriteFlavors;
     public List<TeaFlavorTag> normalFlavors;
     public List<TeaFlavorTag> unlovedFlavors;
 
+    private ReactiveProperty<FriendLevel> _currentFriendLevel;
+    private IReadOnlyReactiveProperty<FriendLevel> CurrentFriendLevel => _currentFriendLevel;
 
-    public void BuyTea(List<TeaFlavorTag> flavors, Action<NPCBuyResult> OnComplete)
+
+    public void BuyItem(ItemData itemData)
     {
-        // NPCBuyResult npcBuyResult = new();
-
-        foreach (var item in flavors)
+        if (itemData.IsConfig<TeaConfig>())
         {
-            Debug.Log(item);
+            BuyTea(itemData);
         }
-
-        if (buyReactions == null || buyReactions.Count == 0)
-        {
-            return;
-        }
-
-        // TeaRating teaRating = EvaluateTea(flavors);
-        // Debug.Log($"Evaluated tea| rating: {teaRating.rating}, buy satisfaction: {teaRating.buySatisfaction}");
-
-        // NPCBuySatisfaction satisfaction = GetNPCBuySatisfaction(teaRating);
-        // npcBuyResult.satisfaction = satisfaction;
-        // Debug.Log($"final satisfaction: {satisfaction}");
-
-        // var buyReaction = GetBuyReaction(satisfaction);
-
-        // if (buyReaction.HasValue && buyReaction.Value.IsValid())
-        // {
-        // npcBuyResult.friendPoints = buyReaction.Value.friendPointsAdded;
-        // 
-        // if (buyReaction.Value.dialogueLine.GetRandomItem() is string dialogue)
-        // {
-        // npcBuyResult.dialogueLine = dialogue;
-        // }
-        // }
-
-        // OnComplete?.Invoke(npcBuyResult);
-
 
     }
 
-    private NPCBuySatisfaction GetNPCBuySatisfaction(TeaRating teaRating)
+    public FriendLevel GetFriendLevel()
     {
-        bool isPerfectMatch = teaRating.rating >= .7f;
-
-        if (teaRating.buySatisfaction == NPCBuySatisfaction.Satisfied)
-        {
-            return isPerfectMatch ? NPCBuySatisfaction.VerySatisfied : NPCBuySatisfaction.Satisfied;
-        }
-        if (teaRating.buySatisfaction == NPCBuySatisfaction.Dissatisfied)
-        {
-            return isPerfectMatch ? NPCBuySatisfaction.VeryDissatisfied : NPCBuySatisfaction.Dissatisfied;
-        }
-        return NPCBuySatisfaction.Neutral;
+        return friendLevelPoints.Find(r => r.pointsToReach.InRange(_friendPoints));
     }
 
-    // private TeaRating EvaluateTea(List<TeaFlavorTag> flavors)
-    // {
-    //     // float favoriteScore = TeaMixer.GetRating(flavors, favoriteFlavors);
-    //     // float normalScore = TeaMixer.GetRating(flavors, normalFlavors);
-    //     // float unlovedScore = TeaMixer.GetRating(flavors, unlovedFlavors);
 
-    //     // float result = Mathf.Abs(favoriteScore - unlovedScore) < .5f ? normalScore : Mathf.Max(favoriteScore, unlovedScore);
-
-    //     // if (favoriteScore == result) return new TeaRating(favoriteScore, NPCBuySatisfaction.Satisfied);
-    //     // if (normalScore == result) return new TeaRating(normalScore, NPCBuySatisfaction.Neutral);
-    //     // return new TeaRating(unlovedScore, NPCBuySatisfaction.Dissatisfied);
-    // }
-
-    private BuyReaction? GetBuyReaction(NPCBuySatisfaction nPCBuySatisfaction)
+    private void BuyTea(ItemData itemData)
     {
-        return buyReactions?.FirstOrDefault(r => r.buySatisfaction == nPCBuySatisfaction);
+        var flavors = itemData.GetConfig<TeaConfig>().teaFlavorTags;
+        var buySatisfaction = EvaluateFlavors(flavors);
+
+        switch (buySatisfaction)
+        {
+            case NPCBuySatisfaction.Best:
+                _friendPoints += 100;
+                break;
+            case NPCBuySatisfaction.Normal:
+                _friendPoints += 25;
+                break;
+            case NPCBuySatisfaction.Poor:
+                _friendPoints -= 50;
+                break;
+        }
+
+        _friendPoints = Mathf.Max(0, _friendPoints);
+
+        FriendLevel friendLevel = GetFriendLevel();
+
+        if (friendLevel != _currentFriendLevel.Value)
+        {
+            _currentFriendLevel.Value = friendLevel;
+        }
     }
 
-    private struct TeaRating
-    {
-        public float rating;
-        public NPCBuySatisfaction buySatisfaction;
 
-        public TeaRating(float rating, NPCBuySatisfaction buySatisfaction)
+    private NPCBuySatisfaction EvaluateFlavors(List<TeaFlavorTag> flavors)
+    {
+        int favoriteMatches = 0;
+        int normalMatches = 0;
+        int unlovedMatches = 0;
+
+
+        foreach (var flavor in flavors)
         {
-            this.rating = rating;
-            this.buySatisfaction = buySatisfaction;
+            if (favoriteFlavors.Contains(flavor))
+            {
+                favoriteMatches++;
+            }
+
+            if (normalFlavors.Contains(flavor))
+            {
+                normalMatches++;
+            }
+
+            if (unlovedFlavors.Contains(flavor))
+            {
+                unlovedMatches++;
+            }
         }
+
+        int flavorsCount = flavors.Count;
+
+        float favoriteRating = favoriteMatches / flavorsCount;
+        float normalRating = normalMatches / flavorsCount;
+        float unlovedRating = unlovedMatches / flavorsCount;
+
+        float maxRating = Mathf.Max(favoriteRating, normalRating, unlovedRating);
+
+        RangeFloat rangeFavorite = new(favoriteRating - 0.1f, favoriteRating + 0.1f);
+
+        if (rangeFavorite.InRange(unlovedRating))
+        {
+            return NPCBuySatisfaction.Normal;
+        }
+
+        if (maxRating == favoriteRating)
+        {
+            return NPCBuySatisfaction.Best;
+        }
+        else if (maxRating == normalRating)
+        {
+            return NPCBuySatisfaction.Normal;
+        }
+        else if (maxRating == unlovedRating)
+        {
+            return NPCBuySatisfaction.Poor;
+        }
+
+        return NPCBuySatisfaction.Poor;
+
+
     }
 
 
 }
 
-public struct NPCBuyResult
-{
-    public int friendPoints;
-    public string dialogueLine;
-    public NPCBuySatisfaction satisfaction;
-
-}
 
 [Serializable]
-public struct BuyReaction
-{
-    public NPCBuySatisfaction buySatisfaction;
-    public float costMultiplier;
-    public int friendPointsAdded;
-    public TypedListContainer dialogueLine;
-
-    public bool IsValid()
-    {
-        return dialogueLine != null;
-    }
-}
-
-[Serializable]
-public struct FriendLevel
+public class FriendLevel
 {
     public int level;
-    public int pointsToReach;
+    public RangeInt pointsToReach;
 }
-
 
 public enum NPCBuySatisfaction
 {
-    VeryDissatisfied,
-    Dissatisfied,
-    Neutral,
-    Satisfied,
-    VerySatisfied
+    Best,
+    Normal,
+    Poor
 }
-
-

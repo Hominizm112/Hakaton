@@ -5,7 +5,6 @@ using DG.Tweening;
 using GameCore.Configs;
 using UniRx;
 using UnityEngine;
-using Zenject;
 
 public class Placer : MonoComponent
 {
@@ -133,7 +132,7 @@ public class Placer : MonoComponent
         }
     }
 
-    private void Hide()
+    public void Hide()
     {
 
         if (gameObject.activeSelf)
@@ -175,22 +174,19 @@ public class Placer : MonoComponent
 
         if (smoothPlace)
         {
-            _placeTween = transform.DOMove(obj.transform.position, placeDuration).SetEase(placeEase).OnComplete(() =>
-            {
-                HandlePlaceEnd(obj);
-
-            });
+            _placeTween = transform.DOMove(obj.transform.position, placeDuration).SetEase(placeEase);
         }
         else
         {
-            HandlePlaceEnd(obj);
+            transform.position = obj.transform.position;
         }
+
+        HandlePlaceEnd(obj);
 
     }
 
     private void HandlePlaceEnd(GameObject obj)
     {
-        transform.position = obj.transform.position;
         _placed = true;
         onPlace?.Invoke(_containingItem);
         _lastPlacedAreaDetector = obj;

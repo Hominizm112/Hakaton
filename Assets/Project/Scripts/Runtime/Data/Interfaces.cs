@@ -31,7 +31,7 @@ public interface IItem { }
 
 public interface IEventListener { }
 
-public abstract class InjectableBehaviour : MonoBehaviour, IInjectable
+public abstract class InjectableBehaviour : MonoBehaviour, IInjectable, IDisposable
 {
     public bool Injected { get; private set; }
     public Action OnInjected { get; set; }
@@ -89,6 +89,8 @@ public abstract class InjectableBehaviour : MonoBehaviour, IInjectable
     }
 
     protected virtual void OnInjectedHandler() { }
+
+    public virtual void Dispose() { }
 }
 
 [AttributeUsage(AttributeTargets.Class)]

@@ -160,13 +160,13 @@ public class NPCService : Service
         NpcReadyToBuy = true;
     }
 
-    private void HandleItemBought(NPCBuyResult buyResult)
-    {
-        NpcReadyToBuy = false;
-        _activeSpeechBubble.SetText(buyResult.dialogueLine);
-        // _emotionIndicator.OnComplete += () => RemoveNPC();
-        // _emotionIndicator.ShowEmotion(GetEmotionSprite(buyResult.satisfaction));
-    }
+    // private void HandleItemBought(NPCBuyResult buyResult)
+    // {
+    // NpcReadyToBuy = false;
+    // _activeSpeechBubble.SetText(buyResult.dialogueLine);
+    // _emotionIndicator.OnComplete += () => RemoveNPC();
+    // _emotionIndicator.ShowEmotion(GetEmotionSprite(buyResult.satisfaction));
+    // }
 
     #endregion
 

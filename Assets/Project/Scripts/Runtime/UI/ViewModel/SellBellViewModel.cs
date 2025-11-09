@@ -1,6 +1,7 @@
 using GameCore.UI;
+using TeaGame.States;
 using UniRx;
-using UnityEngine;
+using Zenject;
 
 public class SellBellViewModel : ViewModel
 {
@@ -8,6 +9,9 @@ public class SellBellViewModel : ViewModel
     private RefTypeViewModelBinder<ReactiveCommand<ItemData>> _sellArea = new("sellArea");
 
     private ReactiveProperty<ItemData> _itemInSellArea = new();
+    private bool _isCustomerAtStall;
+
+    [Inject] private StallState _stallState;
 
     public override void Initialize()
     {
@@ -27,17 +31,24 @@ public class SellBellViewModel : ViewModel
             .Subscribe(item => _itemInSellArea.Value = item)
             .AddTo(disposables);
 
+        _stallState.IsCustomerAtStall
+            .Subscribe(val => _isCustomerAtStall = val)
+            .AddTo(disposables);
+
     }
 
     private void TrySellItem()
     {
-        if (_itemInSellArea.Value == null)
+        if (CanSell())
         {
-            throw new System.ArgumentNullException("Item was not found in sell area");
+            _stallState.Sell(_itemInSellArea.Value);
         }
 
-        Debug.Log("sold");
+    }
 
-
+    private bool CanSell()
+    {
+        return _isCustomerAtStall
+            && _itemInSellArea.Value != null;
     }
 }

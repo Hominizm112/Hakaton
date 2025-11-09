@@ -77,4 +77,20 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 1
+  - type: TeaGame.Views.DayEndView
+    asset:
+      m_AssetGUID: ba085b9006f4a744e81e375089a70e9a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    InitializeOnStart: 1
+  - type: CurrencyView
+    asset:
+      m_AssetGUID: 3e13c1f7ca404e24a9d20a956ca4b0c3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    InitializeOnStart: 1
   rootCanvas: {fileID: 5999725721942602418, guid: dff49ac18601fa542978bab240d20f8c, type: 3}

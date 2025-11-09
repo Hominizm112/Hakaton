@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Zenject;
 
 public class MonoComponent : InjectableBehaviour, IDisposable
@@ -28,5 +27,5 @@ public class MonoComponent : InjectableBehaviour, IDisposable
         _events.Clear();
         Dispose();
     }
-    public virtual void Dispose() { }
+    public override void Dispose() { }
 }

@@ -14,8 +14,7 @@ namespace GameCore.UI
 
         private ViewBinder[] _viewBinders;
         public TViewModel ViewModel { get; private set; }
-        protected CompositeDisposable disposables = new();
-        protected List<Action> onDisposeActions = new();
+
 
 
         protected void Bind(params ViewBinder[] viewBinders)
@@ -34,16 +33,14 @@ namespace GameCore.UI
                 viewBinder.Dispose();
             }
 
-            disposables.Dispose();
-            foreach (var disposeEvent in onDisposeActions)
-            {
-                disposeEvent?.Invoke();
-            }
+
         }
     }
 
     public abstract class View : MonoBehaviour, IDisposable
     {
+        protected CompositeDisposable disposables = new();
+        protected List<Action> onDisposeActions = new();
         public abstract void Initialize();
 
         public virtual void Open()
@@ -58,7 +55,11 @@ namespace GameCore.UI
 
         public virtual void Dispose()
         {
-
+            disposables.Dispose();
+            foreach (var disposeEvent in onDisposeActions)
+            {
+                disposeEvent?.Invoke();
+            }
         }
     }
 }

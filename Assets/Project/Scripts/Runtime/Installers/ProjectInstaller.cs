@@ -29,13 +29,6 @@ public class ProjectInstaller : MonoInstaller
 
     }
 
-    private void BindStates()
-    {
-        Container.BindInterfacesAndSelfTo<TeaGame.States.InventoryState>().AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<TeaGame.States.StallState>().AsSingle().NonLazy();
-
-    }
-
     private void BindMVVM()
     {
         Container.BindInterfacesAndSelfTo<GameCore.Services.ScreensService>().AsSingle().NonLazy();
@@ -43,6 +36,13 @@ public class ProjectInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<GameCore.Factories.ViewsFactory>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<GameCore.Factories.ScreensFactory>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<ScreensConfig>().FromScriptableObject(screensConfig).AsSingle().NonLazy();
+    }
+
+    private void BindStates()
+    {
+        Container.BindInterfacesAndSelfTo<TeaGame.States.InventoryState>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<TeaGame.States.StallState>().AsSingle().NonLazy();
+
     }
 
     private void BindSecondaryServices()

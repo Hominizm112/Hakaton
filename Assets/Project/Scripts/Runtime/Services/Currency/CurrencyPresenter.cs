@@ -1,4 +1,4 @@
-using System;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -9,7 +9,7 @@ public class CurrencyPresenter : EventListener
     [Inject] private SaveManager _saveManager;
     [Inject] private AudioHub _audioHub;
 
-    public Action<int> OnValueChanged;
+    public ReactiveCommand<int> OnValueChanged = new();
 
     private CurrencyModel _model;
 
@@ -29,45 +29,21 @@ public class CurrencyPresenter : EventListener
         _model.AddCurrency(savedCurrency);
     }
 
-    public void InitializeView(CurrencyView currencyView)
-    {
-        _view = currencyView;
-        _view.OnAddCurrencyClicked += HandleAddCurrency;
-        _view.OnSpendCurrencyClicked += HandleSpendCurrency;
-        UpdateView();
-    }
-
     private void HandleCurrencyChanged(int newAmount)
     {
-        UpdateView();
         SaveCurrency();
 
-        _eventBus.Publish(new CurrencyChangedEvent(newAmount));
+        OnValueChanged.Execute(newAmount);
     }
 
-    private void UpdateView()
+    private void HandleAddCurrency(int amount)
     {
-        if (_view != null)
-        {
-            _view.UpdateCurrencyDisplay(_model.CurrencyAmount);
-        }
-    }
-
-    private void HandleAddCurrency()
-    {
-        int amount = _view.GetTestAddAmount();
         _model.AddCurrency(amount);
     }
 
-    private void HandleSpendCurrency()
+    private void HandleSpendCurrency(int amount)
     {
-        int amount = _view.GetTestSpendAmount();
         bool success = _model.SpendCurrency(amount);
-
-        if (!success)
-        {
-            _view.ShowInsufficientFunds();
-        }
     }
 
     private void SaveCurrency()
@@ -87,10 +63,5 @@ public class CurrencyPresenter : EventListener
             _model.OnCurrencyChanged -= HandleCurrencyChanged;
         }
 
-        if (_view != null)
-        {
-            _view.OnAddCurrencyClicked -= HandleAddCurrency;
-            _view.OnSpendCurrencyClicked -= HandleSpendCurrency;
-        }
     }
 }

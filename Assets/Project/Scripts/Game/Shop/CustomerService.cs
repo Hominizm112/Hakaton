@@ -87,7 +87,6 @@ public class CustomerService : Service
         customer.gameObject.transform.position = customerStartPosition;
         customer.gameObject.transform.DOMove(customerAtStallPosition, customerShowDuration).SetEase(customerShowEase).OnComplete(() =>
         {
-            GlobalEventBus.Publish<CustomerAtStallEvent>(new());
             _customerAtStall = customer;
             _lastCustomerAtStall = customer;
         });

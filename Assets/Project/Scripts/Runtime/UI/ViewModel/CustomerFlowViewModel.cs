@@ -1,11 +1,12 @@
 
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using GameCore.UI;
 using GameCore.Utils;
+using TeaGame.States;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Zenject;
 
 public class CustomerFlowViewModel : ViewModel
 {
@@ -16,18 +17,34 @@ public class CustomerFlowViewModel : ViewModel
     public AsyncPool<Customer> CustomersPool => _customersPool;
 
     private Customer _activeCustomer;
-    private bool _isCustomerAtStall;
+    private ReactiveProperty<bool> _isCustomerAtStall = new();
+
+    private bool _canRequestCustomer = true;
+
+    [Inject] private StallState _stallState;
+    [Inject] private EventBus _eventBus;
 
     public override void Initialize()
     {
+        _isCustomerAtStall
+            .Subscribe(val => _stallState.SetCustomerAtStall(val))
+            .AddTo(disposables);
     }
 
-    public void Initialize(AssetReference customerRef, Transform customersParent)
+    public async void Initialize(AssetReference customerRef, Transform customersParent)
     {
-        CreateCustomersPool(customerRef, customersParent);
+        await CreateCustomersPool(customerRef, customersParent);
+        RequestCustomer();
+
+        _stallState.ItemSoldCommand
+            .Subscribe(_ => RequestCustomer())
+            .AddTo(disposables);
+
+        disposables.Add(
+            _eventBus.Subscribe<TimeTrackCompletedEvent>(_ => _canRequestCustomer = false));
     }
 
-    public async void CreateCustomersPool(AssetReference customerRef, Transform customersParent)
+    public async UniTask CreateCustomersPool(AssetReference customerRef, Transform customersParent)
     {
         _customersPool = await AsyncPool<Customer>.CreateAsync(
             createFuncAsync: async (cancellationToken) =>
@@ -45,6 +62,12 @@ public class CustomerFlowViewModel : ViewModel
 
     public void RequestCustomer()
     {
+        if (!_canRequestCustomer)
+        {
+            ReleaseCustomer();
+            return;
+        }
+
         if (_activeCustomer != null && _activeCustomer.Animating)
             return;
 
@@ -62,7 +85,7 @@ public class CustomerFlowViewModel : ViewModel
         if (_activeCustomer == null) return;
 
         var oldCustomer = _activeCustomer;
-        _isCustomerAtStall = false;
+        _isCustomerAtStall.Value = false;
         _customersPool.Release(_activeCustomer);
         _activeCustomer = null;
         customerReleased.Execute(oldCustomer);
@@ -72,7 +95,7 @@ public class CustomerFlowViewModel : ViewModel
 
     public void SetCustomerAtStall(bool atStall)
     {
-        _isCustomerAtStall = atStall;
+        _isCustomerAtStall.Value = atStall;
     }
 
 }

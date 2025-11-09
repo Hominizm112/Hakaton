@@ -37,6 +37,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e13c1f7ca404e24a9d20a956ca4b0c3
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/Currency View.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 41f44503de501974aab7f0c1ae6c02e6
     m_Address: Assets/Resources_moved/Configs/Sounds/PC App Icon Button Sound.asset
     m_ReadOnly: 0
@@ -126,6 +131,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7d7d0f34c1d79144bce2e8d557c7544
     m_Address: Assets/Resources_moved/Prefabs/UI/General Views/ItemView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba085b9006f4a744e81e375089a70e9a
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/DayEnd View.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

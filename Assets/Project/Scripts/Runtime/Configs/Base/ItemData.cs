@@ -44,6 +44,11 @@ public class ItemData : ISerializationCallbackReceiver
     {
         return itemConfig as T;
     }
+
+    public bool IsConfig<T>() where T : ItemConfig
+    {
+        return itemConfig is T;
+    }
 }
 
 public enum ItemRarity

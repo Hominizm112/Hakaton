@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using GameCore.UI;
@@ -55,6 +54,7 @@ namespace TeaGame.Views
 
         public void OnClose()
         {
+            completionSlider.SliderValue = 0;
         }
 
         public async void OnOpenAsync()
