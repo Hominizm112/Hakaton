@@ -15,6 +15,8 @@ public enum SoundType
     PC_TextChangeSound,
     PC_AppIconButton,
     PC_LoadAppSound,
+    BellDing,
+    PencilScribble,
 
 }
 public class AudioHub
