@@ -76,3 +76,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screensConfig: {fileID: 11400000, guid: f8e12f4a88982f344838501009d37e24, type: 2}
   inputActions: {fileID: -944628639613478452, guid: 78f04cd77545dfe42b8f8352a2aae5f5, type: 3}
+  scenesServiceConfig: {fileID: 11400000, guid: 8f5e05745ff150947a0af984e2569a33, type: 2}

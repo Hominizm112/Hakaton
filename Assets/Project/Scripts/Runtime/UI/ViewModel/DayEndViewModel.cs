@@ -1,5 +1,6 @@
 using GameCore.UI;
 using UniRx;
+using UnityEngine;
 using Zenject;
 
 public class DayEndViewModel : ViewModel
@@ -12,5 +13,10 @@ public class DayEndViewModel : ViewModel
     {
         disposables.Add(
             _eventBus.Subscribe<TimeTrackCompletedEvent>(_ => DayEndedCommand.Execute()));
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
     }
 }

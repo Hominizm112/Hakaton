@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using TeaGame.Runtime.Configs;
 using TriInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -17,6 +18,8 @@ namespace GameCore.Utils
         public Type Type => TypeExtensions.GetType(type);
         public AssetReferenceGameObject Asset => asset;
         public bool InitializeOnStart;
+        public bool Persistent;
+        public SceneConfig Scene;
 
         [UsedImplicitly]
         private IEnumerable<string> GetTypes() => TypeExtensions.FilterTypes<TFilter>();

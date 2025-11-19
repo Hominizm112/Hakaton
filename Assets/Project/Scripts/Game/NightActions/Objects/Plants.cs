@@ -5,7 +5,7 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
 {
     [SerializeField] private PlantsAnimationSettings _animationSettings;
     private bool _isActive = false;
-    private Sequence _dropSequence; 
+    private Sequence _dropSequence;
     private bool _isSubscribed = false;
     private Mediator _mediator;
 
@@ -19,7 +19,7 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
     {
         if (!_isSubscribed)
         {
-            Game.GamesStateChanged += OnStateChanged;
+            // GameService.GamesStateChanged += OnStateChanged;
             _isSubscribed = true;
         }
     }
@@ -28,17 +28,17 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
     {
         if (_isSubscribed)
         {
-            Game.GamesStateChanged -= OnStateChanged;
+            // GameService.GamesStateChanged -= OnStateChanged;
             _isSubscribed = false;
         }
     }
 
     private void CheckCurrentState()
     {
-        if (Game.ActualState == Game.State.NightScene)
-        {
-            StartPeriodicAction();
-        }
+        // if (GameService.ActualState == GameService.State.NightScene)
+        // {
+        // StartPeriodicAction();
+        // }
     }
 
     public void Interact()
@@ -50,7 +50,7 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
     {
         if (_animationSettings.leafPrefab == null)
         {
-             _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Leaf Prefab не назначен в ScriptableObject Animation Settings!"));
+            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("Leaf Prefab не назначен в ScriptableObject Animation Settings!"));
             return;
         }
         GameObject newLeaf = Instantiate(_animationSettings.leafPrefab, _animationSettings.dropLeavesPoint, Quaternion.identity);
@@ -84,9 +84,9 @@ public class Plants : MonoBehaviour, IInteractable, IStateListener
         _isActive = false;
     }
 
-    public void OnStateChanged(Game.State newState)
+    public void OnStateChanged(GameService.State newState)
     {
-        if (newState == Game.State.NightScene)
+        if (newState == GameService.State.NightScene)
         {
             StartPeriodicAction();
         }

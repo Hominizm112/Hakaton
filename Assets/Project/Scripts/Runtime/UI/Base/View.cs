@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GameCore.Factories;
 using UniRx;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -28,10 +29,15 @@ namespace GameCore.UI
 
         public override void Dispose()
         {
-            foreach (var viewBinder in _viewBinders)
+            if (_viewBinders != null && _viewBinders.Length > 0)
             {
-                viewBinder.Dispose();
+                foreach (var viewBinder in _viewBinders)
+                {
+                    viewBinder.Dispose();
+                }
             }
+
+            ViewModel.Dispose();
 
 
         }
@@ -51,6 +57,11 @@ namespace GameCore.UI
         public virtual void Close()
         {
             gameObject.SetActive(false);
+        }
+
+        public void OnDestroy()
+        {
+            Dispose();
         }
 
         public virtual void Dispose()

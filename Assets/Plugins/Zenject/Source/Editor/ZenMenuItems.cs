@@ -49,7 +49,7 @@ namespace Zenject.Internal
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
 
-        [MenuItem("GameObject/Zenject/Game Object Context", false, 9)]
+        [MenuItem("GameObject/Zenject/GameService Object Context", false, 9)]
         public static void CreateGameObjectContext(MenuCommand menuCommand)
         {
             var root = new GameObject("GameObjectContext").AddComponent<GameObjectContext>();

@@ -1,3 +1,4 @@
+using TeaGame.Runtime.Services;
 using Zenject;
 
 public partial class ConsoleViewModel
@@ -6,6 +7,7 @@ public partial class ConsoleViewModel
     [Inject] private LazyInject<AppController> _appController;
     [Inject] private SaveManager _saveService;
     [Inject] private InventoryService _inventoryService;
+    [Inject] private ScenesService _scenesService;
 
 
     [ConsoleCommand("addcurrency", "Adds currency to player", "addcurrency <amount>")]
@@ -26,7 +28,7 @@ public partial class ConsoleViewModel
             return CommandResult.Error("Usage: loadscene <sceneName>");
 
         string sceneName = context.GetString(0);
-        // _mediator.LoadScene(sceneName, Game.State.Gameplay);
+        _scenesService.LoadScene(sceneName, GameService.State.Gameplay);
         return CommandResult.Ok($"Loading scene: {sceneName}");
     }
 
@@ -48,7 +50,7 @@ public partial class ConsoleViewModel
     private CommandResult SaveCommand(CommandContext context)
     {
         _ = _saveService.SaveDataAsync();
-        return CommandResult.Ok("Game data saved.");
+        return CommandResult.Ok("GameService data saved.");
     }
 
 
@@ -57,7 +59,7 @@ public partial class ConsoleViewModel
     private CommandResult LoadCommand(CommandContext context)
     {
         _ = _saveService.LoadDataAsync();
-        return CommandResult.Ok("Game data saved.");
+        return CommandResult.Ok("GameService data saved.");
     }
 
     [ConsoleCommand("additem", "Adds an item to player's inventory", "additem <itemId> <quantity>")]

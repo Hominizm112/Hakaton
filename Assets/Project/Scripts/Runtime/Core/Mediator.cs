@@ -7,7 +7,6 @@ using Zenject;
 
 
 
-#region Mediator
 public class Mediator : MonoBehaviour
 {
 
@@ -32,11 +31,11 @@ public class Mediator : MonoBehaviour
 
     public static Mediator Instance { get; private set; }
 
-    private readonly Dictionary<Game.State, List<Action<Game.State>>> _stateChangeCallbacks = new();
+    private readonly Dictionary<GameService.State, List<Action<GameService.State>>> _stateChangeCallbacks = new();
     private readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
 
 
-    public event Action<Game.State> OnStateChanged;
+    public event Action<GameService.State> OnStateChanged;
     public static event Action<float> OnLoadProgress;
     public static event Action<string> OnSceneLoadStarted;
     public static event Action<string> OnSceneLoadComplete;
@@ -44,8 +43,8 @@ public class Mediator : MonoBehaviour
 
     public event Action OnInitializationCompleted;
 
-    private Game.State _currentState;
-    public Game.State CurrentState => _currentState;
+    private GameService.State _currentState;
+    public GameService.State CurrentState => _currentState;
     public GameSettings Settings { get; private set; } = new();
 
     #region Initialize
@@ -67,7 +66,7 @@ public class Mediator : MonoBehaviour
     private void SubscribeToEvents()
     {
         GlobalEventBus.Subscribe<DebugLogErrorEvent>(DebugLogErrorEventHandler);
-        GlobalEventBus.Subscribe<LoadSceneEvent>(@LoadSceneEventHandler);
+        // GlobalEventBus.Subscribe<LoadSceneEvent>(@LoadSceneEventHandler);
     }
 
     private void DebugLogErrorEventHandler(DebugLogErrorEvent @event)
@@ -75,16 +74,16 @@ public class Mediator : MonoBehaviour
         ColorfulDebug.LogError(@event.Message);
     }
 
-    private void LoadSceneEventHandler(LoadSceneEvent @event)
-    {
-        LoadScene(@event.SceneName, @event.TargetState);
-    }
+    // private void LoadSceneEventHandler(LoadSceneEvent @event)
+    // {
+    // LoadScene(@event.SceneName, @event.TargetState);
+    // }
 
     private void InitializeStateDictionary()
     {
-        foreach (Game.State state in Enum.GetValues(typeof(Game.State)))
+        foreach (GameService.State state in Enum.GetValues(typeof(GameService.State)))
         {
-            _stateChangeCallbacks[state] = new List<Action<Game.State>>();
+            _stateChangeCallbacks[state] = new List<Action<GameService.State>>();
         }
     }
 
@@ -117,17 +116,17 @@ public class Mediator : MonoBehaviour
 
     #region State
 
-    public void SetState(Game.State newState)
+    public void SetState(GameService.State newState)
     {
         if (_currentState == newState)
         {
             return;
         }
 
-        Game.State previousState = _currentState;
+        GameService.State previousState = _currentState;
         _currentState = newState;
 
-        Debug.Log($"Game State changed from {previousState} to {_currentState}");
+        Debug.Log($"GameService State changed from {previousState} to {_currentState}");
 
         OnStateChanged?.Invoke(_currentState);
 
@@ -136,7 +135,7 @@ public class Mediator : MonoBehaviour
 
     public void SetState(string newStateName)
     {
-        if (Enum.TryParse(newStateName, out Game.State newState))
+        if (Enum.TryParse(newStateName, out GameService.State newState))
         {
             SetState(newState);
         }
@@ -146,7 +145,7 @@ public class Mediator : MonoBehaviour
         }
     }
 
-    public void SubscribeToState(Game.State state, Action<Game.State> callback)
+    public void SubscribeToState(GameService.State state, Action<GameService.State> callback)
     {
         if (_stateChangeCallbacks.TryGetValue(state, out var callbackList))
         {
@@ -157,12 +156,12 @@ public class Mediator : MonoBehaviour
         }
     }
 
-    public void SubscribeToState(IStateListener listener, Game.State state)
+    public void SubscribeToState(IStateListener listener, GameService.State state)
     {
         SubscribeToState(state, listener.OnStateChanged);
     }
 
-    public void UnsubscribeFromState(Game.State state, Action<Game.State> callback)
+    public void UnsubscribeFromState(GameService.State state, Action<GameService.State> callback)
     {
         if (_stateChangeCallbacks.TryGetValue(state, out var callbackList))
         {
@@ -170,21 +169,21 @@ public class Mediator : MonoBehaviour
         }
     }
 
-    public void UnsubscribeFromState(IStateListener listener, Game.State state)
+    public void UnsubscribeFromState(IStateListener listener, GameService.State state)
     {
         UnsubscribeFromState(state, listener.OnStateChanged);
     }
 
-    public bool IsCurrentState(params Game.State[] states)
+    public bool IsCurrentState(params GameService.State[] states)
     {
-        foreach (Game.State state in states)
+        foreach (GameService.State state in states)
         {
             if (_currentState == state) return true;
         }
         return false;
     }
 
-    private void InvokeStateCallback(Game.State state)
+    private void InvokeStateCallback(GameService.State state)
     {
         if (_stateChangeCallbacks.TryGetValue(state, out var callbacks))
         {
@@ -246,87 +245,4 @@ public class Mediator : MonoBehaviour
 
     #endregion
 
-    #region Scene Loading //TODO переделать в отдельный класс
-
-    public void LoadScene(string sceneName, Game.State targetState, bool useTransitionScreen = true)
-    {
-        print(SceneManager.GetActiveScene().name);
-        print(sceneName);
-        if (SceneManager.GetActiveScene().name == sceneName)
-        {
-            return;
-        }
-        SetState("Loading");
-        if (useTransitionScreen)
-        {
-            // _transitionScreen.StartTransition(() => StartCoroutine(LoadSceneAsync(sceneName, targetState)));
-        }
-        else
-        {
-            StartCoroutine(LoadSceneAsync(sceneName, targetState));
-        }
-    }
-
-    private IEnumerator LoadSceneAsync(string sceneName, Game.State targetState)
-    {
-        ColorfulDebug.LogBlue($"Started loading scene: {sceneName}");
-        OnSceneLoadStarted?.Invoke(sceneName);
-
-        GlobalEventBus.Publish<SceneUnloadEvent>(new(SceneManager.GetActiveScene().name));
-
-        AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
-        operation.allowSceneActivation = false;
-
-        while (!operation.isDone)
-        {
-            float progress = Mathf.Clamp01(operation.progress / 0.9f);
-            OnLoadProgress?.Invoke(progress);
-
-            if (operation.progress >= 0.9f)
-            {
-                operation.allowSceneActivation = true;
-            }
-
-            yield return null;
-        }
-
-        OnSceneLoadComplete?.Invoke(sceneName);
-        GlobalEventBus.Publish<SceneLoadedEvent>(new(sceneName));
-
-        if (_transitionScreen != null)
-        {
-            // _transitionScreen.EndTransition();
-        }
-
-        ColorfulDebug.LogBlue($"Finished loading scene: {sceneName}");
-
-        SetState(targetState);
-    }
-
-    #endregion
-    private void OnDestroy()
-    {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
-
-        OnStateChanged = null;
-        OnLoadProgress = null;
-        OnSceneLoadStarted = null;
-        OnSceneLoadComplete = null;
-        OnInitializationCompleted = null;
-
-
-        foreach (var callbackList in _stateChangeCallbacks.Values)
-        {
-            callbackList.Clear();
-        }
-        _stateChangeCallbacks.Clear();
-        _initializables.Clear();
-        _services.Clear();
-        GlobalEventBus = null;
-    }
 }
-
-#endregion

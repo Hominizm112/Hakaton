@@ -1,6 +1,8 @@
-using UnityEngine;
 using System;
-public abstract class Game : MonoBehaviour
+using System.Collections.Generic;
+using UniRx;
+using UnityEngine;
+public class GameService : Service
 {
     public enum State
     {
@@ -10,24 +12,19 @@ public abstract class Game : MonoBehaviour
         Loading,
         NightScene,
         Trading,
-        MyPortfolio
+        MyPortfolio,
+        Boot,
+        Ready
 
     }
 
-    public static event Action<State> GamesStateChanged;
-    private static State _actualState;
-    public static State ActualState
+    private ReactiveProperty<State> _state = new();
+    public IReadOnlyReactiveProperty<State> GameState => _state;
+
+    public void SetState(State state)
     {
-        get => _actualState;
-        set
-        {
-            if (_actualState != value)
-            {
-                _actualState = value;
-                GamesStateChanged?.Invoke(_actualState);
-
-            }
-        }
+        _state.Value = state;
     }
+
 
 }

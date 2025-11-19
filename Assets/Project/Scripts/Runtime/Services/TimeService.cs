@@ -225,6 +225,17 @@ public class TimeService : Service
         }
     }
 
+    public void ForceStopTracking()
+    {
+        if (_isTracking)
+        {
+            _timeTrackingCts?.Cancel();
+            _timeTrackingCts?.Dispose();
+            _timeTrackingCts = null;
+            _isTracking = false;
+        }
+    }
+
     private async UniTask TimeTrackingTask(GameDateTime desiredDateTime, CancellationToken cancellationToken)
     {
 

@@ -63,6 +63,7 @@ public class AudioHub
     private void CreateSourcesObject()
     {
         _sourcesObj = new();
+        Object.DontDestroyOnLoad(_sourcesObj);
     }
 
     private void BuildSoundsDict()

@@ -1,4 +1,6 @@
+using System;
 using GameCore.UI;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -8,10 +10,11 @@ namespace GameCore.Factories
     {
         [Inject] private DiContainer _objectResolver;
 
+
         public TView Create<TView>(TView prefab, Transform parent)
             where TView : View
         {
-            var view = Object.Instantiate(prefab, parent);
+            var view = UnityEngine.Object.Instantiate(prefab, parent);
             InitializeView(view);
             return view;
         }
@@ -21,5 +24,6 @@ namespace GameCore.Factories
             _objectResolver.Inject(view);
             view.Initialize();
         }
+
     }
 }

@@ -11,7 +11,7 @@ public class SceneStateManager : MonoBehaviour
         string currentSceneName = SceneManager.GetActiveScene().name;
         if (currentSceneName == "Night TEST")
         {
-            Game.ActualState = Game.State.NightScene;
+            // GameService.ActualState = GameService.State.NightScene;
         }
     }
 }

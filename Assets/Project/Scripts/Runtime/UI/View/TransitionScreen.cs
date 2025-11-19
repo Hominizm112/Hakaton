@@ -1,48 +1,47 @@
-using System;
 using DG.Tweening;
+using GameCore.UI;
+using TeaGame.Runtime.Services;
 using UnityEngine;
-using UnityEngine.UI;
+using Zenject;
 
-public class TransitionScreen : MonoBehaviour, IService
+public class TransitionScreen : View
 {
-    /*
-    [SerializeField] private AnimationSettings animationSettings;
-    [SerializeField] private Image image;
-    [SerializeField] private Color _transitionColor;
-    private Color _transparentColor;
+    [Inject] private EventBus _eventBus;
+    [Inject] private ScenesService _scenesService;
+    [SerializeField] private GameObject container;
+    [SerializeField] private CanvasGroup canvasGroup;
 
-    public void Awake()
+    public override void Initialize()
     {
-        _transparentColor = _transitionColor;
-        _transparentColor.a = 0;
-        image.color = _transparentColor;
-    }
-    public void StartTransition(Action midTransitionCallback = null)
-    {
-        StartTransitionAnimation(midTransitionCallback);
-    }
+        disposables.Add(_eventBus.Subscribe<SceneStartLoadEvent>(_ => Drop()));
+        disposables.Add(_eventBus.Subscribe<SceneLoadedEvent>(_ => Lift()));
+        if (_scenesService.LoadingScreenLiftRequested)
+        {
+            Lift();
+        }
+        else
+        {
+            Drop();
+            Lift();
+        }
 
-    public void EndTransition(Action endTransitionCallback = null)
-    {
-        EndTransitionAnimation(endTransitionCallback);
-    }
-
-    private void StartTransitionAnimation(Action callback)
-    {
-        image.gameObject.SetActive(true);
-        image.DOColor(_transitionColor, animationSettings.duration).SetEase(animationSettings.ease).OnComplete(() => callback?.Invoke());
     }
 
-    private void EndTransitionAnimation(Action callback)
+    public void Drop()
     {
-        image.DOColor(_transparentColor, animationSettings.duration).SetEase(animationSettings.ease).OnComplete(() => EndTransitionHandler(callback));
+        canvasGroup.alpha = 1;
+        _eventBus.Publish<LoadingScreenDropEvent>(new());
+        container.SetActive(true);
     }
 
-    private void EndTransitionHandler(Action callback)
+    public void Lift()
     {
-        image.gameObject.SetActive(false);
-        callback?.Invoke();
+        canvasGroup.DOFade(0, 0.5f).SetEase(Ease.OutSine).OnComplete(() =>
+        {
+            container.SetActive(false);
+            _eventBus.Publish<LoadingScreenLiftEvent>(new());
+        });
     }
-    */
+
 
 }

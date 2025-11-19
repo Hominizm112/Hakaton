@@ -19,23 +19,23 @@ public class Cloud : MonoBehaviour, IInteractable, IStateListener
     {
         if (!_isSubscribed)
         {
-            Game.GamesStateChanged += OnStateChanged;
+            // GameService.GamesStateChanged += OnStateChanged;
             _isSubscribed = true;
         }
     }
 
-     private void CheckCurrentState()
+    private void CheckCurrentState()
     {
-        if (Game.ActualState == Game.State.NightScene)
-        {
-            StartCloudMovement();
-        }
+        // if (GameService.ActualState == GameService.State.NightScene)
+        // {
+        //     StartCloudMovement();
+        // }
     }
     private void UnsubscribeFromGameState()
     {
         if (_isSubscribed)
         {
-            Game.GamesStateChanged -= OnStateChanged;
+            // GameService.GamesStateChanged -= OnStateChanged;
             _isSubscribed = false;
         }
     }
@@ -44,12 +44,12 @@ public class Cloud : MonoBehaviour, IInteractable, IStateListener
     {
         if (_cloudAnimationSettings == null)
         {
-            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new ("CloudAnimationsSettings not assigned!"));
+            _mediator.GlobalEventBus.Publish<DebugLogErrorEvent>(new("CloudAnimationsSettings not assigned!"));
             return;
         }
         transform.position = _cloudAnimationSettings.initial_point;
         _isMoving = false;
-    
+
     }
     public void Interact()
     {
@@ -76,9 +76,9 @@ public class Cloud : MonoBehaviour, IInteractable, IStateListener
         _movementTweener = null;
         _isMoving = false;
     }
-    public void OnStateChanged(Game.State newState)
+    public void OnStateChanged(GameService.State newState)
     {
-        if (newState == Game.State.NightScene)
+        if (newState == GameService.State.NightScene)
         {
             StartCloudMovement();
         }

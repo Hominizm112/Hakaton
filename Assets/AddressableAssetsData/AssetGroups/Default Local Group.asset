@@ -31,6 +31,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d7932c3bb845fd47b43bdbed47657ea
+    m_Address: Assets/Resources_moved/Prefabs/UI/General Views/LoadingScreen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1e9aa3f673cf162409ff6fe129dbf6e0
     m_Address: Assets/Resources_moved/Configs/Items/TeaBase.asset
     m_ReadOnly: 0
@@ -218,6 +223,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - WordOfPower
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d015eb2a2cbbcda4da7465c568365f7d
+    m_Address: Assets/Resources_moved/Sprites/UI/title sprite.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d05073557fe399449a2097246c91f918
     m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/ChangeItemsInBoxes View.prefab
     m_ReadOnly: 0
@@ -279,6 +289,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - WordOfPower
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f212e8130d368544988b9a9e988c529b
+    m_Address: Assets/Resources_moved/Prefabs/UI/DayScene/DayStart Screen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fa059a2fa5948294080032a5fc606343
     m_Address: Assets/Resources_moved/Animations/SellBell/SellBellAnimation_Idle.anim

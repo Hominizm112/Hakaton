@@ -129,7 +129,7 @@ public partial class SaveManager : EventListener
         try
         {
             await File.WriteAllTextAsync(SaveFilePath, plainJson, Encoding.UTF8);
-            Debug.Log("Game saved successfully!");
+            Debug.Log("GameService saved successfully!");
             OnSaveCompleted?.Invoke();
         }
         catch (Exception e)

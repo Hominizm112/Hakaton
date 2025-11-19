@@ -1,5 +1,7 @@
 using GameCore.Configs;
 using GameCore.Utils;
+using TeaGame.Runtime.Configs;
+using TeaGame.Runtime.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
@@ -8,17 +10,25 @@ public class ProjectInstaller : MonoInstaller
 {
     [SerializeField] private ScreensConfig screensConfig;
     [SerializeField] private InputActionAsset inputActions;
+    [SerializeField] private ScenesServiceConfig scenesServiceConfig;
+
+    private GameService _gameService;
 
     public override void InstallBindings()
     {
+        _gameService = new();
+        _gameService.SetState(GameService.State.Boot);
         BindCoreServices();
         BindMVVM();
         BindStates();
         BindSecondaryServices();
+        _gameService.SetState(GameService.State.Ready);
     }
 
     private void BindCoreServices()
     {
+        Container.BindInterfacesAndSelfTo<GameService>().FromInstance(_gameService).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<ScenesService>().AsSingle().WithArguments(scenesServiceConfig).NonLazy();
         Container.BindInterfacesAndSelfTo<EventBus>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<InputManager>().AsSingle().WithArguments(inputActions).NonLazy();
         Container.BindInterfacesAndSelfTo<TimeService>().AsSingle().NonLazy();

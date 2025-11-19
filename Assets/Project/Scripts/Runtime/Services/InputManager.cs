@@ -65,9 +65,9 @@ public class InputManager : Service, IStateListener
     public void Construct(InputActionAsset inputActions)
     {
         _inputActions = inputActions;
-        // _mediator.SubscribeToState(this, Game.State.Gameplay);
-        // _mediator.SubscribeToState(this, Game.State.Paused);
-        // _mediator.SubscribeToState(this, Game.State.Menu);
+        // _mediator.SubscribeToState(this, GameService.State.Gameplay);
+        // _mediator.SubscribeToState(this, GameService.State.Paused);
+        // _mediator.SubscribeToState(this, GameService.State.Menu);
 
         InitializeInputActions();
     }
@@ -118,24 +118,24 @@ public class InputManager : Service, IStateListener
         }
     }
 
-    public void OnStateChanged(Game.State state)
+    public void OnStateChanged(GameService.State state)
     {
         switch (state)
         {
-            case Game.State.Gameplay:
+            case GameService.State.Gameplay:
                 SetInputEnabled(true);
                 break;
-            case Game.State.Paused:
-            case Game.State.Menu:
+            case GameService.State.Paused:
+            case GameService.State.Menu:
                 SetInputEnabled(false);
                 break;
-            case Game.State.Loading:
+            case GameService.State.Loading:
                 SetInputEnabled(false);
                 break;
-            case Game.State.Trading:
+            case GameService.State.Trading:
                 SetInputEnabled(true);
                 break;
-            case Game.State.NightScene:
+            case GameService.State.NightScene:
                 SetInputEnabled(false);
                 break;
 
@@ -271,9 +271,9 @@ public class InputManager : Service, IStateListener
 
         // if (_mediator != null)
         // {
-        //     _mediator.UnsubscribeFromState(this, Game.State.Gameplay);
-        //     _mediator.UnsubscribeFromState(this, Game.State.Paused);
-        //     _mediator.UnsubscribeFromState(this, Game.State.Menu);
+        //     _mediator.UnsubscribeFromState(this, GameService.State.Gameplay);
+        //     _mediator.UnsubscribeFromState(this, GameService.State.Paused);
+        //     _mediator.UnsubscribeFromState(this, GameService.State.Menu);
         // }
     }
 

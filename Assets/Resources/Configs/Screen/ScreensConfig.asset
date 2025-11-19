@@ -21,6 +21,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 0
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   - type: TeaGame.Views.WordBookView
     asset:
       m_AssetGUID: aafd410074e4f0445b60744160470416
@@ -29,6 +31,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 0
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   - type: TeaGame.Views.StallView
     asset:
       m_AssetGUID: 2af3d329efdf5c74e90d54e290086745
@@ -37,6 +41,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 0
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   - type: TeaGame.Views.StallChangeItemsView
     asset:
       m_AssetGUID: d05073557fe399449a2097246c91f918
@@ -45,6 +51,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 0
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   - type: TeaGame.Views.InventoryView
     asset:
       m_AssetGUID: c8e8fb4bea6f4d7428aaf0c8f52aa3ae
@@ -53,6 +61,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 0
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   - type: TeaGame.UI.View.ConsoleView
     asset:
       m_AssetGUID: 2fff37299f498aa49a65feb4ce79eb44
@@ -61,6 +71,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 1
+    Persistent: 1
+    Scene: {fileID: 0}
   - type: TeaGame.Views.SellBellView
     asset:
       m_AssetGUID: e705fc3d04ba78d4cbff2bac2ec23fe6
@@ -69,6 +81,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 1
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   - type: TeaGame.UI.View.CustomerFlowView
     asset:
       m_AssetGUID: bb2cfd74d3ca96a4fb0a8aac0b8f0c23
@@ -77,6 +91,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 1
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   - type: TeaGame.Views.DayEndView
     asset:
       m_AssetGUID: ba085b9006f4a744e81e375089a70e9a
@@ -85,6 +101,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 1
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   - type: CurrencyView
     asset:
       m_AssetGUID: 3e13c1f7ca404e24a9d20a956ca4b0c3
@@ -93,4 +111,26 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     InitializeOnStart: 1
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
+  - type: TransitionScreen
+    asset:
+      m_AssetGUID: 1d7932c3bb845fd47b43bdbed47657ea
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    InitializeOnStart: 1
+    Persistent: 1
+    Scene: {fileID: 0}
+  - type: TeaGame.Runtime.UI.View.DayStartView
+    asset:
+      m_AssetGUID: f212e8130d368544988b9a9e988c529b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    InitializeOnStart: 1
+    Persistent: 0
+    Scene: {fileID: 11400000, guid: dbafaf0d9184133478742e24d080c223, type: 2}
   rootCanvas: {fileID: 5999725721942602418, guid: dff49ac18601fa542978bab240d20f8c, type: 3}

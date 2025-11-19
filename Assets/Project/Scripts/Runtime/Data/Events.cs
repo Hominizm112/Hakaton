@@ -6,16 +6,7 @@ using UnityEngine;
 public interface IEvent { }
 
 
-public class LoadSceneEvent : IEvent
-{
-    public string SceneName { get; }
-    public Game.State TargetState { get; }
-    public LoadSceneEvent(string sceneName, Game.State targetState)
-    {
-        SceneName = sceneName;
-        TargetState = targetState;
-    }
-}
+
 public class DebugLogErrorEvent : IEvent
 {
     public string Message { get; }
@@ -93,6 +84,17 @@ public class SceneLoadedEvent : IEvent
     public SceneLoadedEvent(string sceneName)
     {
         SceneName = sceneName;
+    }
+}
+
+public class SceneStartLoadEvent : IEvent
+{
+    public string SceneName { get; }
+    public GameService.State TargetState { get; }
+    public SceneStartLoadEvent(string sceneName, GameService.State targetState)
+    {
+        SceneName = sceneName;
+        TargetState = targetState;
     }
 }
 
@@ -212,5 +214,19 @@ public class ScreenCloseEvent : IScreenEvent
     }
 }
 
+
+#endregion
+
+#region TransitionScreen
+
+public class LoadingScreenDropEvent : IEvent
+{
+
+}
+
+public class LoadingScreenLiftEvent : IEvent
+{
+
+}
 
 #endregion

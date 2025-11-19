@@ -33,7 +33,7 @@ public class StallViewModel : ViewModel
 
     public override void Initialize()
     {
-        _diContainer.BindInterfacesAndSelfTo(GetType()).FromInstance(this).AsSingle().NonLazy();
+        _diContainer.BindInterfacesAndSelfTo(GetType()).FromInstance(this).AsTransient().NonLazy();
         disposables.Add(_eventBus.Subscribe<ScreenOpenEvent>(e =>
         {
             if (e.ScreenView is StallChangeItemsView)

@@ -108,7 +108,6 @@ public interface IViewOpener
 
 public interface IStateListener
 {
-    void OnStateChanged(Game.State state);
+    void OnStateChanged(GameService.State state);
 }
-
 
